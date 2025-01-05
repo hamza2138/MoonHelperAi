@@ -1,221 +1,120 @@
+
 <!DOCTYPE html>
-<html dir="rtl">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>Direct Video Player</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Cairo', sans-serif;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>فيديو مباشر</title>
+    <style>
+        body {
+            background: #1a1a2e;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
 
-body {
-    background: #0f0f1f;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
-    color: white;
-}
+        .input-box {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
 
-.container {
-    width: 100%;
-    max-width: 800px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 15px;
-    padding: 20px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 16px;
+        }
 
-.search-box {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
+        button {
+            padding: 12px 24px;
+            background: #4CAF50;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
 
-#urlInput {
-    flex: 1;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 10px;
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 16px;
-}
+        button:hover {
+            background: #45a049;
+        }
 
-#loadBtn {
-    padding: 12px 25px;
-    border: none;
-    border-radius: 10px;
-    background: #4CAF50;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s;
-}
+        video {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: #000;
+        }
 
-#loadBtn:hover {
-    background: #45a049;
-}
-
-.video-wrapper {
-    width: 100%;
-    margin-top: 20px;
-    border-radius: 10px;
-    overflow: hidden;
-    background: #000;
-    position: relative;
-}
-
-#videoPlayer {
-    width: 100%;
-    height: auto;
-    display: block;
-}
-
-.hint {
-    text-align: center;
-    margin-top: 15px;
-    color: rgba(255, 255, 255, 0.7);
-    font-size: 14px;
-}
-
-@media (max-width: 600px) {
-    .container {
-        padding: 15px;
-    }
-    
-    .search-box {
-        flex-direction: column;
-    }
-    
-    #loadBtn {
-        width: 100%;
-    }
-}
-</style>
+        .message {
+            margin-top: 10px;
+            color: #4CAF50;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
-    <div class="search-box">
-        <input type="text" id="urlInput" placeholder="ضع رابط الفيديو هنا...">
-        <button id="loadBtn" onclick="loadVideo()">تشغيل</button>
+    <div class="input-box">
+        <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا">
+        <button onclick="loadVideo()">عرض الفيديو</button>
+        <button onclick="downloadVideo()" style="background: #2196F3;">تحميل مباشر</button>
     </div>
-    
-    <div class="video-wrapper">
-        <video id="videoPlayer" controls>
 
-<!-- الفيديو سيتم تحميله هنا -->
-        </video>
-    </div>
-    
-    <div class="hint">
-        اضغط مطولاً على الفيديو للتحميل
-    </div>
-</div>
+    <video id="myVideo" controls></video>
+    <div id="message" class="message"></div>
 
-<script>
-let longPressTimer;
-const videoPlayer = document.getElementById('videoPlayer');
-const urlInput = document.getElementById('urlInput');
+    <script>
+        function loadVideo() {
+            const url = document.getElementById('videoUrl').value;
 
-function loadVideo() {
-    const url = urlInput.value.trim();
-    if (!url) {
-        alert('الرجاء إدخال رابط الفيديو');
-        return;
-    }
-    
-    videoPlayer.src = url;
-    videoPlayer.load();
-}
+            const video = document.getElementById('myVideo');
+            const message = document.getElementById('message');
 
-// منع القائمة المنسدلة الافتراضية
-videoPlayer.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-});
+            if (!url) {
+                message.innerText = 'الرجاء إدخال رابط الفيديو';
+                return;
+            }
 
-// للكمبيوتر - الضغط بالزر الأيمن
-videoPlayer.addEventListener('mousedown', (e) => {
-    if (e.button === 2) { // زر الماوس الأيمن
-        if (videoPlayer.src) {
-            downloadVideo();
+            video.src = url;
+            video.load();
+            message.innerText = 'تم تحميل الفيديو';
         }
-    }
-});
 
-// للموبايل - الضغط المطول
-videoPlayer.addEventListener('touchstart', () => {
-    longPressTimer = setTimeout(() => {
-        if (videoPlayer.src) {
-            downloadVideo();
+        function downloadVideo() {
+            const url = document.getElementById('videoUrl').value;
+            const message = document.getElementById('message');
+
+            if (!url) {
+                message.innerText = 'الرجاء إدخال رابط الفيديو';
+                return;
+            }
+
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'video.mp4';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            message.innerText = 'جاري التحميل...';
         }
-    }, 500);
-});
 
-videoPlayer.addEventListener('touchend', () => {
-    clearTimeout(longPressTimer);
-});
-
-function downloadVideo() {
-    if (!videoPlayer.src) return;
-    
-    const a = document.createElement('a');
-    a.href = videoPlayer.src;
-    a.download = `video_${Date.now()}.mp4`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-// تفعيل زر Enter
-urlInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        loadVideo();
-    }
-});
-
-// إضافة مؤثرات للأزرار
-const loadBtn = document.getElementById('loadBtn');
-loadBtn.addEventListener('mousedown', () => {
-    loadBtn.style.transform = 'scale(0.95)';
-});
-
-loadBtn.addEventListener('mouseup', () => {
-    loadBtn.style.transform = 'scale(1)';
-});
-
-// تحسين تجربة المستخدم
-urlInput.addEventListener('paste', () => {
-    setTimeout(loadVideo, 100);
-});
-
-// إضافة رسالة نجاح التحميل
-function showSuccess() {
-    const toast = document.createElement('div');
-
-    toast.style.cssText = `
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #4CAF50;
-        color: white;
-        padding: 10px 20px;
-        border-radius: 5px;
-        z-index: 1000;
-    `;
-    toast.textContent = 'تم بدء التحميل';
-    document.body.appendChild(toast);
-    
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
-}
-</script>
+‎        // تفعيل زر Enter
+        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadVideo();
+            }
+        });
+    </script>
 </body>
 </html>
