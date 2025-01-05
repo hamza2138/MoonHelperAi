@@ -1,68 +1,50 @@
+
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>Moon Helper - جاري التفويض</title>
+<title>🌙 Moon Helper</title>
 <style>
 body {
-  background: #23272A;
-  color: white;
-  font-family: 'Cairo', system-ui;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  margin: 0;
+background: #23272A;
+margin: 0;
+height: 100vh;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-direction: column;
+font-family: 'Cairo', system-ui;
+color: white;
 }
 
 .loader {
-  text-align: center;
+width: 80px;
+height: 80px;
+border: 5px solid #5865F2;
+border-top-color: transparent;
+border-radius: 50%;
+animation: spin 1s linear infinite;
+margin-bottom: 20px;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+to { transform: rotate(360deg); }
 }
 
-.spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #5865F2;
-  border-top-color: transparent;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-  margin: 0 auto;
+.loading-text {
+font-size: 1.2rem;
+color: #B9BBBE;
 }
 </style>
 </head>
 <body>
-<div class="loader">
-  <div class="spinner"></div>
-  <p>جاري تفويض الحساب...</p>
-</div>
+<div class="loader"></div>
+<p class="loading-text">جاري تحميل الصفحة...</p>
 
 <script>
-window.onload = async () => {
-  const urlParams = new URLSearchParams(window.location.search);
-  const code = urlParams.get('code');
-
-  if (code) {
-    try {
-‎      // هنا يمكنك إضافة طلب للخادم للتحقق من الكود
-‎      // وإرجاع بيانات المستخدم
-      
-‎      // مثال لبيانات المستخدم
-      const userData = {
-        id: '123456789',
-        username: 'مستخدم جديد',
-        avatar: null
-      };
-
-      localStorage.setItem('discord_user', JSON.stringify(userData));
-      window.location.href = '/'; // العودة للصفحة الرئيسية
-    } catch (error) {
-      console.error('حدث خطأ:', error);
-      window.location.href = '/?error=auth_failed';
-    }
-  }
-};
+‎// بعد 3 ثواني سيتم التوجيه للصفحة الرئيسية
+setTimeout(() => {
+window.location.href = '/rooms.html';
+}, 3000);
 </script>
 </body>
 </html>
