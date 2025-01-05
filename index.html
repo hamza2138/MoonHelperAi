@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<title>Moon Helper IA - البحث عن الأغاني</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Cairo', sans-serif;
+}
+
+body {
+background: linear-gradient(135deg, #0f172a, #1e293b);
+color: #fff;
+min-height: 100vh;
+}
+
+.header {
+background: rgba(15, 23, 42, 0.95);
+padding: 1.5rem;
+text-align: center;
+box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+position: relative;
+}
+
+.logo {
+font-size: 2rem;
+color: #38bdf8;
+font-weight: bold;
+text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+}
+
+.api-status {
+position: absolute;
+top: 10px;
+right: 10px;
+font-size: 0.8rem;
+padding: 5px 10px;
+border-radius: 20px;
+background: #1DB954;
+}
+
+.search-container {
+max-width: 800px;
+margin: 2rem auto;
+padding: 20px;
+}
+
+.search-box {
+background: #1e293b;
+padding: 20px;
+border-radius: 15px;
+box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+margin-bottom: 20px;
+}
+
+.search-type {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.search-type button {
+flex: 1;
+padding: 15px;
+border: none;
+border-radius: 10px;
+background: #38bdf8;
+color: white;
+cursor: pointer;
+transition: all 0.3s ease;
+font-weight: bold;
+}
+
+.search-type button.active {
+background: #818cf8;
+box-shadow: 0 0 15px rgba(129, 140, 248, 0.4);
+transform: scale(1.02);
+}
+
+.search-input {
+width: 100%;
+padding: 15px;
+border-radius: 10px;
+border: 2px solid #38bdf8;
+background: #0f172a;
+color: white;
+margin-bottom: 20px;
+font-size: 16px;
+}
+
+.search-input:focus {
+outline: none;
+border-color: #818cf8;
+box-shadow: 0 0 20px rgba(56, 189, 248, 0.2);
+}
+
+.file-input {
+display: none;
+}
+
+.file-label {
+display: block;
+padding: 20px;
+text-align: center;
+background: #1e293b;
+border: 2px dashed #38bdf8;
+
+border-radius: 10px;
+cursor: pointer;
+margin-bottom: 20px;
+transition: all 0.3s ease;
+}
+
+.file-label:hover {
+background: #2a3a4f;
+border-color: #818cf8;
+}
+
+.results {
+display: grid;
+gap: 20px;
+grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+}
+
+.song-card {
+background: #1e293b;
+border-radius: 15px;
+padding: 15px;
+transition: all 0.3s ease;
+box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.song-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.song-image {
+width: 100%;
+height: 200px;
+object-fit: cover;
+border-radius: 10px;
+margin-bottom: 15px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.song-title {
+font-weight: bold;
+margin-bottom: 8px;
+font-size: 1.1rem;
+color: #fff;
+}
+
+.song-artist {
+color: #38bdf8;
+font-size: 0.9rem;
+margin-bottom: 15px;
+}
+
+.song-controls {
+display: flex;
+flex-direction: column;
+gap: 10px;
+}
+
+.play-button, .spotify-button {
+width: 100%;
+padding: 10px;
+border: none;
+border-radius: 8px;
+cursor: pointer;
+font-weight: bold;
+transition: all 0.3s ease;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+}
+
+.play-button {
+background: #38bdf8;
+color: white;
+}
+
+.play-button:hover {
+background: #0284c7;
+transform: scale(1.02);
+}
+
+.spotify-button {
+background: #1DB954;
+color: white;
+}
+
+.spotify-button:hover {
+background: #1ed760;
+transform: scale(1.02);
+}
+
+.loading {
+text-align: center;
+padding: 20px;
+font-size: 1.2rem;
+color: #38bdf8;
+display: none;
+}
+
+.error-message {
+background: #ef4444;
+color: white;
+padding: 15px;
+border-radius: 10px;
+margin: 10px 0;
+text-align: center;
+animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(-10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.audio-player {
+width: 100%;
+margin: 10px 0;
+border-radius: 20px;
+background: #0f172a;
+}
+
+@media (max-width: 768px) {
+.search-container {
+padding: 10px;
+}
+.logo {
+font-size: 1.5rem;
+}
+.results {
+grid-template-columns: 1fr;
+}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+<div class="logo">🎵 Moon Helper IA</div>
+<div class="api-status">API متصل</div>
+</div>
+
+<div class="search-container">
+<div class="search-box">
+<div class="search-type">
+<button onclick="switchSearch('text')" class="active" id="textBtn">البحث بالنص</button>
+<button onclick="switchSearch('image')" id="imageBtn">البحث بالصورة</button>
+</div>
+
+<input type="text" id="textSearch" class="search-input" placeholder="اكتب اسم الأغنية أو المغني...">
+<label class="file-label" id="imageSearch" style="display: none;">
+انقر هنا لرفع صورة أو اسحب الصورة وأفلتها هنا
+<input type="file" class="file-input" accept="image/*" onchange="handleImage(event)">
+</label>
+</div>
+
+<div class="loading" id="loading">جاري البحث عن الأغنية...</div>
+<div class="results" id="results"></div>
+</div>
+
+<script>
+// استخدام RapidAPI للبحث عن الأغاني
+const RAPID_API_KEY = '9d6eb7c619msh1b6120f5ee2c3dbp1b84d3jsn53b42058a240';
+let currentSearch = 'text';
+
+// تبديل نوع البحث
+function switchSearch(type) {
+currentSearch = type;
+document.getElementById('textSearch').style.display = type === 'text' ? 'block' : 'none';
+document.getElementById('imageSearch').style.display = type === 'image' ? 'block' : 'none';
+document.getElementById('textBtn').classList.toggle('active', type === 'text');
+document.getElementById('imageBtn').classList.toggle('active', type === 'image');
+}
+
+// البحث عن الأغاني
+async function searchSongs(query) {
+const url = `https://deezerdevs-deezer.p.rapidapi.com/search?q=${encodeURIComponent(query)}`;
+const options = {
+method: 'GET',
+headers: {
+'X-RapidAPI-Key': RAPID_API_KEY,
+'X-RapidAPI-Host': 'deezerdevs-deezer.p.rapidapi.com'
+}
+};
+
+try {
+const response = await fetch(url, options);
+const data = await response.json();
+return data.data.map(song => ({
+title: song.title,
+artist: song.artist.name,
+image: song.album.cover_xl || song.album.cover_big || song.album.cover_medium,
+preview_url: song.preview,
+duration: song.duration,
+album: song.album.title
+}));
+} catch (error) {
+
+console.error(error);
+throw new Error('حدث خطأ في البحث عن الأغاني');
+}
+}
+
+// التعرف على الموسيقى من الصورة
+async function identifyMusicFromImage(file) {
+// محاكاة التعرف على الموسيقى من الصورة
+await new Promise(resolve => setTimeout(resolve, 1500));
+return {
+title: "أغنية تجريبية",
+artist: "فنان تجريبي"
+};
+}
+
+// معالجة الصور
+async function handleImage(event) {
+const file = event.target.files[0];
+if (file) {
+showLoading();
+try {
+const musicInfo = await identifyMusicFromImage(file);
+const songs = await searchSongs(`${musicInfo.title} ${musicInfo.artist}`);
+displayResults(songs);
+} catch (error) {
+showError('لم نتمكن من التعرف على الأغنية. حاول مرة أخرى.');
+}
+hideLoading();
+}
+}
+
+// معالجة البحث النصي
+document.getElementById('textSearch').addEventListener('input', debounce(async (e) => {
+const query = e.target.value.trim();
+if (query) {
+showLoading();
+try {
+const songs = await searchSongs(query);
+displayResults(songs);
+} catch (error) {
+showError('حدث خطأ في البحث. حاول مرة أخرى.');
+}
+hideLoading();
+}
+}, 500));
+
+// تنسيق الوقت
+function formatDuration(seconds) {
+const minutes = Math.floor(seconds / 60);
+const remainingSeconds = seconds % 60;
+return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+}
+
+// عرض النتائج
+function displayResults(songs) {
+const container = document.getElementById('results');
+container.innerHTML = songs.map(song => `
+<div class="song-card">
+<img src="${song.image}" class="song-image" alt="${song.title}">
+<div class="song-title">${song.title}</div>
+<div class="song-artist">${song.artist}</div>
+<div class="song-controls">
+${song.preview_url ? `
+<audio class="audio-player" controls>
+<source src="${song.preview_url}" type="audio/mpeg">
+متصفحك لا يدعم تشغيل الصوت
+</audio>
+` : ''}
+<button class="spotify-button" onclick="window.open('https://open.spotify.com/search/${encodeURIComponent(song.title + ' ' + song.artist)}', '_blank')">
+
+<img src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_White.png" style="height: 20px;" alt="Spotify">
+فتح في Spotify
+</button>
+</div>
+</div>
+`).join('');
+}
+
+// دوال مساعدة
+function showLoading() {
+document.getElementById('loading').style.display = 'block';
+}
+
+function hideLoading() {
+document.getElementById('loading').style.display = 'none';
+}
+
+function showError(message) {
+const errorDiv = document.createElement('div');
+errorDiv.className = 'error-message';
+errorDiv.textContent = message;
+document.getElementById('results').prepend(errorDiv);
+setTimeout(() => errorDiv.remove(), 5000);
+}
+
+function debounce(func, wait) {
+let timeout;
+return function executedFunction(...args) {
+const later = () => {
+clearTimeout(timeout);
+func(...args);
+};
+clearTimeout(timeout);
+timeout = setTimeout(later, wait);
+};
+}
+
+// تفعيل سحب وإفلات الصور
+const dropZone = document.getElementById('imageSearch');
+
+dropZone.addEventListener('dragover', (e) => {
+e.preventDefault();
+dropZone.style.borderColor = '#818cf8';
+dropZone.style.background = '#2a3a4f';
+});
+
+dropZone.addEventListener('dragleave', () => {
+dropZone.style.borderColor = '#38bdf8';
+dropZone.style.background = '#1e293b';
+});
+
+dropZone.addEventListener('drop', (e) => {
+e.preventDefault();
+dropZone.style.borderColor = '#38bdf8';
+dropZone.style.background = '#1e293b';
+const file = e.dataTransfer.files[0];
+if (file && file.type.startsWith('image/')) {
+const event = { target: { files: [file] } };
+handleImage(event);
+}
+});
+</script>
+</body>
+</html>
