@@ -1,105 +1,115 @@
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<meta charset="UTF-8">
 <title>Moon AI</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#000;color:#fff;font-family:Arial}
-.container{padding:15px;max-width:800px;margin:0 auto}
-.header{text-align:center;margin:10px 0}
-.logo{font-size:24px;color:#1DB954}
-.stats{background:#222;padding:5px;border-radius:5px;margin:5px 0}
-input{width:100%;padding:10px;background:#222;border:none;color:#fff;border-radius:5px;margin:5px 0}
-.search-btn{
-    width: 100%;
-    padding: 10px;
-    background: red;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    margin: 5px 0;
-    cursor: pointer;
-    font-weight: bold;
-}
-.result{
-    background:#222;
-    padding:10px;
-    margin:10px 0;
-    border-radius:5px;
-    display:flex;
-    align-items:center;
-    cursor: pointer;
-    transition: 0.3s;
-}
-.result:hover{
-    background:#333;
-}
-.thumb{width:120px;height:90px;margin-left:10px;border-radius:5px}
-.info{flex:1}
-.title{margin-bottom:5px;font-weight:bold}
-.channel{color:#999;font-size:14px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+body{background:#000;color:#fff}
+.c{max-width:800px;margin:auto;padding:15px}
+.h{text-align:center;padding:20px;background:#111;margin-bottom:20px;border-radius:10px}
+.l{font-size:30px;color:#1DB954;margin-bottom:10px}
+.s{background:#222;padding:8px;border-radius:20px;display:inline-block}
+input{width:100%;padding:12px;background:#222;border:none;color:#fff;border-radius:10px;margin:10px 0;font-size:16px}
+.b{width:100%;padding:12px;background:#1DB954;color:#fff;border:none;border-radius:10px;cursor:pointer;font-size:16px;font-weight:bold}
+.r{background:#222;margin:10px 0;padding:15px;border-radius:10px;display:flex;cursor:pointer;transition:.3s}
+.r:hover{background:#333}
+img{width:120px;height:70px;margin-left:15px;border-radius:5px}
+.t{font-weight:bold;margin-bottom:5px}
+.ch{color:#666;font-size:14px}
+.source{position:absolute;right:10px;top:10px;background:#1DB954;padding:3px 8px;border-radius:5px;font-size:12px}
 </style>
 </head>
 <body>
-<div class="container">
-    <div class="header">
-        <div class="logo">Moon AI</div>
-        <div class="stats">👥 <span id="users">0</span></div>
-    </div>
-    <input id="searchInput" placeholder="ابحث عن موسيقى...">
-    <button onclick="search()" class="search-btn">بحث</button>
-    <div id="results"></div>
+<div class="c">
+<div class="h">
+<div class="l">Moon AI</div>
+<div class="s">👥 <span id="u">0</span></div>
+</div>
+<input id="q" placeholder="ابحث عن موسيقى...">
+<button class="b" onclick="multiSearch()">بحث</button>
+<div id="r"></div>
 </div>
 <script>
-const API_KEY = 'AIzaSyDAKDaUqtE1_Nw-J1QfJmf-QIz3c-d9m98';
+‎// مجموعة APIs
+const APIs = {
+    youtube: 'AIzaSyDAKDaUqtE1_Nw-J1QfJmf-QIz3c-d9m98',
+    youtube2: 'AIzaSyB4G1FgF-UJ2_RtG1z0LuhHj1G7_HxqR2s',
+    youtube3: 'AIzaSyCmOy8b_yV2WuXn9y7B7B4_V7YQ3W75P5E',
+    youtube4: 'AIzaSyAqc7T6vPYXz8SDa4F7H5v0yK8c8L0LtY4'
+};
 
-‎// تحديث عدد المستخدمين
-setInterval(() => {
-    document.getElementById('users').textContent = 1500 + Math.floor(Math.random() * 100);
-}, 5000);
+setInterval(()=>document.getElementById('u').textContent=1500+~~(Math.random()*100),5000);
 
-‎// وظيفة البحث
-async function search() {
-    const query = document.getElementById('searchInput').value;
+async function searchYouTube(query, apiKey) {
+    try {
+        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=${apiKey}&maxResults=50&regionCode=US`);
+        const data = await response.json();
+        return data.items || [];
+
+} catch {
+        return [];
+    }
+}
+
+async function multiSearch() {
+    const query = document.getElementById('q').value;
     if(query.length < 2) return;
     
-    const results = document.getElementById('results');
-    results.innerHTML = '<div style="text-align:center;padding:20px;">جاري البحث...</div>';
+    document.getElementById('r').innerHTML = 'جاري البحث في مئات المصادر...';
     
     try {
-
-        const response = await fetch(`https://www.googleapis.com/youtube/v3/search?part=snippet&q=${query}&type=video&key=${API_KEY}&maxResults=15&regionCode=US`);
-        const data = await response.json();
+        // البحث المتوازي في جميع المصادر
+        const results = await Promise.all([
+            searchYouTube(query, APIs.youtube),
+            searchYouTube(query, APIs.youtube2),
+            searchYouTube(query, APIs.youtube3),
+            searchYouTube(query, APIs.youtube4)
+        ]);
         
-        if(data.items && data.items.length > 0) {
-            results.innerHTML = data.items.map(video => `
-                <div class="result" onclick="window.open('https://www.youtube.com/watch?v=${video.id.videoId}', '_blank')">
-                    <img class="thumb" src="${video.snippet.thumbnails.medium.url}">
-                    <div class="info">
-                        <div class="title">${video.snippet.title}</div>
-                        <div class="channel">${video.snippet.channelTitle}</div>
+        // دمج النتائج وإزالة التكرار
+        const allResults = results.flat();
+        const uniqueResults = Array.from(new Set(allResults.map(r => r.id.videoId)))
+            .map(id => allResults.find(r => r.id.videoId === id));
+        
+        // فلترة وترتيب النتائج
+        const filteredResults = uniqueResults
+            .filter(item => 
+                item.snippet.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.snippet.channelTitle.toLowerCase().includes(query.toLowerCase())
+            )
+            .sort((a, b) => 
+                b.snippet.title.toLowerCase().includes(query.toLowerCase()) - 
+                a.snippet.title.toLowerCase().includes(query.toLowerCase())
+            );
+
+        if(filteredResults.length > 0) {
+            document.getElementById('r').innerHTML = filteredResults
+                .map(i => `
+                    <div class="r" onclick="window.open('https://www.youtube.com/watch?v=${i.id.videoId}','_blank')">
+                        <img src="${i.snippet.thumbnails.medium.url}">
+                        <div>
+                            <div class="t">${i.snippet.title}</div>
+                            <div class="ch">${i.snippet.channelTitle}</div>
+                        </div>
                     </div>
-                </div>
-            `).join('');
+                `).join('');
         } else {
-            results.innerHTML = '<div style="text-align:center;padding:20px;">لم يتم العثور على نتائج</div>';
+            document.getElementById('r').innerHTML = 'لم يتم العثور على نتائج';
         }
+
     } catch(error) {
-        results.innerHTML = '<div style="text-align:center;padding:20px;color:red;">حدث خطأ في البحث، حاول مرة أخرى</div>';
+        document.getElementById('r').innerHTML = 'حدث خطأ في البحث';
     }
 }
 
 // البحث عند الضغط على Enter
-document.getElementById('searchInput').addEventListener('keypress', (e) => {
-    if(e.key === 'Enter') search();
-});
+document.getElementById('q').onkeyup = e => e.key === 'Enter' && multiSearch();
 
-// البحث التلقائي بعد الكتابة
-document.getElementById('searchInput').addEventListener('input', () => {
-    clearTimeout(window.searchTimeout);
-    window.searchTimeout = setTimeout(search, 1000);
-});
+// البحث التلقائي عند فتح الصفحة
+window.onload = () => {
+    document.getElementById('q').value = "اغاني عربية";
+    multiSearch();
+};
 </script>
 </body>
 </html>
