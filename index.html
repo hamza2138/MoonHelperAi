@@ -1,15 +1,15 @@
+
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>🌟 Moon Voice Pro</title>
+<title>🌙 Moon Helper</title>
 <style>
 :root {
-  --primary: #6366f1;
-  --secondary: #8b5cf6;
-  --accent: #d946ef;
-  --success: #22c55e;
-  --error: #ef4444;
-  --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+  --primary: #5865F2;
+  --secondary: #2C2F33;
+  --success: #57F287;
+  --error: #ED4245;
+  --bg: linear-gradient(135deg, #23272A 0%, #2C2F33 100%);
 }
 
 * {
@@ -31,39 +31,76 @@ body {
   padding: 2rem;
 }
 
-.header {
+‎/* صفحة تسجيل الدخول */
+.login-page {
+  height: 100vh;
+  display: grid;
+  place-items: center;
   text-align: center;
-  margin-bottom: 3rem;
-  animation: fadeIn 1s ease;
 }
 
-.header h1 {
-  font-size: 3.5rem;
-  background: linear-gradient(to right, #6366f1, #d946ef);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.login-box {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+.logo {
+  font-size: 2.5rem;
   margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.login-btn {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.login-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+}
+
+‎/* صفحة الغرف */
+.rooms-page {
+  display: none;
+  padding-top: 2rem;
 }
 
 .room-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 2rem;
-  margin-bottom: 3rem;
+  margin-top: 2rem;
 }
 
 .room-card {
   background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border-radius: 20px;
+  border-radius: 15px;
   padding: 2rem;
   text-align: center;
-  transition: transform 0.3s;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s;
 }
 
 .room-card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .room-icon {
@@ -71,376 +108,151 @@ body {
   margin-bottom: 1rem;
 }
 
-.btn {
-  background: linear-gradient(to right, var(--primary), var(--secondary));
-  color: white;
-  border: none;
-  padding: 1rem 2rem;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
-}
-
-.btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
-}
-
-.controls {
-  position: fixed;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 1rem;
-  background: rgba(0, 0, 0, 0.8);
-  padding: 1rem;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-}
-
-.control-btn {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  font-size: 1.5rem;
-  transition: all 0.3s;
-}
-
-.mic-btn {
-  background: var(--primary);
-
-color: white;
-}
-
-.screen-btn {
-  background: var(--secondary);
-  color: white;
-}
-
-.end-btn {
-  background: var(--error);
-  color: white;
-}
-
-.room-info {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 2rem;
-  border-radius: 20px;
-  margin-top: 2rem;
-  text-align: center;
-  animation: slideUp 0.5s ease;
-}
-
-.room-code {
-  font-size: 2rem;
-  color: var(--accent);
-  margin: 1rem 0;
-  padding: 1rem;
-  background: rgba(0, 0, 0, 0.2);
-  border-radius: 10px;
-}
-
-.participants {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
-  margin-top: 2rem;
-}
-
-.participant {
-  background: rgba(0, 0, 0, 0.2);
-  padding: 1rem;
-  border-radius: 15px;
+.user-info {
   display: flex;
   align-items: center;
   gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
 }
 
-.participant-avatar {
+.avatar {
   width: 50px;
-  height: 50px;
-  background: var(--primary);
+
+height: 50px;
   border-radius: 50%;
-  display: grid;
-  place-items: center;
-  font-weight: bold;
+  border: 2px solid var(--primary);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { transform: translateY(20px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.8);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: #1e1b4b;
-  padding: 2rem;
-  border-radius: 20px;
-  width: 90%;
-  max-width: 500px;
-}
-
-.share-options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.status-message {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: 1rem 2rem;
+.status {
+  padding: 1rem;
   border-radius: 10px;
-  animation: slideIn 0.3s ease;
+  margin-top: 1rem;
+  display: none;
 }
 
-@keyframes slideIn {
-  from { transform: translateX(100%); }
-  to { transform: translateX(0); }
-}
+.status.success { background: rgba(87, 242, 135, 0.1); color: var(--success); }
+.status.error { background: rgba(237, 66, 69, 0.1); color: var(--error); }
 </style>
 </head>
 <body>
 
-<div class="container">
-  <header class="header">
-    <h1>Moon Voice Pro</h1>
-    <p>تواصل مع العالم 🌍</p>
-  </header>
-
-  <div class="room-grid">
-    <div class="room-card">
-      <div class="room-icon">🎯</div>
-
-<h2>إنشاء غرفة</h2>
-      <p>أنشئ غرفة جديدة وشارك مع أصدقائك</p>
-      <button class="btn" onclick="createRoom()">إنشاء غرفة</button>
-    </div>
-
-    <div class="room-card">
-      <div class="room-icon">🚀</div>
-      <h2>انضمام لغرفة</h2>
-      <p>انضم لغرفة موجودة باستخدام الكود</p>
-      <button class="btn" onclick="showJoinModal()">انضمام</button>
-    </div>
-  </div>
-
-  <div id="roomInfo" class="room-info" style="display: none">
-    <h2>معلومات الغرفة</h2>
-    <div id="roomCode" class="room-code"></div>
-    <button class="btn" onclick="copyRoomCode()">نسخ الكود</button>
-    
-    <div class="participants" id="participantsList">
-      <!-- سيتم إضافة المشاركين هنا -->
-    </div>
+<!-- صفحة تسجيل الدخول -->
+<div id="loginPage" class="login-page">
+  <div class="login-box">
+    <div class="logo">🌙 Moon Helper</div>
+    <p>قم بتسجيل الدخول للوصول إلى الغرف الصوتية</p>
+    <button onclick="loginWithDiscord()" class="login-btn">
+      <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_white_RGB.png" width="24">
+      تسجيل دخول بـ Discord
+    </button>
   </div>
 </div>
 
-<div class="controls" id="controls" style="display: none">
-  <button class="control-btn mic-btn" onclick="toggleMic()" id="micBtn">🎤</button>
-  <button class="control-btn screen-btn" onclick="toggleScreen()" id="screenBtn">🖥️</button>
-  <button class="control-btn end-btn" onclick="endCall()">❌</button>
-</div>
+<!-- صفحة الغرف -->
+<div id="roomsPage" class="rooms-page">
+  <div class="container">
+    <div class="user-info">
+      <img id="userAvatar" class="avatar" src="" alt="صورة المستخدم">
+      <div>
+        <h3 id="username">...</h3>
+        <button onclick="logout()" class="login-btn" style="background: var(--error)">تسجيل خروج</button>
+      </div>
+    </div>
 
-<div class="modal" id="joinModal">
-  <div class="modal-content">
-    <h2>انضمام لغرفة</h2>
-    <input type="text" id="roomCodeInput" placeholder="أدخل كود الغرفة" class="input">
-    <button class="btn" onclick="joinRoom()">انضمام</button>
+    <div class="room-grid">
+      <div class="room-card">
+        <div class="room-icon">🎯</div>
+        <h2>إنشاء غرفة</h2>
+        <p>أنشئ غرفة جديدة وشارك مع أصدقائك</p>
+        <button class="login-btn" onclick="createRoom()">إنشاء غرفة</button>
+      </div>
+
+      <div class="room-card">
+        <div class="room-icon">🚀</div>
+        <h2>انضمام لغرفة</h2>
+        <p>انضم لغرفة موجودة باستخدام الكود</p>
+        <button class="login-btn" onclick="joinRoom()">انضمام للغرفة</button>
+      </div>
+    </div>
   </div>
 </div>
+
+<div id="status" class="status"></div>
 
 <script>
-let localStream;
-let screenStream;
-let peerConnection;
-let roomId;
-let isAudioEnabled = true;
-let isScreenSharing = false;
-
-// تهيئة الاتصال
-const servers = {
-  iceServers: [
-    {
-      urls: [
-        'stun:stun1.l.google.com:19302',
-        'stun:stun2.l.google.com:19302',
-      ]
-    }
-  ]
+const config = {
+  CLIENT_ID: '1284253565417816246',
+  REDIRECT_URI: 'https://hamza2138.github.io/MoonHelperAi/callback'
 };
 
-// إنشاء غرفة جديدة
-async function createRoom() {
-  try {
-    await initializeMedia();
-    roomId = generateRoomId();
-    showRoomInfo(roomId);
-    showControls();
-    showStatus('تم إنشاء الغرفة بنجاح! 🎉', 'success');
-  } catch (error) {
-    showStatus('حدث خطأ أثناء إنشاء الغرفة ❌', 'error');
+// التحقق من حالة تسجيل الدخول عند تحميل الصفحة
+window.onload = () => {
+  const userData = localStorage.getItem('discord_user');
+
+if (userData) {
+    showRoomsPage(JSON.parse(userData));
   }
+};
+
+// تسجيل الدخول بـ Discord
+function loginWithDiscord() {
+  const scopes = [
+    'identify',
+    'connections',
+    'voice',
+    'applications.commands.permissions.update',
+    'sdk.social_layer'
+  ].join('%20');
+
+  const authUrl = `https://discord.com/oauth2/authorize?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(config.REDIRECT_URI)}&scope=${scopes}`;
+
+  window.location.href = authUrl;
+}
+
+// عرض صفحة الغرف بعد تسجيل الدخول
+function showRoomsPage(user) {
+  document.getElementById('loginPage').style.display = 'none';
+  document.getElementById('roomsPage').style.display = 'block';
+  
+  document.getElementById('userAvatar').src = user.avatar 
+    ? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+    : 'https://discord.com/assets/1cbd08c76f8af6dddce02c5138971129.png';
+  
+  document.getElementById('username').textContent = user.username;
+}
+
+// إنشاء غرفة جديدة
+function createRoom() {
+  const roomId = Math.random().toString(36).substring(2, 9);
+  showStatus(`تم إنشاء الغرفة! الكود: ${roomId}`, 'success');
 }
 
 // الانضمام لغرفة
-async function joinRoom() {
-
-const code = document.getElementById('roomCodeInput').value.trim();
-  if (!code) {
-    showStatus('الرجاء إدخال كود الغرفة ⚠️', 'error');
-    return;
-  }
-
-  try {
-    await initializeMedia();
-    roomId = code;
-    hideJoinModal();
-    showRoomInfo(roomId);
-    showControls();
-    showStatus('تم الانضمام للغرفة بنجاح! 🎉', 'success');
-  } catch (error) {
-    showStatus('حدث خطأ أثناء الانضمام للغرفة ❌', 'error');
+function joinRoom() {
+  const roomId = prompt('أدخل كود الغرفة:');
+  if (roomId) {
+    showStatus('جاري الانضمام للغرفة...', 'success');
   }
 }
 
-// تهيئة الوسائط
-async function initializeMedia() {
-  try {
-    localStream = await navigator.mediaDevices.getUserMedia({
-      audio: true,
-      video: false
-    });
-    return true;
-  } catch (error) {
-    throw new Error('فشل في الوصول للمايكروفون');
-  }
+// تسجيل خروج
+function logout() {
+  localStorage.removeItem('discord_user');
+  window.location.reload();
 }
 
-// مشاركة الشاشة
-async function toggleScreen() {
-  if (!isScreenSharing) {
-    try {
-      screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true
-      });
-      isScreenSharing = true;
-      document.getElementById('screenBtn').textContent = '🔴';
-      showStatus('جارِ مشاركة الشاشة 🖥️', 'success');
-    } catch (error) {
-      showStatus('فشل في مشاركة الشاشة ❌', 'error');
-    }
-  } else {
-    stopScreenSharing();
-  }
-}
-
-// إيقاف مشاركة الشاشة
-function stopScreenSharing() {
-  if (screenStream) {
-    screenStream.getTracks().forEach(track => track.stop());
-    screenStream = null;
-    isScreenSharing = false;
-    document.getElementById('screenBtn').textContent = '🖥️';
-    showStatus('تم إيقاف مشاركة الشاشة 🛑', 'success');
-  }
-}
-
-// التحكم بالمايك
-function toggleMic() {
-  isAudioEnabled = !isAudioEnabled;
-  localStream.getAudioTracks()[0].enabled = isAudioEnabled;
-  document.getElementById('micBtn').textContent = isAudioEnabled ? '🎤' : '🔇';
-  showStatus(isAudioEnabled ? 'تم تشغيل المايك 🎤' : 'تم كتم المايك 🔇', 'success');
-}
-
-// إنهاء المكالمة
-function endCall() {
-  if (confirm('هل أنت متأكد من إنهاء المكالمة؟')) {
-    if (localStream) {
-      localStream.getTracks().forEach(track => track.stop());
-    }
-    if (screenStream) {
-      stopScreenSharing();
-    }
-
-    hideControls();
-    hideRoomInfo();
-    showStatus('تم إنهاء المكالمة ✋', 'success');
-  }
-}
-
-// توليد كود غرفة عشوائي
-function generateRoomId() {
-  return Math.random().toString(36).substring(2, 9);
-}
-
-// نسخ كود الغرفة
-function copyRoomCode() {
-  const code = document.getElementById('roomCode').textContent;
-  navigator.clipboard.writeText(code);
-  showStatus('تم نسخ الكود! 📋', 'success');
-}
-
-// دوال مساعدة للواجهة
-function showControls() {
-  document.getElementById('controls').style.display = 'flex';
-}
-
-function hideControls() {
-  document.getElementById('controls').style.display = 'none';
-}
-
-function showRoomInfo(code) {
-  const roomInfo = document.getElementById('roomInfo');
-  const roomCode = document.getElementById('roomCode');
-  roomInfo.style.display = 'block';
-  roomCode.textContent = code;
-}
-
-function hideRoomInfo() {
-  document.getElementById('roomInfo').style.display = 'none';
-}
-
-function showJoinModal() {
-  document.getElementById('joinModal').style.display = 'flex';
-}
-
-function hideJoinModal() {
-  document.getElementById('joinModal').style.display = 'none';
-}
-
+// عرض رسائل الحالة
 function showStatus(message, type) {
-  const status = document.createElement('div');
-  status.className = `status-message ${type}`;
+  const status = document.getElementById('status');
   status.textContent = message;
-  document.body.appendChild(status);
+  status.className = `status ${type}`;
+  status.style.display = 'block';
   
   setTimeout(() => {
-    status.remove();
+    status.style.display = 'none';
   }, 3000);
 }
 </script>
