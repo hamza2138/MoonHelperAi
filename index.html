@@ -2,7 +2,7 @@
 <html dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Moon MP4 Pro V2</title>
+<title>Moon MP4 Pro V3</title>
 <style>
 * {
 margin: 0;
@@ -113,7 +113,7 @@ font-size: 28px;
 <body>
 <div class="container">
 <div class="header">
-<div class="logo">Moon MP4 Pro V2</div>
+<div class="logo">Moon MP4 Pro V3</div>
 <div class="subtitle">تحميل فيديوهات بدون علامة مائية</div>
 </div>
 
@@ -133,54 +133,54 @@ font-size: 28px;
 
 <script>
 async function download() {
-    const url = document.getElementById('url').value;
-    const platform = document.getElementById('platform').value;
-    const status = document.getElementById('status');
+const url = document.getElementById('url').value;
+const platform = document.getElementById('platform').value;
+const status = document.getElementById('status');
 
-    if (!url) {
-        status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
-        return;
-    }
+if (!url) {
+status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
+return;
+}
 
-    status.textContent = '⏳ جاري التحميل...';
+status.textContent = '⏳ جاري التحميل...';
 
-    try {
-        let apiUrl;
-        
-        switch(platform) {
-            case 'youtube':
-                apiUrl = `https://api.vevioz.com/api/button/mp4/${encodeURIComponent(url)}`;
-                break;
-            case 'instagram':
-                apiUrl = `https://api.vevioz.com/api/button/instagram/${encodeURIComponent(url)}`;
-                break;
-            case 'tiktok':
-                apiUrl = `https://api.vevioz.com/api/button/tiktok/${encodeURIComponent(url)}`;
-                break;
-        }
+try {
+let apiUrl;
 
-        window.open(apiUrl, '_blank');
-        
-        status.textContent = '✅ تم بدء التحميل';
-        
-        setTimeout(() => {
-            status.textContent = '';
-        }, 3000);
+switch(platform) {
+case 'youtube':
+apiUrl = `https://ytmp3.cc/en13/download?url=${encodeURIComponent(url)}`;
+break;
+case 'instagram':
+apiUrl = `https://ytmp3.cc/en13/download?url=${encodeURIComponent(url)}`;
+break;
+case 'tiktok':
+apiUrl = `https://ytmp3.cc/en13/download?url=${encodeURIComponent(url)}`;
+break;
+}
 
-    } catch (error) {
-        status.textContent = '❌ حدث خطأ في التحميل';
-    }
+window.open(apiUrl, '_blank');
+
+status.textContent = '✅ تم بدء التحميل';
+
+setTimeout(() => {
+status.textContent = '';
+}, 3000);
+
+} catch (error) {
+status.textContent = '❌ حدث خطأ في التحميل';
+}
 }
 
 // تفعيل زر Enter
 document.getElementById('url').addEventListener('keypress', e => {
-    if (e.key === 'Enter') download();
+if (e.key === 'Enter') download();
 });
 
 // تغيير placeholder حسب المنصة
 document.getElementById('platform').addEventListener('change', function() {
-    const input = document.getElementById('url');
-    input.placeholder = `ضع رابط ${this.options[this.selectedIndex].text} هنا...`;
+const input = document.getElementById('url');
+input.placeholder = `ضع رابط ${this.options[this.selectedIndex].text} هنا...`;
 });
 </script>
 </body>
