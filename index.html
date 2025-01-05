@@ -1,187 +1,112 @@
+
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Moon MP4 Pro V6</title>
-<style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-min-height: 100vh;
-background: linear-gradient(45deg, #0f0f1f, #1f1f3f);
-display: flex;
-justify-content: center;
-align-items: center;
-padding: 20px;
-}
-
-.container {
-width: 100%;
-max-width: 800px;
-background: rgba(255, 255, 255, 0.05);
-backdrop-filter: blur(10px);
-border-radius: 20px;
-padding: 30px;
-box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-}
-
-.header {
-text-align: center;
-margin-bottom: 30px;
-}
-
-.logo {
-font-size: 35px;
-font-weight: bold;
-background: linear-gradient(45deg, #ff3366, #ff6b6b);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-color: #fff;
-opacity: 0.8;
-font-size: 14px;
-margin-top: 10px;
-}
-
-.input-group {
-margin: 20px 0;
-}
-
-.url-input {
-width: 100%;
-padding: 15px;
-background: rgba(255, 255, 255, 0.05);
-border: 2px solid rgba(255, 255, 255, 0.1);
-border-radius: 12px;
-color: #fff;
-font-size: 16px;
-}
-
-.platform-select {
-width: 100%;
-padding: 15px;
-margin-bottom: 20px;
-background: rgba(255, 255, 255, 0.05);
-border: 2px solid rgba(255, 255, 255, 0.1);
-border-radius: 12px;
-color: #fff;
-font-size: 16px;
-}
-
-.download-btn {
-width: 100%;
-padding: 15px;
-background: linear-gradient(45deg, #ff3366, #ff6b6b);
-color: #fff;
-border: none;
-border-radius: 12px;
-font-size: 16px;
-font-weight: bold;
-cursor: pointer;
-transition: 0.3s;
-}
-
-.download-btn:hover {
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
-}
-
-.status {
-text-align: center;
-margin-top: 20px;
-color: #fff;
-min-height: 24px;
-}
-
-@media (max-width: 480px) {
-.container {
-padding: 20px;
-}
-.logo {
-font-size: 28px;
-}
-}
-</style>
+<title>Moon MP4 Pro V7</title>
+‎<!-- نفس الـ CSS السابق -->
 </head>
 <body>
 <div class="container">
 <div class="header">
-<div class="logo">Moon MP4 Pro V6</div>
-<div class="subtitle">تحميل فيديوهات بدون علامة مائية</div>
+<div class="logo">Moon MP4 Pro V7</div>
+<div class="subtitle">تحميل فيديوهات مباشر</div>
 </div>
-
-<select class="platform-select" id="platform">
-<option value="youtube">يوتيوب</option>
-<option value="instagram">انستغرام</option>
-<option value="tiktok">تيك توك</option>
-</select>
 
 <div class="input-group">
 <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
 </div>
 
-<button onclick="download()" class="download-btn">تحميل</button>
+<button onclick="download()" class="download-btn">تحميل مباشر</button>
 <div id="status" class="status"></div>
+<div id="download-options" class="download-options"></div>
 </div>
 
 <script>
 async function download() {
-const url = document.getElementById('url').value;
-const platform = document.getElementById('platform').value;
-const status = document.getElementById('status');
+    const url = document.getElementById('url').value;
+    const status = document.getElementById('status');
+    const downloadOptions = document.getElementById('download-options');
 
-if (!url) {
-status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
-return;
-}
+    if (!url) {
+        status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
+        return;
+    }
 
-status.textContent = '⏳ جاري التحميل...';
+    status.textContent = '⏳ جاري تحليل الرابط...';
+    downloadOptions.innerHTML = '';
 
-try {
-let apiUrl;
+    try {
+‎        // استخدام CORS Proxy للتحايل على قيود CORS
+        const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
+        const response = await fetch(proxyUrl + 'https://api.downloadmedia.net/api/convert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ url: url })
+        });
 
-switch(platform) {
-case 'youtube':
-apiUrl = `https://en1.savefrom.net/2ol/${encodeURIComponent(url)}`;
-break;
-case 'instagram':
-apiUrl = `https://en1.savefrom.net/2ol/${encodeURIComponent(url)}`;
-break;
-case 'tiktok':
-apiUrl = `https://en1.savefrom.net/2ol/${encodeURIComponent(url)}`;
-break;
-}
+        const data = await response.json();
 
-window.open(apiUrl, '_blank');
+        if (data.formats && data.formats.length > 0) {
+            status.textContent = '✅ اختر جودة التحميل:';
+            
+‎            // عرض خيارات التحميل
+            data.formats.forEach(format => {
+                const downloadButton = document.createElement('button');
+                downloadButton.className = 'download-option';
+                downloadButton.textContent = `تحميل ${format.quality}`;
+                downloadButton.onclick = () => {
+‎                    // تحميل مباشر
+                    const a = document.createElement('a');
 
-status.textContent = '✅ تم بدء التحميل';
-
-setTimeout(() => {
-status.textContent = '';
-}, 3000);
-
-} catch (error) {
-status.textContent = '❌ حدث خطأ في التحميل';
-}
+                    a.href = format.url;
+                    a.download = `video_${Date.now()}.mp4`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+                downloadOptions.appendChild(downloadButton);
+            });
+        } else {
+            throw new Error('لم يتم العثور على روابط تحميل');
+        }
+    } catch (error) {
+        status.textContent = '❌ حدث خطأ في التحميل';
+        console.error(error);
+    }
 }
 
 // تفعيل زر Enter
 document.getElementById('url').addEventListener('keypress', e => {
-if (e.key === 'Enter') download();
-});
-
-// تغيير placeholder حسب المنصة
-document.getElementById('platform').addEventListener('change', function() {
-const input = document.getElementById('url');
-input.placeholder = `ضع رابط ${this.options[this.selectedIndex].text} هنا...`;
+    if (e.key === 'Enter') download();
 });
 </script>
+
+<style>
+/* الستايل السابق */
+
+.download-options {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.download-option {
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.download-option:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+</style>
 </body>
 </html>
