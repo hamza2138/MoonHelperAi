@@ -1,219 +1,268 @@
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تحميل الفيديو</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EGYXO INSTA PRO</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Cairo', sans-serif;
+}
 
-        body {
-            background: linear-gradient(135deg, #1e2024 0%, #17181c 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+body {
+min-height: 100vh;
+background: #000000;
+background-image:
+radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
+background-size: 550px 550px, 350px 350px, 250px 250px;
+background-position: 0 0, 40px 60px, 130px 270px;
+display: flex;
+justify-content: center;
+align-items: center;
+color: white;
+}
 
-        .container {
-            width: 100%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+.container {
+width: 90%;
+max-width: 600px;
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(10px);
+border-radius: 20px;
+padding: 2rem;
+box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+border: 1px solid rgba(255, 255, 255, 0.1);
+animation: float 6s ease-in-out infinite;
+}
 
-        .title {
-            color: #fff;
-            text-align: center;
-            font-size: 24px;
-            margin-bottom: 30px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-        }
+@keyframes float {
+0% { transform: translatey(0px); }
+50% { transform: translatey(-20px); }
+100% { transform: translatey(0px); }
+}
 
-        .input-group {
-            margin-bottom: 20px;
-        }
+.title {
+text-align: center;
+font-size: 2rem;
+margin-bottom: 2rem;
+color: #fff;
+text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+}
 
-        input {
-            width: 100%;
-            padding: 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-radius: 12px;
-            color: #fff;
-            font-size: 16px;
-            transition: all 0.3s ease;
-            margin-bottom: 15px;
-        }
+.input-box {
+position: relative;
+margin-bottom: 1.5rem;
+}
 
-        input:focus {
-            outline: none;
-            border-color: #00ff88;
-            box-shadow: 0 0 15px rgba(0,255,136,0.3);
-        }
+input {
+width: 100%;
+padding: 1rem;
+background: rgba(255, 255, 255, 0.05);
+border: 2px solid rgba(255, 255, 255, 0.1);
+border-radius: 10px;
+color: white;
+font-size: 1rem;
+transition: all 0.3s ease;
+}
 
-        .buttons {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+input:focus {
+outline: none;
+border-color: #00ff88;
+box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+}
 
-        button {
-            flex: 1;
-            padding: 15px;
-            border: none;
+.btn-group {
+display: flex;
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
 
-border-radius: 12px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+button {
+flex: 1;
+padding: 1rem;
+border: none;
+border-radius: 10px;
+font-size: 1rem;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
 
-        .play-btn {
-            background: linear-gradient(45deg, #00ff88, #00b8ff);
-            color: #000;
-        }
+background: linear-gradient(45deg, #ff3366, #ff6b4d);
+color: white;
+position: relative;
+overflow: hidden;
+}
 
-        .download-btn {
-            background: linear-gradient(45deg, #ff3366, #ff6b4d);
-            color: #fff;
-        }
+button::before {
+content: '';
+position: absolute;
+top: 0;
+left: -100%;
+width: 100%;
+height: 100%;
+background: linear-gradient(
+120deg,
+transparent,
+rgba(255, 255, 255, 0.3),
+transparent
+);
+transition: 0.5s;
+}
 
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
+button:hover::before {
+left: 100%;
+}
 
-        button:active {
-            transform: translateY(0);
-        }
+.convert {
+background: linear-gradient(45deg, #00ff88, #00b8ff);
+}
 
-        .video-container {
-            width: 100%;
-            border-radius: 12px;
-            overflow: hidden;
-            background: #000;
-            margin-top: 20px;
-        }
+#result {
+text-align: center;
+margin-top: 1rem;
+padding: 1rem;
+border-radius: 10px;
+background: rgba(0, 0, 0, 0.2);
+min-height: 50px;
+}
 
-        video {
-            width: 100%;
-            display: block;
-        }
+.loading {
+position: relative;
+height: 40px;
+display: none;
+}
 
-        .message {
-            color: #00ff88;
-            text-align: center;
-            margin-top: 15px;
-            font-size: 16px;
-            min-height: 24px;
-        }
+.loading::after {
+content: '';
+position: absolute;
+width: 40px;
+height: 40px;
+top: 0;
+left: 50%;
+transform: translateX(-50%);
+background: conic-gradient(transparent, #00ff88);
+animation: rotate 1s infinite linear;
+border-radius: 50%;
+}
 
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px;
-            }
+@keyframes rotate {
+from { transform: translateX(-50%) rotate(0deg); }
+to { transform: translateX(-50%) rotate(360deg); }
+}
 
-            .buttons {
-                flex-direction: column;
-            }
+.success {
+color: #00ff88;
+}
 
-            button {
-                width: 100%;
-            }
-        }
-    </style>
+.error {
+color: #ff3366;
+}
+
+.footer {
+text-align: center;
+margin-top: 2rem;
+font-size: 0.8rem;
+color: rgba(255, 255, 255, 0.5);
+}
+
+@media (max-width: 480px) {
+.container {
+padding: 1rem;
+}
+
+.btn-group {
+flex-direction: column;
+}
+
+.title {
+font-size: 1.5rem;
+}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">تحميل ومشاهدة الفيديو</h1>
-        
-        <div class="input-group">
-            <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا..." dir="ltr">
-        </div>
+<div class="container">
+<h1 class="title">EGYXO INSTA PRO</h1>
 
-        <div class="buttons">
-            <button onclick="playVideo()" class="play-btn">تشغيل الفيديو</button>
-            <button onclick="downloadVideo()" class="download-btn">تحميل الفيديو</button>
-        </div>
+<div class="input-box">
+<input type="text" id="url" placeholder="ضع رابط فيديو انستقرام هنا..." dir="ltr">
+</div>
 
-        <div class="video-container">
-            <video id="videoPlayer" controls>
+<div class="btn-group">
+<button onclick="convert()" class="convert">تحويل</button>
+<button onclick="download()" class="download">تحميل</button>
+</div>
 
-متصفحك لا يدعم تشغيل الفيديو
-            </video>
-        </div>
+<div id="loading" class="loading"></div>
+<div id="result"></div>
 
-        <div id="message" class="message"></div>
-    </div>
+<div class="footer">
+Made with 🤍 by <@1016128744819265618>
+</div>
+</div>
 
-    <script>
-        function playVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            const video = document.getElementById('videoPlayer');
-            const message = document.getElementById('message');
+<script>
+let videoUrl = '';
 
-            if (!url) {
-                message.innerHTML = '⚠️ الرجاء إدخال رابط الفيديو';
-                return;
-            }
+async function convert() {
+const url = document.getElementById('url').value;
+const result = document.getElementById('result');
+const loading = document.getElementById('loading');
 
-            try {
-                video.src = url;
-                video.load();
-                message.innerHTML = '✅ تم تحميل الفيديو بنجاح';
-                video.play();
-            } catch (error) {
-                message.innerHTML = '❌ حدث خطأ في تحميل الفيديو';
-            }
-        }
+if (!url) {
 
-        function downloadVideo() {
-            const url = document.getElementById('videoUrl').value.trim();
-            const message = document.getElementById('message');
+result.innerHTML = '<span class="error">⚠️ الرجاء إدخال رابط</span>';
+return;
+}
 
-            if (!url) {
-                message.innerHTML = '⚠️ الرجاء إدخال رابط الفيديو';
-                return;
-            }
+loading.style.display = 'block';
+result.innerHTML = '';
 
-            try {
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `video_${Date.now()}.mp4`;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                message.innerHTML = '📥 جاري التحميل...';
-            } catch (error) {
-                message.innerHTML = '❌ حدث خطأ في التحميل';
-            }
-        }
+try {
+const res = await fetch(`https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${url}`, {
+headers: {
+'X-RapidAPI-Key': '40804646fdmshcc60c6cca844058p1c00e7jsndc50f8457fa9',
+'X-RapidAPI-Host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
+}
+});
 
-        // تفعيل زر Enter
-        document.getElementById('videoUrl').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                playVideo();
-            }
-        });
+const data = await res.json();
+videoUrl = data.media;
+loading.style.display = 'none';
+result.innerHTML = '<span class="success">✨ تم التحويل بنجاح</span>';
+} catch {
+loading.style.display = 'none';
+result.innerHTML = '<span class="error">❌ حدث خطأ في التحويل</span>';
+}
+}
 
-        // تنظيف الرسالة عند الكتابة
-        document.getElementById('videoUrl').addEventListener('input', function() {
-            document.getElementById('message').innerHTML = '';
-        });
-    </script>
+function download() {
+const result = document.getElementById('result');
+
+if (!videoUrl) {
+result.innerHTML = '<span class="error">⚠️ قم بالتحويل أولاً</span>';
+return;
+}
+
+const a = document.createElement('a');
+a.href = videoUrl;
+a.download = `insta_video_${Date.now()}.mp4`;
+document.body.appendChild(a);
+a.click();
+document.body.removeChild(a);
+result.innerHTML = '<span class="success">🚀 جاري التحميل...</span>';
+}
+
+// Enter key support
+document.getElementById('url').addEventListener('keypress', (e) => {
+if (e.key === 'Enter') convert();
+});
+</script>
 </body>
 </html>
