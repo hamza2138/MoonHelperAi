@@ -3,252 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOON INSTA PRO 🔥</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<title>MOON INSTA PRO</title>
 <style>
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Cairo', sans-serif;
-}
-
 body {
-min-height: 100vh;
-background: #0f0f0f;
-background-image: 
-linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
-url('https://i.imgur.com/ZFyCToL.png');
-background-size: cover;
-display: flex;
-justify-content: center;
-align-items: center;
-color: white;
+font-family: system-ui;
+background: #000;
+color: #fff;
+margin: 0;
 padding: 20px;
+display: grid;
+place-items: center;
+min-height: 100vh;
 }
-
-.container {
+.box {
+background: #111;
+padding: 20px;
+border-radius: 10px;
 width: 90%;
-max-width: 600px;
-background: rgba(255, 255, 255, 0.1);
-backdrop-filter: blur(10px);
-border-radius: 20px;
-padding: 2rem;
-box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
-border: 1px solid rgba(255, 255, 255, 0.1);
+max-width: 500px;
 }
-
-.title {
-text-align: center;
-font-size: 2rem;
-margin-bottom: 2rem;
-color: #00ff88;
-text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
-}
-
 input {
 width: 100%;
-padding: 1rem;
-background: rgba(255, 255, 255, 0.05);
-border: 2px solid rgba(0, 255, 136, 0.2);
-border-radius: 10px;
-color: white;
-font-size: 1rem;
-margin-bottom: 1.5rem;
-transition: all 0.3s ease;
+padding: 10px;
+border-radius: 5px;
+border: 1px solid #333;
+background: #000;
+color: #fff;
+margin: 10px 0;
 }
-
-input:focus {
-outline: none;
-border-color: #00ff88;
-box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-}
-
-.btn-group {
+.btns {
 display: flex;
-gap: 1rem;
-margin-bottom: 1.5rem;
+gap: 10px;
+margin: 10px 0;
 }
-
 button {
 flex: 1;
-padding: 1rem;
+padding: 10px;
 border: none;
-border-radius: 10px;
-font-size: 1rem;
-font-weight: bold;
+border-radius: 5px;
 cursor: pointer;
-transition: all 0.3s ease;
-text-transform: uppercase;
-color: white;
-background: linear-gradient(45deg, #00ff88, #00b8ff);
-position: relative;
-overflow: hidden;
+font-weight: bold;
 }
-
-button:hover {
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
-}
-
-button:active {
-transform: translateY(0);
-}
-
-.download {
-background: linear-gradient(45deg, #ff3366, #ff6b4d);
-}
-
-#result {
-text-align: center;
-margin-top: 1rem;
-padding: 1rem;
-border-radius: 10px;
-
-background: rgba(0, 0, 0, 0.2);
-}
-
-.video-container {
-margin-top: 1rem;
-border-radius: 10px;
-overflow: hidden;
-}
-
-video {
-width: 100%;
-border-radius: 10px;
-}
-
-.success {
-color: #00ff88;
-}
-
-.error {
-color: #ff3366;
-}
-
-.footer {
-text-align: center;
-margin-top: 2rem;
-color: rgba(255, 255, 255, 0.5);
-}
-
-@media (max-width: 480px) {
-.container {
-width: 95%;
-padding: 1.5rem;
-}
-
-.btn-group {
-flex-direction: column;
-}
-
-.title {
-font-size: 1.5rem;
-}
-}
+.convert { background: #0f0; color: #000; }
+.download { background: #f00; color: #fff; }
 </style>
 </head>
 <body>
-<div class="container">
-<h1 class="title">MOON INSTA PRO</h1>
-<input type="text" id="url" placeholder="ضع رابط فيديو انستقرام هنا..." dir="ltr">
-<div class="btn-group">
+<div class="box">
+<h2>MOON INSTA PRO</h2>
+<input type="text" id="url" placeholder="رابط انستقرام..." dir="ltr">
+<div class="btns">
 <button onclick="convert()" class="convert">تحويل ⚡</button>
 <button onclick="download()" class="download">تحميل 📥</button>
 </div>
-<div id="video-container" class="video-container"></div>
-<div id="result"></div>
-<div class="footer">
-Made with 💚 by MrHamza
-</div>
+<div id="msg"></div>
 </div>
 
 <script>
 let videoUrl = '';
 
 async function convert() {
-const url = document.getElementById('url').value.trim();
-const result = document.getElementById('result');
-const videoContainer = document.getElementById('video-container');
+const url = document.getElementById('url').value;
+const msg = document.getElementById('msg');
 
-if (!url) {
-result.innerHTML = '<span class="error">⚠️ الرجاء إدخال رابط</span>';
+if(!url) {
+msg.innerHTML = '⚠️ ضع الرابط';
 return;
 }
 
-result.innerHTML = '<span class="success">⏳ جاري التحويل...</span>';
-videoContainer.innerHTML = '';
+msg.innerHTML = '⏳ جاري التحويل...';
 
 try {
-const res = await fetch(`https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${encodeURIComponent(url)}`, {
+const res = await fetch('https://instagram-downloader-api.p.rapidapi.com/media', {
+method: 'POST',
 headers: {
+'content-type': 'application/json',
 'X-RapidAPI-Key': '40804646fdmshcc60c6cca844058p1c00e7jsndc50f8457fa9',
-'X-RapidAPI-Host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
-}
+'X-RapidAPI-Host': 'instagram-downloader-api.p.rapidapi.com'
+},
+body: JSON.stringify({url})
 });
 
 const data = await res.json();
-
-if (!data.media) {
-throw new Error('لم يتم العثور على الفيديو');
-}
-
-videoUrl = data.media;
-
-// عرض الفيديو
-videoContainer.innerHTML = `
-<video controls>
-<source src="${videoUrl}" type="video/mp4">
-متصفحك لا يدعم تشغيل الفيديو
-</video>
-`;
-
-result.innerHTML = '<span class="success">✨ تم التحويل بنجاح - يمكنك الآن التحميل</span>';
-} catch (error) {
-result.innerHTML = '<span class="error">❌ حدث خطأ في التحويل - تأكد من صحة الرابط</span>';
-console.error(error);
+videoUrl = data.url;
+msg.innerHTML = '✅ تم التحويل';
+} catch {
+msg.innerHTML = '❌ فشل التحويل';
 }
 }
 
-async function download() {
-const result = document.getElementById('result');
-
-if (!videoUrl) {
-result.innerHTML = '<span class="error">⚠️ قم بالتحويل أولاً</span>';
+function download() {
+if(!videoUrl) {
+document.getElementById('msg').innerHTML = '⚠️ حول اولاً';
 return;
 }
-
-try {
-result.innerHTML = '<span class="success">🚀 جاري التحميل...</span>';
-
-const response = await fetch(videoUrl);
-const blob = await response.blob();
-const downloadUrl = window.URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = downloadUrl;
-a.download = `EGYXO_INSTA_${Date.now()}.mp4`;
-document.body.appendChild(a);
-a.click();
-window.URL.revokeObjectURL(downloadUrl);
-document.body.removeChild(a);
-
-result.innerHTML = '<span class="success">✅ تم التحميل بنجاح</span>';
-} catch (error) {
-result.innerHTML = '<span class="error">❌ فشل التحميل - حاول مرة أخرى</span>';
-console.error(error);
+window.open(videoUrl, '_blank');
 }
-}
-
-// دعم مفتاح Enter
-document.getElementById('url').addEventListener('keypress', (e) => {
-if (e.key === 'Enter') convert();
-});
-
-// تنظيف الرسالة عند الكتابة
-document.getElementById('url').addEventListener('input', function() {
-document.getElementById('result').innerHTML = '';
-});
 </script>
 </body>
 </html>
