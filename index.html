@@ -1,65 +1,69 @@
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>🌙 Moon Helper</title>
-<style>
-body {
-background: #23272A;
-margin: 0;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-font-family: 'Cairo', system-ui;
-color: white;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 Moon Helper</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: #23272A;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-family: 'Cairo', sans-serif;
+            color: white;
+        }
 
-.login-btn {
-background: #5865F2;
-color: white;
-border: none;
-padding: 15px 32px;
-border-radius: 8px;
-font-size: 1.2rem;
-cursor: pointer;
-display: flex;
-align-items: center;
-gap: 10px;
-transition: all 0.3s ease;
-}
+        .login-btn {
+            background: #5865F2;
+            color: white;
+            border: none;
+            padding: 15px 32px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-family: 'Cairo', sans-serif;
+        }
 
-.login-btn:hover {
-background: #4752C4;
-}
+        .login-btn:hover {
+            background: #4752C4;
+            transform: translateY(-2px);
+        }
 
-.discord-icon {
-width: 24px;
-height: 24px;
-}
+        .discord-icon {
+            width: 24px;
+            height: 24px;
+        }
 
-.title {
-font-size: 2.5rem;
-margin-bottom: 2rem;
-}
-</style>
+        .title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-<h1 class="title">🌙 Moon Helper</h1>
-<button onclick="loginWithDiscord()" class="login-btn">
-<img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_white_RGB.png" class="discord-icon">
-‎تسجيل دخول بواسطة Discord
-</button>
+    <h1 class="title">🌙 Moon Helper</h1>
+    <a href="https://discord.com/oauth2/authorize?client_id=1284253565417816246&response_type=code&redirect_uri=https%3A%2F%2Fhamza2138.github.io%2FMoonHelperAi%2Fcallback&scope=identify+guilds+guilds.channels.read+guilds.members.read+guilds.join+voice" class="login-btn">
+        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_white_RGB.png" alt="Discord" class="discord-icon">
+‎        تسجيل دخول بواسطة Discord
+    </a>
 
-<script>
-function loginWithDiscord() {
-window.location.href = 'https://discord.com/oauth2/authorize?client_id=1284253565417816246&response_type=code&redirect_uri=https%3A%2F%2Fhamza2138.github.io%2FMoonHelperAi%2Fcallback&scope=identify+guilds+guilds.channels.read+guilds.members.read+guilds.join+voice';
-}
+    <script>
+‎        // التحقق من وجود مستخدم مسجل
 
-‎// منع الوصول المباشر إذا كان المستخدم مسجل دخول
-if (localStorage.getItem('discord_user')) {
-window.location.href = '/rooms.html';
-}
-</script>
+        if (localStorage.getItem('discord_user')) {
+            window.location.href = 'rooms.html';
+        }
+    </script>
 </body>
 </html>
