@@ -4,256 +4,200 @@
 <title>Moon Voice | دردشة صوتية</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-:root {
---primary: #6d28d9;
---secondary: #4f46e5;
---background: #f5f3ff;
---text: #1f2937;
-}
+‎/* ... الستايل السابق ... */
 
-* {
-margin: 0;
-padding: 0;
-box-sizing: border-box;
-font-family: 'Tajawal', sans-serif;
-}
-
-body {
-background: var(--background);
-height: 100vh;
+‎/* إضافة ستايل جديد */
+.modal {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: rgba(0,0,0,0.8);
 display: flex;
 justify-content: center;
 align-items: center;
+z-index: 1000;
 }
 
-.app-container {
+.modal-content {
 background: white;
-border-radius: 20px;
-box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-width: 90%;
-max-width: 800px;
 padding: 2rem;
+border-radius: 15px;
+width: 90%;
+max-width: 400px;
 }
 
-.header {
-text-align: center;
-margin-bottom: 2rem;
-}
-
-.header h1 {
-color: var(--primary);
-font-size: 2.5rem;
-margin-bottom: 0.5rem;
-}
-
-.header p {
-color: var(--text);
-opacity: 0.8;
-}
-
-.room-section {
-display: flex;
-flex-direction: column;
-gap: 1.5rem;
-margin-bottom: 2rem;
-}
-
-.room-input {
-display: flex;
-gap: 1rem;
-}
-
-input {
-flex: 1;
-padding: 1rem;
-border: 2px solid #e5e7eb;
-border-radius: 12px;
-font-size: 1rem;
-transition: border-color 0.3s;
-}
-
-input:focus {
-outline: none;
-border-color: var(--primary);
-}
-
-.btn {
-padding: 1rem 2rem;
-border: none;
-border-radius: 12px;
-font-weight: bold;
-cursor: pointer;
-transition: all 0.3s;
-}
-
-.btn-primary {
-background: var(--primary);
+.share-screen-btn {
+background: #10b981;
 color: white;
-}
-
-.btn-secondary {
-background: var(--secondary);
-color: white;
-}
-
-.btn:hover {
-transform: translateY(-2px);
-box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.status {
-text-align: center;
-padding: 1rem;
-border-radius: 12px;
-background: #f3f4f6;
-margin: 1rem 0;
-}
-
-.controls {
-display: flex;
-justify-content: center;
-gap: 1rem;
-margin: 2rem 0;
-}
-
-.mic-btn {
-width: 70px;
-height: 70px;
+padding: 0.8rem;
 border-radius: 50%;
 border: none;
-background: var(--primary);
-color: white;
-font-size: 1.5rem;
 cursor: pointer;
-transition: all 0.3s;
-box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.mic-btn:hover {
-transform: scale(1.1);
-}
-
-.mic-btn.muted {
-background: #ef4444;
-}
-
-.participants {
-margin-top: 2rem;
-}
-
-.participant {
-
-display: flex;
-align-items: center;
-padding: 1rem;
-background: #f9fafb;
-border-radius: 12px;
-margin-bottom: 1rem;
-}
-
-.participant-icon {
-width: 40px;
-height: 40px;
-border-radius: 50%;
-background: var(--primary);
-color: white;
-display: flex;
-align-items: center;
-justify-content: center;
 margin-left: 1rem;
+font-size: 1.2rem;
 }
 
-.participant-info {
-flex: 1;
-}
-
-.participant-name {
-font-weight: bold;
-color: var(--text);
-}
-
-.participant-status {
-font-size: 0.9rem;
-color: #6b7280;
-}
-
-.room-code {
+.participants-grid {
+display: grid;
+grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+gap: 1rem;
 margin-top: 1rem;
-padding: 1rem;
+}
+
+.participant-card {
 background: #f3f4f6;
-border-radius: 12px;
-display: flex;
-justify-content: space-between;
-align-items: center;
-}
-
-.copy-btn {
-background: none;
-border: none;
-color: var(--primary);
-cursor: pointer;
-font-weight: bold;
-}
-
-@media (max-width: 640px) {
-.app-container {
 padding: 1rem;
+border-radius: 12px;
+text-align: center;
 }
 
-.room-input {
-flex-direction: column;
+.participant-avatar {
+width: 60px;
+height: 60px;
+border-radius: 50%;
+background: var(--primary);
+color: white;
+display: flex;
+align-items: center;
+justify-content: center;
+margin: 0 auto 1rem;
+font-size: 1.5rem;
 }
 
-.btn {
-width: 100%;
-}
+.room-status {
+background: #fef3c7;
+color: #92400e;
+padding: 0.5rem;
+border-radius: 8px;
+margin: 1rem 0;
+text-align: center;
 }
 </style>
 </head>
 <body>
 
+‎<!-- مودال إدخال الاسم -->
+<div class="modal" id="nameModal">
+<div class="modal-content">
+<h2>أدخل اسمك</h2>
+<input type="text" id="userName" placeholder="اسمك هنا" style="width: 100%; margin: 1rem 0;">
+<button class="btn btn-primary" onclick="setUserName()">تم</button>
+</div>
+</div>
+
 <div class="app-container">
-<div class="header">
-<h1>Moon Voice</h1>
-<p>تحدث مع أصدقائك بكل سهولة</p>
-</div>
-
-<div class="room-section">
-<div class="room-input">
-<input type="text" id="roomInput" placeholder="أدخل كود الغرفة">
-<button class="btn btn-primary" id="joinBtn">انضمام</button>
-</div>
-<button class="btn btn-secondary" id="createBtn">إنشاء غرفة جديدة</button>
-</div>
-
-<div class="status" id="statusBar">
-غير متصل
-</div>
+‎<!-- ... الهيدر السابق ... -->
 
 <div class="controls">
 <button class="mic-btn" id="micBtn">🎤</button>
+<button class="share-screen-btn" id="screenBtn">🖥️</button>
 </div>
 
-<div class="participants" id="participantsList">
-<h3>المتصلون</h3>
-<!-- سيتم إضافة المشاركين هنا -->
+<div class="room-status" id="roomStatus"></div>
+
+<div class="participants-grid" id="participantsList">
+‎<!-- سيتم إضافة المشاركين هنا -->
 </div>
 
-<div class="room-code" id="roomCode" style="display: none">
-<span id="codeDisplay"></span>
-<button class="copy-btn" onclick="copyRoomCode()">نسخ الكود</button>
-</div>
+‎<!-- ... باقي العناصر ... -->
 </div>
 
 <script>
 let localStream;
-let peerConnection;
-let roomId;
+let screenStream;
+let peerConnections = {};
 
-// تهيئة المايكروفون
-async function initAudio() {
+let userName = '';
+let participants = new Set();
+const MAX_PARTICIPANTS = 4;
+
+// التحقق من الاسم عند بدء التطبيق
+window.onload = () => {
+document.getElementById('nameModal').style.display = 'flex';
+};
+
+// تعيين اسم المستخدم
+function setUserName() {
+const nameInput = document.getElementById('userName');
+if (nameInput.value.trim()) {
+userName = nameInput.value.trim();
+document.getElementById('nameModal').style.display = 'none';
+updateParticipants();
+}
+}
+
+// تحديث قائمة المشاركين
+function updateParticipants() {
+const list = document.getElementById('participantsList');
+list.innerHTML = '';
+
+participants.forEach(name => {
+list.innerHTML += `
+<div class="participant-card">
+<div class="participant-avatar">${name[0].toUpperCase()}</div>
+<div class="participant-name">${name}</div>
+</div>
+`;
+});
+
+updateRoomStatus();
+}
+
+// تحديث حالة الغرفة
+function updateRoomStatus() {
+const status = document.getElementById('roomStatus');
+status.textContent = `المشاركون: ${participants.size}/${MAX_PARTICIPANTS}`;
+}
+
+// إنشاء غرفة جديدة
+async function createRoom() {
+if (!userName) {
+alert('الرجاء إدخال اسمك أولاً');
+return;
+}
+
+await initMedia();
+roomId = Math.random().toString(36).substr(2, 9);
+participants.add(userName);
+updateParticipants();
+showRoomCode(roomId);
+setupPeerConnection(true);
+}
+
+// الانضمام لغرفة
+async function joinRoom() {
+if (!userName) {
+alert('الرجاء إدخال اسمك أولاً');
+return;
+}
+
+if (participants.size >= MAX_PARTICIPANTS) {
+alert('عذراً، الغرفة ممتلئة');
+return;
+}
+
+const code = document.getElementById('roomInput').value.trim();
+if(!code) {
+alert('الرجاء إدخال كود الغرفة');
+return;
+}
+
+await initMedia();
+roomId = code;
+participants.add(userName);
+updateParticipants();
+setupPeerConnection(false);
+}
+
+// تهيئة الوسائط
+async function initMedia() {
 try {
-localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+localStream = await navigator.mediaDevices.getUserMedia({ 
+audio: true,
+video: false
+});
 updateStatus('تم تفعيل المايكروفون');
 } catch (err) {
 updateStatus('خطأ في الوصول للمايكروفون');
@@ -261,108 +205,49 @@ console.error(err);
 }
 }
 
-// إنشاء غرفة جديدة
-async function createRoom() {
-await initAudio();
-roomId = Math.random().toString(36).substr(2, 9);
-showRoomCode(roomId);
-setupPeerConnection(true);
-}
+// مشاركة الشاشة
 
-// الانضمام لغرفة
-async function joinRoom() {
-const code = document.getElementById('roomInput').value.trim();
-if(!code) {
-alert('الرجاء إدخال كود الغرفة');
-return;
-}
-await initAudio();
-roomId = code;
-setupPeerConnection(false);
-}
-
-// إعداد اتصال WebRTC
-function setupPeerConnection(isHost) {
-const configuration = {
-iceServers: [
-{ urls: 'stun:stun.l.google.com:19302' }
-]
-};
-
-peerConnection = new RTCPeerConnection(configuration);
-
-// إضافة المسار الصوتي
-localStream.getTracks().forEach(track => {
-peerConnection.addTrack(track, localStream);
-});
-
-// استقبال الصوت
-peerConnection.ontrack = event => {
-const remoteStream = new MediaStream();
-event.streams[0].getTracks().forEach(track => {
-remoteStream.addTrack(track);
-});
-playRemoteStream(remoteStream);
-};
-
-if(isHost) {
-createOffer();
-}
-}
-
-// إنشاء عرض الاتصال
-async function createOffer() {
+async function shareScreen() {
 try {
-const offer = await peerConnection.createOffer();
-await peerConnection.setLocalDescription(offer);
-// هنا يتم إرسال العرض للطرف الآخر
-} catch(err) {
-console.error('خطأ في إنشاء العرض:', err);
-}
-}
-
-// تشغيل الصوت القادم
-function playRemoteStream(stream) {
-const audio = new Audio();
-audio.srcObject = stream;
-audio.play();
-}
-
-// تحديث حالة التطبيق
-function updateStatus(message) {
-document.getElementById('statusBar').textContent = message;
-}
-
-// إظهار كود الغرفة
-function showRoomCode(code) {
-const roomCodeElement = document.getElementById('roomCode');
-const codeDisplay = document.getElementById('codeDisplay');
-roomCodeElement.style.display = 'flex';
-codeDisplay.textContent = `كود الغرفة: ${code}`;
-}
-
-// نسخ كود الغرفة
-function copyRoomCode() {
-const code = document.getElementById('codeDisplay').textContent;
-navigator.clipboard.writeText(code.split(': ')[1]);
-alert('تم نسخ الكود');
-}
-
-// التحكم بالمايكروفون
-function toggleMic() {
-
-const micBtn = document.getElementById('micBtn');
-localStream.getAudioTracks().forEach(track => {
-track.enabled = !track.enabled;
-micBtn.textContent = track.enabled ? '🎤' : '🔇';
-micBtn.classList.toggle('muted');
+screenStream = await navigator.mediaDevices.getDisplayMedia({
+video: true,
+audio: true
 });
+
+// إرسال مسار الشاشة لجميع المتصلين
+Object.values(peerConnections).forEach(pc => {
+screenStream.getTracks().forEach(track => {
+pc.addTrack(track, screenStream);
+});
+});
+
+updateStatus('جارٍ مشاركة الشاشة');
+
+screenStream.getVideoTracks()[0].onended = () => {
+stopScreenShare();
+};
+} catch (err) {
+console.error('خطأ في مشاركة الشاشة:', err);
+updateStatus('فشل في مشاركة الشاشة');
+}
+}
+
+// إيقاف مشاركة الشاشة
+function stopScreenShare() {
+if (screenStream) {
+screenStream.getTracks().forEach(track => track.stop());
+screenStream = null;
+updateStatus('تم إيقاف مشاركة الشاشة');
+}
 }
 
 // إضافة مستمعي الأحداث
 document.getElementById('createBtn').addEventListener('click', createRoom);
 document.getElementById('joinBtn').addEventListener('click', joinRoom);
 document.getElementById('micBtn').addEventListener('click', toggleMic);
+document.getElementById('screenBtn').addEventListener('click', shareScreen);
+
+// ... باقي الكود السابق ...
 </script>
 </body>
 </html>
