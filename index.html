@@ -1,194 +1,315 @@
-
 <!DOCTYPE html>
 <html dir="rtl" lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moon Helper IA - البحث عن الأغاني</title>
-    <style>
-        body {
-            background: #1a1a1a;
-            color: white;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        .search-box {
-            background: #333;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .results {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 20px;
-        }
-        .song-card {
-            background: #333;
-            padding: 15px;
-            border-radius: 10px;
-        }
-        .song-image {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-        .button {
-            background: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .button:hover {
-            background: #0056b3;
-        }
-        #dropZone {
-            border: 2px dashed #666;
-            padding: 20px;
-            text-align: center;
-            margin: 10px 0;
-            display: none;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>Moon Helper IA - البحث عن الأغاني</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+}
+
+body {
+    background: linear-gradient(45deg, #1a1a2e, #16213e);
+    color: white;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    text-align: center;
+    padding: 30px 0;
+    background: rgba(26, 26, 46, 0.8);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.header h1 {
+    font-size: 2.5em;
+    color: #4ade80;
+    text-shadow: 0 0 10px rgba(74, 222, 128, 0.3);
+}
+
+.search-box {
+    background: rgba(22, 33, 62, 0.8);
+    padding: 25px;
+    border-radius: 15px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.button {
+    flex: 1;
+    padding: 15px 25px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(45deg, #4ade80, #3b82f6);
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(74, 222, 128, 0.3);
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #4ade80;
+    border-radius: 10px;
+    background: rgba(26, 26, 46, 0.9);
+    color: white;
+    font-size: 1.1em;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.3);
+}
+
+#dropZone {
+    border: 3px dashed #4ade80;
+    padding: 30px;
+    text-align: center;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+#dropZone:hover {
+
+background: rgba(74, 222, 128, 0.1);
+    border-color: #3b82f6;
+}
+
+.results {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    padding: 20px 0;
+}
+
+.song-card {
+    background: rgba(22, 33, 62, 0.9);
+    border-radius: 15px;
+    padding: 20px;
+    transition: transform 0.3s;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.song-card:hover {
+    transform: translateY(-5px);
+}
+
+.song-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.song-title {
+    font-size: 1.2em;
+    color: #4ade80;
+    margin-bottom: 10px;
+}
+
+.song-artist {
+    color: #94a3b8;
+    margin-bottom: 15px;
+}
+
+audio {
+    width: 100%;
+    margin: 10px 0;
+}
+
+.play-button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(45deg, #4ade80, #3b82f6);
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-size: 1em;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.play-button:hover {
+    transform: scale(1.02);
+    box-shadow: 0 4px 15px rgba(74, 222, 128, 0.3);
+}
+
+.no-results {
+    text-align: center;
+    padding: 30px;
+    background: rgba(22, 33, 62, 0.9);
+    border-radius: 15px;
+    color: #4ade80;
+    font-size: 1.2em;
+    grid-column: 1/-1;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    .button-group {
+        flex-direction: column;
+    }
+    .results {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 </head>
 <body>
-    <div class="container">
+<div class="container">
+    <div class="header">
         <h1>Moon Helper IA - البحث عن الأغاني 🎵</h1>
-        
-        <div class="search-box">
-            <button onclick="switchMode('text')" class="button">بحث نصي</button>
-
-<button onclick="switchMode('image')" class="button">بحث بالصورة</button>
-            
-            <div id="textSearch">
-                <input type="text" id="searchInput" placeholder="ابحث عن أغنية...">
-            </div>
-            
-            <div id="imageSearch" style="display:none;">
-                <div id="dropZone">
-                    اسحب الصورة هنا أو اضغط للاختيار
-                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-                </div>
-            </div>
-        </div>
-
-        <div id="results" class="results"></div>
     </div>
 
-    <script>
-        let currentMode = 'text';
+    <div class="search-box">
+        <div class="button-group">
+            <button onclick="switchMode('text')" class="button">بحث نصي</button>
+            <button onclick="switchMode('image')" class="button">بحث بالصورة</button>
+        </div>
 
-        function switchMode(mode) {
-            currentMode = mode;
-            document.getElementById('textSearch').style.display = mode === 'text' ? 'block' : 'none';
-            document.getElementById('imageSearch').style.display = mode === 'image' ? 'block' : 'none';
-        }
+        <div id="textSearch">
+            <input type="text" id="searchInput" placeholder="اكتب اسم الأغنية أو الفنان...">
 
-        document.getElementById('searchInput').addEventListener('input', async (e) => {
-            const query = e.target.value;
-            if (query.length > 2) {
-                const results = await searchSongs(query);
-                displayResults(results);
-            }
-        });
+</div>
 
-        const dropZone = document.getElementById('dropZone');
-        
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.background = '#444';
-        });
+        <div id="imageSearch" style="display:none;">
+            <div id="dropZone">
+                اسحب الصورة هنا أو اضغط لاختيار صورة
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+        </div>
+    </div>
 
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.background = 'none';
-        });
+    <div id="results" class="results">
+        <!-- هنا سيتم عرض نتائج البحث -->
+    </div>
+</div>
 
-        dropZone.addEventListener('drop', async (e) => {
-            e.preventDefault();
-            dropZone.style.background = 'none';
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                await processImage(file);
-            }
-        });
+<script>
+let currentMode = 'text';
+let searchResults = [
+    {
+        id: 1,
+        title: "أغنية تجريبية",
+        artist: "فنان تجريبي",
+        image: "https://via.placeholder.com/300",
+        preview: "path/to/audio.mp3"
+    }
+    // يمكنك إضافة المزيد من الأغاني هنا
+];
 
-        dropZone.addEventListener('click', () => {
-            document.getElementById('fileInput').click();
+function switchMode(mode) {
+    currentMode = mode;
+    document.getElementById('textSearch').style.display = mode === 'text' ? 'block' : 'none';
+    document.getElementById('imageSearch').style.display = mode === 'image' ? 'block' : 'none';
+    document.getElementById('results').innerHTML = ''; // مسح النتائج السابقة
+}
 
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    if (query.length > 2) {
+        const filteredResults = searchResults.filter(song => 
+            song.title.toLowerCase().includes(query) || 
+            song.artist.toLowerCase().includes(query)
+        );
+        displayResults(filteredResults);
+    }
 });
 
-        document.getElementById('fileInput').addEventListener('change', async (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                await processImage(file);
-            }
-        });
+function displayResults(songs) {
+    const resultsDiv = document.getElementById('results');
+    if (songs.length === 0) {
+        resultsDiv.innerHTML = `
+            <div class="no-results">
+                جاري البحث عن "${document.getElementById('searchInput').value}"...
+            </div>`;
+        return;
+    }
 
-        async function processImage(file) {
-            const formData = new FormData();
-            formData.append('image', file);
-            
-            try {
-                const response = await fetch('https://api.example.com/image-search', {
-                    method: 'POST',
-                    body: formData
-                });
-                const results = await response.json();
-                displayResults(results);
-            } catch (error) {
-                console.error('Error:', error);
-                alert('حدث خطأ أثناء معالجة الصورة');
-            }
-        }
+    resultsDiv.innerHTML = songs.map(song => `
+        <div class="song-card">
+            <img src="${song.image}" alt="${song.title}" class="song-image">
+            <h3 class="song-title">${song.title}</h3>
+            <p class="song-artist">${song.artist}</p>
 
-        async function searchSongs(query) {
-            try {
-                const response = await fetch(`https://api.example.com/search?q=${encodeURIComponent(query)}`);
-                return await response.json();
-            } catch (error) {
-                console.error('Error:', error);
-                return [];
-            }
-        }
+            <audio controls src="${song.preview}"></audio>
+            <button onclick="playSong('${song.id}')" class="play-button">
+                تشغيل الأغنية
+            </button>
+        </div>
+    `).join('');
+}
 
-        function displayResults(songs) {
-            const resultsDiv = document.getElementById('results');
-            if (songs.length === 0) {
-                resultsDiv.innerHTML = '<p>لم يتم العثور على نتائج</p>';
-                return;
-            }
+function playSong(songId) {
+    console.log(`تشغيل الأغنية رقم: ${songId}`);
+    // هنا يمكنك إضافة كود تشغيل الأغنية
+}
 
-            resultsDiv.innerHTML = songs.map(song => `
-                <div class="song-card">
-                    <img src="${song.image}" alt="${song.title}" class="song-image">
-                    <h3>${song.title}</h3>
-                    <p>${song.artist}</p>
-                    <audio controls src="${song.preview}"></audio>
-                    <button onclick="playSong('${song.id}')" class="button">تشغيل</button>
-                </div>
-            `).join('');
-        }
+// التعامل مع سحب وإفلات الصور
+const dropZone = document.getElementById('dropZone');
 
-        function playSong(songId) {
-            // تنفيذ عملية تشغيل الأغنية
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.style.borderColor = '#3b82f6';
+});
 
-            console.log(`Playing song: ${songId}`);
-        }
-    </script>
+dropZone.addEventListener('dragleave', () => {
+    dropZone.style.borderColor = '#4ade80';
+});
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        processImage(file);
+    }
+});
+
+dropZone.addEventListener('click', () => {
+    document.getElementById('fileInput').click();
+});
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        processImage(file);
+    }
+});
+
+function processImage(file) {
+    // هنا يمكنك إضافة كود معالجة الصور
+    console.log('معالجة الصورة:', file.name);
+}
+</script>
 </body>
 </html>
