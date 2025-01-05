@@ -1,104 +1,245 @@
+
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOON INSTA PRO</title>
-<style>
-body {
-font-family: system-ui;
-background: #000;
-color: #fff;
-margin: 0;
-padding: 20px;
-display: grid;
-place-items: center;
-min-height: 100vh;
-}
-.box {
-background: #111;
-padding: 20px;
-border-radius: 10px;
-width: 90%;
-max-width: 500px;
-}
-input {
-width: 100%;
-padding: 10px;
-border-radius: 5px;
-border: 1px solid #333;
-background: #000;
-color: #fff;
-margin: 10px 0;
-}
-.btns {
-display: flex;
-gap: 10px;
-margin: 10px 0;
-}
-button {
-flex: 1;
-padding: 10px;
-border: none;
-border-radius: 5px;
-cursor: pointer;
-font-weight: bold;
-}
-.convert { background: #0f0; color: #000; }
-.download { background: #f00; color: #fff; }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مكتبتي | تبادل وقراءة الكتب</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+        }
+
+        nav {
+            background: #2c3e50;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-bar {
+            background: white;
+            padding: 0.5rem;
+            border-radius: 25px;
+            width: 300px;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 0.5rem;
+        }
+
+        .categories {
+            padding: 1rem;
+            background: white;
+            margin: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .category-list {
+            display: flex;
+            gap: 1rem;
+            overflow-x: auto;
+            padding: 1rem 0;
+        }
+
+        .category {
+            background: #3498db;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+        }
+
+        .book-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+
+box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+
+        .book-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .book-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .book-info {
+            padding: 1rem;
+        }
+
+        .book-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .book-author {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .read-btn {
+            background: #2ecc71;
+            color: white;
+        }
+
+        .exchange-btn {
+            background: #e74c3c;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .search-bar {
+                width: 200px;
+            }
+        }
+    </style>
 </head>
 <body>
-<div class="box">
-<h2>MOON INSTA PRO</h2>
-<input type="text" id="url" placeholder="رابط انستقرام..." dir="ltr">
-<div class="btns">
-<button onclick="convert()" class="convert">تحويل ⚡</button>
-<button onclick="download()" class="download">تحميل 📥</button>
-</div>
-<div id="msg"></div>
-</div>
+    <nav>
+        <h1>مكتبتي</h1>
+        <div class="search-bar">
+            <input type="text" placeholder="ابحث عن كتاب...">
+        </div>
+    </nav>
 
-<script>
-let videoUrl = '';
+    <div class="categories">
+        <h2>التصنيفات</h2>
+        <div class="category-list">
+            <div class="category">الكل</div>
+            <div class="category">روايات</div>
+            <div class="category">تنمية بشرية</div>
+            <div class="category">تاريخ</div>
+            <div class="category">علوم</div>
+            <div class="category">فلسفة</div>
+            <div class="category">دين</div>
+            <div class="category">سياسة</div>
+        </div>
+    </div>
 
-async function convert() {
-const url = document.getElementById('url').value;
-const msg = document.getElementById('msg');
+    <div class="books-grid" id="booksContainer">
+        <!-- سيتم إضافة الكتب هنا عبر JavaScript -->
+    </div>
 
-if(!url) {
-msg.innerHTML = '⚠️ ضع الرابط';
-return;
-}
+    <script>
+        // بيانات الكتب
+        const books = [
 
-msg.innerHTML = '⏳ جاري التحويل...';
+{
+                title: "العادات الذرية",
+                author: "جيمس كلير",
+                image: "https://i.imgur.com/1234.jpg",
+                category: "تنمية بشرية"
+            },
+            {
+                title: "فن اللامبالاة",
+                author: "مارك مانسون",
+                image: "https://i.imgur.com/5678.jpg",
+                category: "تنمية بشرية"
+            },
+            {
+                title: "1984",
+                author: "جورج أورويل",
+                image: "https://i.imgur.com/9012.jpg",
+                category: "روايات"
+            }
+            // يمكنك إضافة المزيد من الكتب هنا
+        ];
 
-try {
-const res = await fetch('https://instagram-downloader-api.p.rapidapi.com/media', {
-method: 'POST',
-headers: {
-'content-type': 'application/json',
-'X-RapidAPI-Key': '40804646fdmshcc60c6cca844058p1c00e7jsndc50f8457fa9',
-'X-RapidAPI-Host': 'instagram-downloader-api.p.rapidapi.com'
-},
-body: JSON.stringify({url})
-});
+        // عرض الكتب
+        function displayBooks(books) {
+            const container = document.getElementById('booksContainer');
+            container.innerHTML = books.map(book => `
+                <div class="book-card">
+                    <img src="${book.image || 'https://via.placeholder.com/200x300'}" class="book-image">
+                    <div class="book-info">
+                        <div class="book-title">${book.title}</div>
+                        <div class="book-author">${book.author}</div>
+                        <div class="action-buttons">
+                            <button class="read-btn" onclick="readBook('${book.title}')">قراءة</button>
+                            <button class="exchange-btn" onclick="exchangeBook('${book.title}')">تبادل</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-const data = await res.json();
-videoUrl = data.url;
-msg.innerHTML = '✅ تم التحويل';
-} catch {
-msg.innerHTML = '❌ فشل التحويل';
-}
-}
+        // وظائف التفاعل
+        function readBook(title) {
+            alert(`جاري فتح كتاب: ${title}`);
+        }
 
-function download() {
-if(!videoUrl) {
-document.getElementById('msg').innerHTML = '⚠️ حول اولاً';
-return;
-}
-window.open(videoUrl, '_blank');
-}
-</script>
+        function exchangeBook(title) {
+            alert(`طلب تبادل كتاب: ${title}`);
+        }
+
+        // تحميل الكتب عند فتح الصفحة
+        displayBooks(books);
+
+        // البحث
+        document.querySelector('.search-bar input').addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+
+            const filteredBooks = books.filter(book => 
+                book.title.toLowerCase().includes(searchTerm) || 
+                book.author.toLowerCase().includes(searchTerm)
+            );
+            displayBooks(filteredBooks);
+        });
+
+        // تصفية حسب التصنيف
+        document.querySelectorAll('.category').forEach(cat => {
+            cat.addEventListener('click', () => {
+                const category = cat.textContent;
+                const filteredBooks = category === 'الكل' 
+                    ? books 
+                    : books.filter(book => book.category === category);
+                displayBooks(filteredBooks);
+            });
+        });
+    </script>
 </body>
 </html>
