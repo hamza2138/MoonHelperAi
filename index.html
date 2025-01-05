@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MOON INSTA PRO</title>
+<title>MOON INSTA PRO 🔥</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 * {
@@ -15,17 +15,16 @@ font-family: 'Cairo', sans-serif;
 
 body {
 min-height: 100vh;
-background: #000000;
-background-image:
-radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
-radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
-radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px);
-background-size: 550px 550px, 350px 350px, 250px 250px;
-background-position: 0 0, 40px 60px, 130px 270px;
+background: #0f0f0f;
+background-image: 
+linear-gradient(rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.9)),
+url('https://i.imgur.com/ZFyCToL.png');
+background-size: cover;
 display: flex;
 justify-content: center;
 align-items: center;
 color: white;
+padding: 20px;
 }
 
 .container {
@@ -35,38 +34,27 @@ background: rgba(255, 255, 255, 0.1);
 backdrop-filter: blur(10px);
 border-radius: 20px;
 padding: 2rem;
-box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+box-shadow: 0 0 30px rgba(0, 255, 136, 0.2);
 border: 1px solid rgba(255, 255, 255, 0.1);
-animation: float 6s ease-in-out infinite;
-}
-
-@keyframes float {
-0% { transform: translatey(0px); }
-50% { transform: translatey(-20px); }
-100% { transform: translatey(0px); }
 }
 
 .title {
 text-align: center;
 font-size: 2rem;
 margin-bottom: 2rem;
-color: #fff;
-text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-}
-
-.input-box {
-position: relative;
-margin-bottom: 1.5rem;
+color: #00ff88;
+text-shadow: 0 0 10px rgba(0, 255, 136, 0.5);
 }
 
 input {
 width: 100%;
 padding: 1rem;
 background: rgba(255, 255, 255, 0.05);
-border: 2px solid rgba(255, 255, 255, 0.1);
+border: 2px solid rgba(0, 255, 136, 0.2);
 border-radius: 10px;
 color: white;
 font-size: 1rem;
+margin-bottom: 1.5rem;
 transition: all 0.3s ease;
 }
 
@@ -92,35 +80,23 @@ font-weight: bold;
 cursor: pointer;
 transition: all 0.3s ease;
 text-transform: uppercase;
-
-background: linear-gradient(45deg, #ff3366, #ff6b4d);
 color: white;
+background: linear-gradient(45deg, #00ff88, #00b8ff);
 position: relative;
 overflow: hidden;
 }
 
-button::before {
-content: '';
-position: absolute;
-top: 0;
-left: -100%;
-width: 100%;
-height: 100%;
-background: linear-gradient(
-120deg,
-transparent,
-rgba(255, 255, 255, 0.3),
-transparent
-);
-transition: 0.5s;
+button:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
 }
 
-button:hover::before {
-left: 100%;
+button:active {
+transform: translateY(0);
 }
 
-.convert {
-background: linear-gradient(45deg, #00ff88, #00b8ff);
+.download {
+background: linear-gradient(45deg, #ff3366, #ff6b4d);
 }
 
 #result {
@@ -128,32 +104,19 @@ text-align: center;
 margin-top: 1rem;
 padding: 1rem;
 border-radius: 10px;
+
 background: rgba(0, 0, 0, 0.2);
-min-height: 50px;
 }
 
-.loading {
-position: relative;
-height: 40px;
-display: none;
+.video-container {
+margin-top: 1rem;
+border-radius: 10px;
+overflow: hidden;
 }
 
-.loading::after {
-content: '';
-position: absolute;
-width: 40px;
-height: 40px;
-top: 0;
-left: 50%;
-transform: translateX(-50%);
-background: conic-gradient(transparent, #00ff88);
-animation: rotate 1s infinite linear;
-border-radius: 50%;
-}
-
-@keyframes rotate {
-from { transform: translateX(-50%) rotate(0deg); }
-to { transform: translateX(-50%) rotate(360deg); }
+video {
+width: 100%;
+border-radius: 10px;
 }
 
 .success {
@@ -167,13 +130,13 @@ color: #ff3366;
 .footer {
 text-align: center;
 margin-top: 2rem;
-font-size: 0.8rem;
 color: rgba(255, 255, 255, 0.5);
 }
 
 @media (max-width: 480px) {
 .container {
-padding: 1rem;
+width: 95%;
+padding: 1.5rem;
 }
 
 .btn-group {
@@ -188,22 +151,16 @@ font-size: 1.5rem;
 </head>
 <body>
 <div class="container">
-<h1 class="title">EGYXO INSTA PRO</h1>
-
-<div class="input-box">
+<h1 class="title">MOON INSTA PRO</h1>
 <input type="text" id="url" placeholder="ضع رابط فيديو انستقرام هنا..." dir="ltr">
-</div>
-
 <div class="btn-group">
-<button onclick="convert()" class="convert">تحويل</button>
-<button onclick="download()" class="download">تحميل</button>
+<button onclick="convert()" class="convert">تحويل ⚡</button>
+<button onclick="download()" class="download">تحميل 📥</button>
 </div>
-
-<div id="loading" class="loading"></div>
+<div id="video-container" class="video-container"></div>
 <div id="result"></div>
-
 <div class="footer">
-Made with 🤍 by <@1016128744819265618>
+Made with 💚 by MrHamza
 </div>
 </div>
 
@@ -211,59 +168,87 @@ Made with 🤍 by <@1016128744819265618>
 let videoUrl = '';
 
 async function convert() {
-    const url = document.getElementById('url').value;
-    const result = document.getElementById('result');
-    const loading = document.getElementById('loading');
+const url = document.getElementById('url').value.trim();
+const result = document.getElementById('result');
+const videoContainer = document.getElementById('video-container');
 
-    if (!url) {
-        result.innerHTML = '<span class="error">⚠️ الرجاء إدخال رابط</span>';
-        return;
-    }
+if (!url) {
+result.innerHTML = '<span class="error">⚠️ الرجاء إدخال رابط</span>';
+return;
+}
 
-    loading.style.display = 'block';
-    result.innerHTML = '';
+result.innerHTML = '<span class="success">⏳ جاري التحويل...</span>';
+videoContainer.innerHTML = '';
 
-    try {
-        const res = await fetch(`https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${url}`, {
-            headers: {
-                'X-RapidAPI-Key': '40804646fdmshcc60c6cca844058p1c00e7jsndc50f8457fa9',
-                'X-RapidAPI-Host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
-            }
-        });
+try {
+const res = await fetch(`https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${encodeURIComponent(url)}`, {
+headers: {
+'X-RapidAPI-Key': '40804646fdmshcc60c6cca844058p1c00e7jsndc50f8457fa9',
+'X-RapidAPI-Host': 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
+}
+});
 
-        const data = await res.json();
-        videoUrl = data.media;
-        
-‎        // إضافة عرض الفيديو مباشرة
-        result.innerHTML = `
-            <video width="100%" controls>
-                <source src="${videoUrl}" type="video/mp4">
-                Your browser does not support the video tag.
-            </video>
-            <span class="success">✨ تم التحويل بنجاح - اضغط على التحميل للحفظ</span>
-        `;
-        
-        loading.style.display = 'none';
-    } catch (error) {
-        loading.style.display = 'none';
-        result.innerHTML = '<span class="error">❌ حدث خطأ في التحويل</span>';
-        console.error(error);
-    }
+const data = await res.json();
+
+if (!data.media) {
+throw new Error('لم يتم العثور على الفيديو');
+}
+
+videoUrl = data.media;
+
+// عرض الفيديو
+videoContainer.innerHTML = `
+<video controls>
+<source src="${videoUrl}" type="video/mp4">
+متصفحك لا يدعم تشغيل الفيديو
+</video>
+`;
+
+result.innerHTML = '<span class="success">✨ تم التحويل بنجاح - يمكنك الآن التحميل</span>';
+} catch (error) {
+result.innerHTML = '<span class="error">❌ حدث خطأ في التحويل - تأكد من صحة الرابط</span>';
+console.error(error);
+}
 }
 
 async function download() {
-    const result = document.getElementById('result');
+const result = document.getElementById('result');
 
-    if (!videoUrl) {
-        result.innerHTML = '<span class="error">⚠️ قم بالتحويل أولاً</span>';
-        return;
-    }
+if (!videoUrl) {
+result.innerHTML = '<span class="error">⚠️ قم بالتحويل أولاً</span>';
+return;
+}
 
-    try {
-        result.innerHTML = '<span class="success">🚀 جاري التحميل...</span>';
-        
-‎        // طريقة التحميل الجديدة
-        const response = await fetch(videoUrl);
-        const blob = await response.blob();
+try {
+result.innerHTML = '<span class="success">🚀 جاري التحميل...</span>';
+
+const response = await fetch(videoUrl);
+const blob = await response.blob();
+const downloadUrl = window.URL.createObjectURL(blob);
+const a = document.createElement('a');
+a.href = downloadUrl;
+a.download = `EGYXO_INSTA_${Date.now()}.mp4`;
+document.body.appendChild(a);
+a.click();
+window.URL.revokeObjectURL(downloadUrl);
+document.body.removeChild(a);
+
+result.innerHTML = '<span class="success">✅ تم التحميل بنجاح</span>';
+} catch (error) {
+result.innerHTML = '<span class="error">❌ فشل التحميل - حاول مرة أخرى</span>';
+console.error(error);
+}
+}
+
+// دعم مفتاح Enter
+document.getElementById('url').addEventListener('keypress', (e) => {
+if (e.key === 'Enter') convert();
+});
+
+// تنظيف الرسالة عند الكتابة
+document.getElementById('url').addEventListener('input', function() {
+document.getElementById('result').innerHTML = '';
+});
+</script>
 </body>
 </html>
