@@ -1,0 +1,247 @@
+
+<!DOCTYPE html>
+<html dir="rtl">
+<head>
+<title>🌙 Moon Helper - الغرف</title>
+<style>
+:root {
+--primary: #5865F2;
+--secondary: #2C2F33;
+--bg: #23272A;
+--success: #57F287;
+--error: #ED4245;
+}
+
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Cairo', system-ui;
+}
+
+body {
+background: linear-gradient(135deg, var(--bg), var(--secondary));
+min-height: 100vh;
+color: white;
+}
+
+.container {
+max-width: 1200px;
+margin: 0 auto;
+padding: 2rem;
+}
+
+‎/* شريط المستخدم */
+.user-bar {
+background: rgba(255, 255, 255, 0.1);
+backdrop-filter: blur(10px);
+padding: 1rem;
+border-radius: 15px;
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 2rem;
+}
+
+.user-info {
+display: flex;
+align-items: center;
+gap: 1rem;
+}
+
+.avatar {
+width: 40px;
+height: 40px;
+border-radius: 50%;
+border: 2px solid var(--primary);
+}
+
+.logout-btn {
+background: var(--error);
+color: white;
+border: none;
+padding: 0.5rem 1rem;
+border-radius: 8px;
+cursor: pointer;
+transition: all 0.3s;
+}
+
+.logout-btn:hover {
+opacity: 0.9;
+transform: translateY(-2px);
+}
+
+‎/* شبكة الغرف */
+.rooms-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+gap: 2rem;
+margin-top: 2rem;
+}
+
+.room-card {
+background: rgba(255, 255, 255, 0.1);
+border-radius: 15px;
+padding: 2rem;
+text-align: center;
+transition: all 0.3s;
+}
+
+.room-card:hover {
+transform: translateY(-5px);
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.room-icon {
+font-size: 3rem;
+margin-bottom: 1rem;
+}
+
+.room-title {
+font-size: 1.5rem;
+margin-bottom: 0.5rem;
+color: white;
+}
+
+.room-description {
+color: #B9BBBE;
+margin-bottom: 1.5rem;
+}
+
+.room-btn {
+background: var(--primary);
+color: white;
+border: none;
+padding: 1rem;
+border-radius: 8px;
+width: 100%;
+cursor: pointer;
+transition: all 0.3s;
+font-size: 1rem;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 0.5rem;
+}
+
+.room-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(88, 101, 242, 0.4);
+}
+
+‎/* الإشعارات */
+.notification {
+
+position: fixed;
+bottom: 2rem;
+right: 2rem;
+padding: 1rem 2rem;
+border-radius: 8px;
+background: var(--success);
+color: white;
+display: none;
+animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+from { transform: translateX(100%); opacity: 0; }
+to { transform: translateX(0); opacity: 1; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+<!-- شريط المستخدم -->
+<div class="user-bar">
+<div class="user-info">
+<img id="userAvatar" class="avatar" src="" alt="صورة المستخدم">
+<h3 id="username">...</h3>
+</div>
+<button onclick="logout()" class="logout-btn">تسجيل خروج</button>
+</div>
+
+<!-- شبكة الغرف -->
+<div class="rooms-grid">
+<!-- بطاقة إنشاء غرفة -->
+<div class="room-card">
+<div class="room-icon">🎯</div>
+<h2 class="room-title">إنشاء غرفة</h2>
+<p class="room-description">أنشئ غرفة جديدة وشارك مع أصدقائك</p>
+<button onclick="createRoom()" class="room-btn">
+<span>إنشاء غرفة</span>
+</button>
+</div>
+
+<!-- بطاقة الانضمام لغرفة -->
+<div class="room-card">
+<div class="room-icon">🚀</div>
+<h2 class="room-title">انضمام لغرفة</h2>
+<p class="room-description">انضم لغرفة موجودة باستخدام الكود</p>
+<button onclick="joinRoom()" class="room-btn">
+<span>انضمام للغرفة</span>
+</button>
+</div>
+</div>
+</div>
+
+<!-- الإشعارات -->
+<div id="notification" class="notification"></div>
+
+<script>
+// التحقق من تسجيل الدخول
+window.onload = () => {
+const userData = localStorage.getItem('discord_user');
+if (!userData) {
+window.location.href = '/index.html';
+return;
+}
+
+const user = JSON.parse(userData);
+document.getElementById('userAvatar').src = user.avatar
+? `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+: 'https://discord.com/assets/1cbd08c76f8af6dddce02c5138971129.png';
+document.getElementById('username').textContent = user.username;
+};
+
+// إنشاء غرفة جديدة
+function createRoom() {
+const roomId = Math.random().toString(36).substring(2, 9);
+showNotification(`تم إنشاء الغرفة! الكود: ${roomId}`);
+// هنا يمكنك إضافة المنطق الخاص بإنشاء الغرفة
+}
+
+// الانضمام لغرفة
+function joinRoom() {
+
+const roomId = prompt('أدخل كود الغرفة:');
+if (roomId) {
+showNotification('جاري الانضمام للغرفة...');
+// هنا يمكنك إضافة المنطق الخاص بالانضمام للغرفة
+}
+}
+
+// تسجيل الخروج
+function logout() {
+localStorage.removeItem('discord_user');
+window.location.href = '/index.html';
+}
+
+// عرض الإشعارات
+function showNotification(message) {
+const notification = document.getElementById('notification');
+notification.textContent = message;
+notification.style.display = 'block';
+
+setTimeout(() => {
+notification.style.display = 'none';
+}, 3000);
+}
+
+// منع الوصول المباشر للصفحة
+if (!localStorage.getItem('discord_user')) {
+window.location.href = '/index.html';
+}
+</script>
+</body>
+</html>
