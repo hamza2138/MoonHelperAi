@@ -1,227 +1,252 @@
-
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-    <title>Moon Book | عالم من القراءة</title>
-    <style>
-        :root {
-            --primary: #7c3aed;
-            --secondary: #4f46e5;
-            --background: #f3f4f6;
-            --text: #1f2937;
-        }
+<title>Moon Book | قراءة ممتعة</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root {
+    --gradient: linear-gradient(45deg, #6366f1, #8b5cf6, #d946ef);
+    --shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+}
 
-        body {
-            background: var(--background);
-            color: var(--text);
-        }
+body {
+    background: #f8fafc;
+    min-height: 100vh;
+}
 
-        nav {
-            background: linear-gradient(to right, var(--primary), var(--secondary));
-            padding: 1.5rem;
-            color: white;
-            text-align: center;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+‎/* تصميم الهيدر */
+.header {
+    background: var(--gradient);
+    padding: 2rem;
+    text-align: center;
+    color: white;
+    margin-bottom: 3rem;
+}
 
-        .logo {
-            font-size: 2.5rem;
-            font-weight: bold;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
+.logo {
+    font-size: 3rem;
+    font-weight: bold;
+    text-shadow: 2px 4px 8px rgba(0,0,0,0.2);
+    margin-bottom: 1rem;
+}
 
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 2rem;
-            padding: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
 
-        .book-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-        }
+‎/* تصميم الكتب */
+.books-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
 
-        .book-card:hover {
-            transform: translateY(-5px);
-        }
+.book-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
 
-        .book-image {
-            width: 100%;
-            height: 400px;
-            object-fit: cover;
-        }
+.book-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
 
-        .book-info {
-            padding: 1.5rem;
-        }
+.book-cover {
+    position: relative;
+    padding-top: 140%;
+}
 
-        .book-title {
-            font-size: 1.25rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: var(--primary);
-        }
+.book-cover img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
 
-        .book-author {
-            color: #666;
-            margin-bottom: 1rem;
-        }
+.book-info {
+    padding: 1.5rem;
+    text-align: center;
+}
 
-        .read-btn {
+.book-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1e293b;
+    margin-bottom: 0.5rem;
+}
 
-background: linear-gradient(to right, var(--primary), var(--secondary));
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: bold;
-            transition: opacity 0.3s;
-        }
+.book-author {
+    color: #64748b;
+    margin-bottom: 1.5rem;
+}
 
-        .read-btn:hover {
-            opacity: 0.9;
-        }
+.read-btn {
+    background: var(--gradient);
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+    transition: opacity 0.3s;
+}
 
-        /* PDF Viewer */
-        .pdf-viewer {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            display: none;
-        }
+.read-btn:hover {
 
-        .pdf-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-        }
+opacity: 0.9;
+}
 
-        .pdf-toolbar {
-            background: var(--primary);
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-        }
+/* تصميم قارئ PDF */
+.pdf-viewer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.9);
+    z-index: 1000;
+    display: none;
+}
 
-        .pdf-content {
-            flex: 1;
-            background: #fff;
-        }
+.pdf-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
 
-        #pdf-embed {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
+.pdf-toolbar {
+    background: var(--gradient);
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-        .close-btn {
-            background: #ef4444;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-        }
-    </style>
+.pdf-title {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.close-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#pdf-embed {
+    flex: 1;
+    width: 100%;
+    border: none;
+}
+</style>
 </head>
 <body>
-    <nav>
-        <div class="logo">Moon Book 📚</div>
-    </nav>
 
-    <div class="books-grid" id="booksContainer"></div>
-
-    <!-- PDF Viewer -->
-    <div class="pdf-viewer" id="pdfViewer">
-        <div class="pdf-container">
-            <div class="pdf-toolbar">
-                <h3 id="reading-title">قراءة كتاب</h3>
-                <button class="close-btn" onclick="closePdfViewer()">إغلاق</button>
-            </div>
-            <div class="pdf-content">
-                <iframe id="pdf-embed"></iframe>
-
+<div class="header">
+    <div class="logo">📚 Moon Book</div>
+    <div class="subtitle">عالم من المعرفة بين يديك</div>
 </div>
+
+<div class="books-container" id="booksContainer"></div>
+
+<div class="pdf-viewer" id="pdfViewer">
+    <div class="pdf-container">
+        <div class="pdf-toolbar">
+            <div class="pdf-title" id="reading-title"></div>
+            <button class="close-btn" onclick="closePdfViewer()">إغلاق ✕</button>
         </div>
+        <iframe id="pdf-embed"></iframe>
     </div>
+</div>
 
-    <script>
-        const books = [
-            {
-                title: "فن اللامبالاة",
-                author: "مارك مانسون",
-                image: "https://i.ibb.co/zN6LKGJ/subtle-art.jpg",
-                pdfUrl: "https://www.noor-book.com/book/internal_download/2c8d2f89e1a79be23f0514768f0e683f/1/the-subtle-art"
-            },
-            {
-                title: "العادات الذرية",
-                author: "جيمس كلير",
-                image: "https://i.ibb.co/K2YJxYm/atomic.jpg",
-                pdfUrl: "https://www.noor-book.com/book/internal_download/1d2e3f4g5h6i7j8k9l0m/1/atomic-habits"
-            },
-            {
-                title: "قوة العادات",
-                author: "تشارلز دوهيج",
-                image: "https://i.ibb.co/4WK0j2w/power.jpg",
-                pdfUrl: "https://www.noor-book.com/book/internal_download/3e4f5g6h7i8j9k0l1m2n/1/power-of-habit"
-            }
-            // يمكنك إضافة المزيد من الكتب هنا
-        ];
+<script>
+const books = [
+    {
+        title: "فن اللامبالاة",
+        author: "مارك مانسون",
+        image: "https://i.imgur.com/cover1.jpg",
+        pdf: "data/subtle-art.pdf" // ملف PDF محلي
+    },
+    {
+        title: "العادات الذرية",
+        author: "جيمس كلير",
+        image: "https://i.imgur.com/cover2.jpg",
+        pdf: "data/atomic-habits.pdf"
+    },
+    {
+        title: "قوة العادات",
+        author: "تشارلز دوهيج",
+        image: "https://i.imgur.com/cover3.jpg",
+        pdf: "data/power-of-habits.pdf"
+    },
+    {
+        title: "عقل هادئ",
+        author: "جيمس ويليامز",
+        image: "https://i.imgur.com/cover4.jpg",
+        pdf: "data/digital-minimalism.pdf"
 
-        function displayBooks() {
-            const container = document.getElementById('booksContainer');
-            container.innerHTML = books.map(book => `
-                <div class="book-card">
-                    <img src="${book.image}" alt="${book.title}" class="book-image">
-                    <div class="book-info">
-                        <div class="book-title">${book.title}</div>
-                        <div class="book-author">${book.author}</div>
-                        <button class="read-btn" onclick="openPdfViewer('${book.title}', '${book.pdfUrl}')">
-                            قراءة الكتاب
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
+    }
+];
 
-        function openPdfViewer(title, url) {
-            const viewer = document.getElementById('pdfViewer');
-            const embed = document.getElementById('pdf-embed');
-            const titleEl = document.getElementById('reading-title');
+function displayBooks() {
+    const container = document.getElementById('booksContainer');
+    container.innerHTML = books.map(book => `
+        <div class="book-card">
+            <div class="book-cover">
+                <img src="${book.image}" alt="${book.title}">
+            </div>
+            <div class="book-info">
+                <div class="book-title">${book.title}</div>
+                <div class="book-author">تأليف: ${book.author}</div>
+                <button class="read-btn" onclick="openPdfViewer('${book.title}', '${book.pdf}')">
+                    قراءة الكتاب 📖
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
 
-            titleEl.textContent = `قراءة: ${title}`;
-            embed.src = `${url}#toolbar=0&navpanes=0`;
-            viewer.style.display = 'block';
-        }
+function openPdfViewer(title, pdfUrl) {
+    const viewer = document.getElementById('pdfViewer');
+    const embed = document.getElementById('pdf-embed');
+    const titleEl = document.getElementById('reading-title');
 
-        function closePdfViewer() {
-            document.getElementById('pdfViewer').style.display = 'none';
-        }
+    titleEl.textContent = `قراءة: ${title}`;
+    embed.src = pdfUrl;
+    viewer.style.display = 'flex';
+}
 
-        // عرض الكتب عند تحميل الصفحة
-        displayBooks();
-    </script>
+function closePdfViewer() {
+    document.getElementById('pdfViewer').style.display = 'none';
+    document.getElementById('pdf-embed').src = '';
+}
+
+// عرض الكتب عند تحميل الصفحة
+displayBooks();
+</script>
 </body>
 </html>
