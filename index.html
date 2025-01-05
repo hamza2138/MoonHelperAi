@@ -1,247 +1,255 @@
-<!DOCTYPE html>
-<html dir="rtl">
-<head>
-<meta charset="UTF-8">
-<title>Moon Video Downloader Pro</title>
-<style>
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
+// Config
+const API_BASE = "https://api.downloader.local";
+const ALLOWED_FORMATS = ["mp4", "mp3"];
 
-body {
-    min-height: 100vh;
-    background: linear-gradient(45deg, #1a1a2e, #16213e);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-}
-
-.container {
-    width: 100%;
-    max-width: 800px;
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-}
-
-.header {
-    text-align: center;
-    margin-bottom: 30px;
-    color: white;
-}
-
-.logo {
-    font-size: 35px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    background: linear-gradient(45deg, #4CAF50, #8BC34A);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.subtitle {
-    color: #fff;
-    opacity: 0.8;
-    font-size: 16px;
-}
-
-.input-container {
-    position: relative;
-    margin: 30px 0;
-}
-
-.url-input {
-    width: 100%;
-    padding: 15px 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    color: #fff;
-    font-size: 16px;
-    transition: all 0.3s ease;
-}
-
-.url-input:focus {
-    outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 15px rgba(76, 175, 80, 0.3);
-}
-
-.url-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-}
-
-.paste-btn {
-    position: absolute;
-    right: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 8px 15px;
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.paste-btn:hover {
-    background: rgba(76, 175, 80, 0.3);
-}
-
-.download-btn {
-    width: 100%;
-    padding: 15px;
-    background: linear-gradient(45deg, #4CAF50, #8BC34A);
-    color: white;
-
-border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.download-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-}
-
-.download-btn:active {
-    transform: translateY(0);
-}
-
-.result-container {
-    margin-top: 20px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-    display: none;
-}
-
-.download-option {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    margin-bottom: 10px;
-    color: white;
-}
-
-.download-option:hover {
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.quality-badge {
-    padding: 5px 10px;
-    background: rgba(76, 175, 80, 0.2);
-    color: #4CAF50;
-    border-radius: 5px;
-    font-size: 14px;
-}
-
-.download-link {
-    padding: 8px 15px;
-    background: #4CAF50;
-    color: white;
-    border-radius: 5px;
-    text-decoration: none;
-    transition: all 0.3s ease;
-}
-
-.download-link:hover {
-    background: #45a049;
-}
-
-.status {
-    text-align: center;
-    margin-top: 20px;
-    color: #fff;
-    font-size: 14px;
-    min-height: 20px;
-}
-
-@media (max-width: 480px) {
-    .container {
-        padding: 20px;
+// Main Class
+class VideoDownloader {
+    constructor() {
+        this.downloadQueue = [];
+        this.isProcessing = false;
     }
-    
-    .logo {
-        font-size: 28px;
+
+‎    // تحقق من صحة الرابط
+    validateUrl(url) {
+        const patterns = {
+            youtube: /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/,
+            instagram: /^(https?:\/\/)?(www\.)?(instagram\.com)\/.+$/,
+            tiktok: /^(https?:\/\/)?(www\.)?(tiktok\.com)\/.+$/
+        };
+
+        return Object.keys(patterns).some(platform => patterns[platform].test(url));
     }
-    
-    .download-option {
-        flex-direction: column;
-        gap: 10px;
-        text-align: center;
+
+‎    // تحليل معلومات الفيديو
+    async getVideoInfo(url) {
+        try {
+            const response = await fetch(`${API_BASE}/info`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url })
+            });
+
+            return await response.json();
+        } catch (error) {
+            throw new Error("فشل في تحليل معلومات الفيديو");
+        }
+    }
+
+‎    // بدء التحميل
+    async startDownload(url, format = 'mp4') {
+        if (!this.validateUrl(url)) {
+            throw new Error("رابط غير صالح");
+        }
+
+        if (!ALLOWED_FORMATS.includes(format)) {
+            throw new Error("صيغة غير مدعومة");
+        }
+
+        const videoInfo = await this.getVideoInfo(url);
+        
+‎        // إضافة للقائمة
+        this.downloadQueue.push({
+            id: Date.now(),
+            url,
+            format,
+            info: videoInfo,
+            status: 'pending',
+            progress: 0
+        });
+
+        if (!this.isProcessing) {
+            this.processQueue();
+        }
+    }
+
+‎    // معالجة قائمة التحميل
+    async processQueue() {
+        if (this.downloadQueue.length === 0) {
+            this.isProcessing = false;
+            return;
+        }
+
+        this.isProcessing = true;
+        const download = this.downloadQueue[0];
+
+        try {
+
+download.status = 'downloading';
+            this.updateProgress(download.id, 0);
+
+            const response = await fetch(`${API_BASE}/download`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    url: download.url,
+                    format: download.format
+                })
+            });
+
+            if (!response.ok) throw new Error("فشل التحميل");
+
+            const blob = await response.blob();
+            this.updateProgress(download.id, 100);
+            
+‎            // تحميل الملف
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `video_${download.id}.${download.format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+
+            download.status = 'completed';
+        } catch (error) {
+            download.status = 'failed';
+            console.error(error);
+        }
+
+‎        // إزالة من القائمة
+        this.downloadQueue.shift();
+        
+‎        // معالجة العنصر التالي
+        this.processQueue();
+    }
+
+‎    // تحديث نسبة التقدم
+    updateProgress(id, progress) {
+        const download = this.downloadQueue.find(d => d.id === id);
+        if (download) {
+            download.progress = progress;
+            this.emitProgressUpdate(download);
+        }
+    }
+
+‎    // إرسال تحديثات التقدم
+    emitProgressUpdate(download) {
+        const event = new CustomEvent('downloadProgress', {
+            detail: {
+                id: download.id,
+                progress: download.progress,
+                status: download.status
+            }
+        });
+        window.dispatchEvent(event);
     }
 }
-</style>
-</head>
-<body>
-<div class="container">
-    <div class="header">
-        <div class="logo">Moon Video Downloader Pro</div>
-        <div class="subtitle">تحميل فيديوهات من يوتيوب وانستغرام وتيكتوك بدون علامة مائية</div>
-    </div>
 
-    <div class="input-container">
-        <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
-        <button class="paste-btn" onclick="pasteUrl()">لصق</button>
-    </div>
+‎// مثال على الاستخدام
+const downloader = new VideoDownloader();
 
-    <button onclick="startDownload()" class="download-btn">تحميل</button>
+‎// استماع لتحديثات التقدم
+
+window.addEventListener('downloadProgress', (event) => {
+    console.log(`تحميل ${event.detail.id}: ${event.detail.progress}%`);
+});
+
+// HTML Interface
+document.getElementById('downloadBtn').addEventListener('click', async () => {
+    const url = document.getElementById('urlInput').value;
+    const format = document.getElementById('formatSelect').value;
     
-    <div id="status" class="status"></div>
-    
-    <div id="result" class="result-container">
-        <!-- نتائج التحميل ستظهر هنا -->
-    </div>
-</div>
-
-<script>
-async function pasteUrl() {
     try {
-        const text = await navigator.clipboard.readText();
-        document.getElementById('url').value = text;
-    } catch (err) {
-        console.error('فشل في لصق النص:', err);
-    }
-}
-
-async function startDownload() {
-    const url = document.getElementById('url').value;
-    const status = document.getElementById('status');
-    const result = document.getElementById('result');
-    
-    if (!url) {
-        status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
-        return;
-    }
-
-    status.textContent = '⏳ جاري تحليل الرابط...';
-    result.style.display = 'none';
-
-    // تحويل الرابط مباشرة إلى savefrom.net
-    window.location.href = `https://en1.savefrom.net/2ol/#url=${encodeURIComponent(url)}`;
-}
-
-document.getElementById('url').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        startDownload();
+        await downloader.startDownload(url, format);
+    } catch (error) {
+        console.error(error);
+        alert(error.message);
     }
 });
-</script>
-</body>
-</html>
+
+```
+
+والـ PHP backend:
+
+```php
+<?php
+header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST');
+header('Access-Control-Allow-Headers: Content-Type');
+
+class VideoDownloader {
+    private $supportedPlatforms = ['youtube', 'instagram', 'tiktok'];
+    private $downloadPath = __DIR__ . '/downloads/';
+    
+    public function __construct() {
+        if (!file_exists($this->downloadPath)) {
+            mkdir($this->downloadPath, 0777, true);
+        }
+    }
+
+    public function getVideoInfo($url) {
+        $platform = $this->detectPlatform($url);
+        if (!$platform) {
+            throw new Exception("منصة غير مدعومة");
+        }
+
+        $command = "yt-dlp --dump-json " . escapeshellarg($url);
+        $output = shell_exec($command);
+        
+        if (!$output) {
+            throw new Exception("فشل في جلب معلومات الفيديو");
+        }
+
+        return json_decode($output, true);
+    }
+
+    public function downloadVideo($url, $format = 'mp4') {
+        $platform = $this->detectPlatform($url);
+        if (!$platform) {
+            throw new Exception("منصة غير مدعومة");
+        }
+
+        $filename = uniqid('video_') . '.' . $format;
+        $filepath = $this->downloadPath . $filename;
+
+        $command = "yt-dlp -f 'best' -o " . escapeshellarg($filepath) . " " . escapeshellarg($url);
+        exec($command, $output, $returnVar);
+
+        if ($returnVar !== 0) {
+            throw new Exception("فشل في تحميل الفيديو");
+        }
+
+        return $filepath;
+    }
+
+    private function detectPlatform($url) {
+        foreach ($this->supportedPlatforms as $platform) {
+            if (strpos($url, $platform) !== false) {
+                return $platform;
+            }
+        }
+        return null;
+    }
+}
+
+// API Endpoints
+$downloader = new VideoDownloader();
+
+try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $input = json_decode(file_get_contents('php://input'), true);
+
+        if (isset($input['url'])) {
+            if (isset($_GET['action']) && $_GET['action'] === 'info') {
+                $info = $downloader->getVideoInfo($input['url']);
+                echo json_encode(['success' => true, 'data' => $info]);
+            } else {
+                $format = isset($input['format']) ? $input['format'] : 'mp4';
+                $filepath = $downloader->downloadVideo($input['url'], $format);
+                
+                header('Content-Type: application/octet-stream');
+                header('Content-Disposition: attachment; filename="' . basename($filepath) . '"');
+                readfile($filepath);
+                unlink($filepath); // حذف الملف بعد التحميل
+            }
+        } else {
+            throw new Exception("الرجاء تحديد رابط الفيديو");
+        }
+    }
+} catch (Exception $e) {
+    http_response_code(400);
+    echo json_encode(['success' => false, 'error' => $e->getMessage()]);
+}
+?>
