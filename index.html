@@ -2,7 +2,7 @@
 <html dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>Moon MP4 Pro</title>
+<title>Moon MP4 Pro V2</title>
 <style>
 * {
 margin: 0;
@@ -28,7 +28,6 @@ backdrop-filter: blur(10px);
 border-radius: 20px;
 padding: 30px;
 box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 .header {
@@ -42,35 +41,38 @@ font-weight: bold;
 background: linear-gradient(45deg, #ff3366, #ff6b6b);
 -webkit-background-clip: text;
 -webkit-text-fill-color: transparent;
-margin-bottom: 10px;
 }
 
 .subtitle {
 color: #fff;
 opacity: 0.8;
 font-size: 14px;
+margin-top: 10px;
 }
 
 .input-group {
-position: relative;
 margin: 20px 0;
 }
 
 .url-input {
 width: 100%;
-padding: 15px 20px;
+padding: 15px;
 background: rgba(255, 255, 255, 0.05);
 border: 2px solid rgba(255, 255, 255, 0.1);
 border-radius: 12px;
 color: #fff;
 font-size: 16px;
-transition: all 0.3s ease;
 }
 
-.url-input:focus {
-outline: none;
-border-color: #ff3366;
-box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
+.platform-select {
+width: 100%;
+padding: 15px;
+margin-bottom: 20px;
+background: rgba(255, 255, 255, 0.05);
+border: 2px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+color: #fff;
+font-size: 16px;
 }
 
 .download-btn {
@@ -83,9 +85,7 @@ border-radius: 12px;
 font-size: 16px;
 font-weight: bold;
 cursor: pointer;
-transition: all 0.3s ease;
-text-transform: uppercase;
-letter-spacing: 1px;
+transition: 0.3s;
 }
 
 .download-btn:hover {
@@ -97,22 +97,7 @@ box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
 text-align: center;
 margin-top: 20px;
 color: #fff;
-font-size: 14px;
-}
-
-.loading {
-display: inline-block;
-width: 20px;
-height: 20px;
-border: 3px solid rgba(255, 255, 255, 0.3);
-border-radius: 50%;
-border-top-color: #ff3366;
-animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-
-to { transform: rotate(360deg); }
+min-height: 24px;
 }
 
 @media (max-width: 480px) {
@@ -128,52 +113,74 @@ font-size: 28px;
 <body>
 <div class="container">
 <div class="header">
-<div class="logo">Moon MP4 Pro</div>
-<div class="subtitle">تحميل فيديوهات MP4 بجودة عالية</div>
+<div class="logo">Moon MP4 Pro V2</div>
+<div class="subtitle">تحميل فيديوهات بدون علامة مائية</div>
 </div>
+
+<select class="platform-select" id="platform">
+<option value="youtube">يوتيوب</option>
+<option value="instagram">انستغرام</option>
+<option value="tiktok">تيك توك</option>
+</select>
 
 <div class="input-group">
 <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
 </div>
 
-<button onclick="download()" class="download-btn">تحميل MP4</button>
+<button onclick="download()" class="download-btn">تحميل</button>
 <div id="status" class="status"></div>
 </div>
 
 <script>
 async function download() {
     const url = document.getElementById('url').value;
+    const platform = document.getElementById('platform').value;
     const status = document.getElementById('status');
 
     if (!url) {
-        status.innerHTML = '⚠️ الرجاء إدخال رابط صحيح';
+        status.textContent = '⚠️ الرجاء إدخال رابط صحيح';
         return;
     }
 
-    status.innerHTML = '<div class="loading"></div> جاري التحميل...';
+    status.textContent = '⏳ جاري التحميل...';
 
     try {
-        // استخدام API جديد
-        const apiUrl = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=mp4&direct=1`;
+        let apiUrl;
         
-        // فتح الرابط في نافذة جديدة للتحميل المباشر
+        switch(platform) {
+            case 'youtube':
+                apiUrl = `https://api.vevioz.com/api/button/mp4/${encodeURIComponent(url)}`;
+                break;
+            case 'instagram':
+                apiUrl = `https://api.vevioz.com/api/button/instagram/${encodeURIComponent(url)}`;
+                break;
+            case 'tiktok':
+                apiUrl = `https://api.vevioz.com/api/button/tiktok/${encodeURIComponent(url)}`;
+                break;
+        }
+
         window.open(apiUrl, '_blank');
         
-        status.innerHTML = '✅ تم بدء التحميل';
+        status.textContent = '✅ تم بدء التحميل';
         
-        // مسح الرسالة بعد 3 ثواني
         setTimeout(() => {
-            status.innerHTML = '';
+            status.textContent = '';
         }, 3000);
 
     } catch (error) {
-        status.innerHTML = '❌ حدث خطأ في التحميل';
+        status.textContent = '❌ حدث خطأ في التحميل';
     }
 }
 
 // تفعيل زر Enter
 document.getElementById('url').addEventListener('keypress', e => {
     if (e.key === 'Enter') download();
+});
+
+// تغيير placeholder حسب المنصة
+document.getElementById('platform').addEventListener('change', function() {
+    const input = document.getElementById('url');
+    input.placeholder = `ضع رابط ${this.options[this.selectedIndex].text} هنا...`;
 });
 </script>
 </body>
