@@ -1,50 +1,71 @@
-
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>🌙 Moon Helper</title>
-<style>
-body {
-background: #23272A;
-margin: 0;
-height: 100vh;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-direction: column;
-font-family: 'Cairo', system-ui;
-color: white;
-}
+    <title>🌙 Moon Helper</title>
+    <style>
+        body {
+            background: #23272A;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            font-family: 'Cairo', system-ui;
+            color: white;
+        }
 
-.loader {
-width: 80px;
-height: 80px;
-border: 5px solid #5865F2;
-border-top-color: transparent;
-border-radius: 50%;
-animation: spin 1s linear infinite;
-margin-bottom: 20px;
-}
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 5px solid #5865F2;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
 
-@keyframes spin {
-to { transform: rotate(360deg); }
-}
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
 
-.loading-text {
-font-size: 1.2rem;
-color: #B9BBBE;
-}
-</style>
+        .loading-text {
+            font-size: 1.2rem;
+            color: #B9BBBE;
+        }
+    </style>
 </head>
 <body>
-<div class="loader"></div>
-<p class="loading-text">جاري تحميل الصفحة...</p>
+    <div class="loader"></div>
+    <p class="loading-text">جاري تحميل الصفحة...</p>
 
-<script>
-‎// بعد 3 ثواني سيتم التوجيه للصفحة الرئيسية
-setTimeout(() => {
-window.location.href = '/rooms.html';
-}, 3000);
-</script>
+    <script>
+‎        // استخراج الكود من URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get('code');
+
+        if (code) {
+‎            // تخزين الكود في localStorage
+            localStorage.setItem('discord_code', code);
+            
+‎            // إنشاء بيانات المستخدم (مثال)
+            const mockUser = {
+                id: '123456789',
+                username: 'User' + Math.floor(Math.random() * 1000),
+                avatar: null
+            };
+            
+‎            // تخزين بيانات المستخدم
+            localStorage.setItem('discord_user', JSON.stringify(mockUser));
+            
+‎            // التوجيه لصفحة الغرف بعد ثانيتين
+            setTimeout(() => {
+                window.location.href = '/rooms.html';
+            }, 2000);
+        } else {
+‎            // إذا لم يكن هناك كود، نعود لصفحة تسجيل الدخول
+            window.location.href = '/index.html';
+        }
+    </script>
 </body>
 </html>
