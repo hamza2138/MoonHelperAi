@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>Moon Downloader</title>
+<title>Moon MP4 Downloader</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{
@@ -27,6 +27,10 @@ body{
     margin-bottom:10px;
     font-weight:bold
 }
+.input-container{
+    margin:20px 0;
+    position:relative
+}
 .url-input{
     width:100%;
     padding:15px;
@@ -35,8 +39,7 @@ body{
     color:#fff;
     border-radius:10px;
     font-size:16px;
-    margin:10px 0;
-    transition:all 0.3s
+    transition:0.3s
 }
 .url-input:focus{
     border-color:#00ff88;
@@ -52,33 +55,17 @@ body{
     font-size:16px;
     font-weight:bold;
     cursor:pointer;
-    transition:all 0.3s
+    transition:0.3s;
+    margin:10px 0
 }
 .download-btn:hover{
     background:#00cc6a;
     transform:translateY(-2px)
 }
-.result{
-    background:#222;
-    padding:20px;
-    border-radius:10px;
-    margin:20px 0;
-    display:none
-}
-.format-select{
-    width:100%;
-    padding:12px;
-    background:#333;
-    color:#fff;
-    border:none;
-    border-radius:8px;
-    margin:10px 0;
-    cursor:pointer
-}
 .platform-btns{
     display:flex;
     gap:10px;
-    margin:15px 0
+    margin-bottom:20px
 }
 .platform-btn{
     flex:1;
@@ -91,122 +78,102 @@ body{
 }
 .youtube{background:#ff0000;color:#fff}
 .instagram{background:#e1306c;color:#fff}
-.loading{
+#status{
     text-align:center;
-    color:#00ff88;
-    margin:20px 0;
-    display:none
+    margin:15px 0;
+    color:#00ff88
 }
 </style>
 </head>
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">Moon Downloader</div>
-        <p>تحميل من يوتيوب وانستغرام بدون علامة مائية</p>
+        <div class="logo">Moon MP4 Downloader</div>
+        <p>تحميل فيديوهات MP4 عالية الجودة</p>
     </div>
-    
-    <div class="platform-btns">
 
-<button class="platform-btn youtube" onclick="setPlatform('youtube')">يوتيوب</button>
+    <div class="platform-btns">
+        <button class="platform-btn youtube" onclick="setPlatform('youtube')">يوتيوب</button>
         <button class="platform-btn instagram" onclick="setPlatform('instagram')">انستغرام</button>
     </div>
 
-    <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
-    
-    <select id="format" class="format-select">
-        <option value="auto">أفضل جودة</option>
-        <option value="720">720p</option>
-        <option value="480">480p</option>
-        <option value="360">360p</option>
-    </select>
+    <div class="input-container">
 
-    <button onclick="download()" class="download-btn">تحميل</button>
-    
-    <div id="loading" class="loading">جاري التحميل...</div>
-    <div id="result" class="result"></div>
+<input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
+    </div>
+
+    <button onclick="downloadMP4()" class="download-btn">تحميل MP4</button>
+    <div id="status"></div>
 </div>
 
 <script>
 let currentPlatform = 'youtube';
+const API_KEY = '2844421e5dmsh6b45d3c42ec7e26p1389dfjsn0cca91431465';
 
 function setPlatform(platform) {
     currentPlatform = platform;
     document.getElementById('url').placeholder = `ضع رابط ${platform === 'youtube' ? 'يوتيوب' : 'انستغرام'} هنا...`;
 }
 
-async function download() {
+async function downloadMP4() {
     const url = document.getElementById('url').value;
-    const format = document.getElementById('format').value;
-    const loading = document.getElementById('loading');
-    const result = document.getElementById('result');
-
+    const status = document.getElementById('status');
+    
     if (!url) {
-        alert('الرجاء إدخال رابط صحيح');
+        status.innerHTML = 'الرجاء إدخال رابط صحيح';
         return;
     }
 
-    loading.style.display = 'block';
-    result.style.display = 'none';
+    status.innerHTML = 'جاري تحضير الملف للتحميل...';
 
     try {
-        // استخدام خدمة RapidAPI للتحميل
         const options = {
-            method: 'POST',
+            method: 'GET',
             headers: {
-                'content-type': 'application/json',
-                'X-RapidAPI-Key': '2844421e5dmsh6b45d3c42ec7e26p1389dfjsn0cca91431465',
-                'X-RapidAPI-Host': currentPlatform === 'youtube' ? 'youtube-video-download-info.p.rapidapi.com' : 'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
-            },
-            body: JSON.stringify({ url })
+                'X-RapidAPI-Key': API_KEY,
+                'X-RapidAPI-Host': currentPlatform === 'youtube' ? 
+                    'youtube-mp4-downloader.p.rapidapi.com' : 
+                    'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
+            }
         };
 
-        const response = await fetch(
-            currentPlatform === 'youtube'
+        let apiUrl = currentPlatform === 'youtube' ?
+            `https://youtube-mp4-downloader.p.rapidapi.com/download?url=${encodeURIComponent(url)}` :
+            `https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${encodeURIComponent(url)}`;
 
-? 'https://youtube-video-download-info.p.rapidapi.com/dl'
-                : 'https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index',
-            options
-        );
-
+        const response = await fetch(apiUrl, options);
         const data = await response.json();
 
         if (data.error) {
             throw new Error(data.error);
         }
 
-        // معالجة النتائج حسب المنصة
-        if (currentPlatform === 'youtube') {
-            const videoUrl = data.formats.find(f => f.qualityLabel === format)?.url || data.formats[0].url;
-            result.innerHTML = `
-                <video width="100%" controls>
-                    <source src="${videoUrl}" type="video/mp4">
-                </video>
-                <a href="${videoUrl}" class="download-btn" style="display:block;text-decoration:none;text-align:center;margin-top:10px" 
-                   download="video.mp4">تحميل الفيديو</a>
-            `;
-        } else {
-            result.innerHTML = `
-                <video width="100%" controls>
-                    <source src="${data.media}" type="video/mp4">
-                </video>
-                <a href="${data.media}" class="download-btn" style="display:block;text-decoration:none;text-align:center;margin-top:10px" 
-                   download="instagram-video.mp4">تحميل الفيديو</a>
-            `;
-        }
+        // إنشاء رابط التحميل
+        const downloadUrl = currentPlatform === 'youtube' ? data.downloadUrl : data.media;
+        
+        // إنشاء عنصر a مخفي للتحميل
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = `video_${Date.now()}.mp4`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
 
-        result.style.display = 'block';
+        status.innerHTML = 'جاري التحميل... ✅';
+        
+        // تنظيف الحالة بعد 3 ثواني
+        setTimeout(() => {
+            status.innerHTML = '';
+        }, 3000);
+
     } catch (error) {
-        result.innerHTML = `<div style="color:red">حدث خطأ: ${error.message}</div>`;
-        result.style.display = 'block';
-    } finally {
-        loading.style.display = 'none';
+        status.innerHTML = `حدث خطأ: ${error.message}`;
     }
 }
 
-// تحسين تجربة المستخدم عند الضغط على Enter
+// تفعيل زر Enter للتحميل
 document.getElementById('url').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') download();
+    if (e.key === 'Enter') downloadMP4();
 });
 </script>
 </body>
