@@ -1,179 +1,233 @@
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<title>Moon MP4 Downloader</title>
+<meta charset="UTF-8">
+<title>Moon MP4 Pro</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{
-    background:#0f0f0f;
-    color:#fff;
-    line-height:1.6
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
-.container{
-    max-width:800px;
-    margin:auto;
-    padding:20px
+
+body {
+min-height: 100vh;
+background: linear-gradient(45deg, #0f0f1f, #1f1f3f);
+display: flex;
+justify-content: center;
+align-items: center;
+padding: 20px;
 }
-.header{
-    text-align:center;
-    padding:30px 0;
-    background:linear-gradient(45deg,#1a1a1a,#2a2a2a);
-    border-radius:15px;
-    margin-bottom:30px
+
+.container {
+width: 100%;
+max-width: 800px;
+background: rgba(255, 255, 255, 0.05);
+backdrop-filter: blur(10px);
+border-radius: 20px;
+padding: 30px;
+box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+border: 1px solid rgba(255, 255, 255, 0.18);
 }
-.logo{
-    font-size:35px;
-    color:#00ff88;
-    margin-bottom:10px;
-    font-weight:bold
+
+.header {
+text-align: center;
+margin-bottom: 30px;
 }
-.input-container{
-    margin:20px 0;
-    position:relative
+
+.logo {
+font-size: 35px;
+font-weight: bold;
+background: linear-gradient(45deg, #ff3366, #ff6b6b);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+margin-bottom: 10px;
 }
-.url-input{
-    width:100%;
-    padding:15px;
-    background:#222;
-    border:2px solid #333;
-    color:#fff;
-    border-radius:10px;
-    font-size:16px;
-    transition:0.3s
+
+.subtitle {
+color: #fff;
+opacity: 0.8;
+font-size: 14px;
 }
-.url-input:focus{
-    border-color:#00ff88;
-    outline:none
+
+.input-group {
+position: relative;
+margin: 20px 0;
 }
-.download-btn{
-    width:100%;
-    padding:15px;
-    background:#00ff88;
-    color:#000;
-    border:none;
-    border-radius:10px;
-    font-size:16px;
-    font-weight:bold;
-    cursor:pointer;
-    transition:0.3s;
-    margin:10px 0
+
+.url-input {
+width: 100%;
+padding: 15px 20px;
+background: rgba(255, 255, 255, 0.05);
+border: 2px solid rgba(255, 255, 255, 0.1);
+border-radius: 12px;
+color: #fff;
+font-size: 16px;
+transition: all 0.3s ease;
 }
-.download-btn:hover{
-    background:#00cc6a;
-    transform:translateY(-2px)
+
+.url-input:focus {
+outline: none;
+border-color: #ff3366;
+box-shadow: 0 0 15px rgba(255, 51, 102, 0.3);
 }
-.platform-btns{
-    display:flex;
-    gap:10px;
-    margin-bottom:20px
+
+.download-btn {
+width: 100%;
+padding: 15px;
+background: linear-gradient(45deg, #ff3366, #ff6b6b);
+color: #fff;
+border: none;
+border-radius: 12px;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+transition: all 0.3s ease;
+text-transform: uppercase;
+letter-spacing: 1px;
 }
-.platform-btn{
-    flex:1;
-    padding:12px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-    font-weight:bold;
-    transition:0.3s
+
+.download-btn:hover {
+transform: translateY(-2px);
+box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
 }
-.youtube{background:#ff0000;color:#fff}
-.instagram{background:#e1306c;color:#fff}
-#status{
-    text-align:center;
-    margin:15px 0;
-    color:#00ff88
+
+.download-btn:active {
+transform: translateY(0);
+}
+
+.platform-btns {
+display: flex;
+gap: 10px;
+margin-bottom: 20px;
+}
+
+.platform-btn {
+flex: 1;
+padding: 12px;
+border: none;
+border-radius: 10px;
+cursor: pointer;
+font-weight: bold;
+transition: 0.3s;
+background: rgba(255, 255, 255, 0.05);
+color: #fff;
+}
+
+.platform-btn.active {
+background: linear-gradient(45deg, #ff3366, #ff6b6b);
+}
+
+.status {
+text-align: center;
+margin-top: 20px;
+color: #fff;
+font-size: 14px;
+min-height: 20px;
+}
+
+.loading {
+display: inline-block;
+width: 20px;
+height: 20px;
+border: 3px solid rgba(255, 255, 255, 0.3);
+border-radius: 50%;
+border-top-color: #ff3366;
+animation: spin 1s ease-in-out infinite;
+margin-right: 10px;
+}
+
+@keyframes spin {
+to { transform: rotate(360deg); }
+}
+
+/* تأثيرات إضافية */
+.pulse {
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0% { transform: scale(1); }
+50% { transform: scale(1.05); }
+100% { transform: scale(1); }
+}
+
+/* تحسينات للموبايل */
+@media (max-width: 480px) {
+.container {
+padding: 20px;
+}
+
+.logo {
+font-size: 28px;
+}
+
+.platform-btns {
+flex-direction: column;
+}
 }
 </style>
 </head>
 <body>
 <div class="container">
-    <div class="header">
-        <div class="logo">Moon MP4 Downloader</div>
-        <p>تحميل فيديوهات MP4 عالية الجودة</p>
-    </div>
+<div class="header">
+<div class="logo">Moon MP4 Pro</div>
+<div class="subtitle">تحميل فيديوهات MP4 بجودة عالية</div>
+</div>
 
-    <div class="platform-btns">
-        <button class="platform-btn youtube" onclick="setPlatform('youtube')">يوتيوب</button>
-        <button class="platform-btn instagram" onclick="setPlatform('instagram')">انستغرام</button>
-    </div>
+<div class="platform-btns">
+<button class="platform-btn active" onclick="setPlatform('youtube')">يوتيوب</button>
+<button class="platform-btn" onclick="setPlatform('instagram')">انستغرام</button>
+</div>
 
-    <div class="input-container">
-
+<div class="input-group">
 <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
-    </div>
+</div>
 
-    <button onclick="downloadMP4()" class="download-btn">تحميل MP4</button>
-    <div id="status"></div>
+<button onclick="download()" class="download-btn pulse">تحميل MP4</button>
+<div id="status" class="status"></div>
 </div>
 
 <script>
 let currentPlatform = 'youtube';
-const API_KEY = '2844421e5dmsh6b45d3c42ec7e26p1389dfjsn0cca91431465';
 
 function setPlatform(platform) {
-    currentPlatform = platform;
-    document.getElementById('url').placeholder = `ضع رابط ${platform === 'youtube' ? 'يوتيوب' : 'انستغرام'} هنا...`;
+currentPlatform = platform;
+document.querySelectorAll('.platform-btn').forEach(btn => {
+btn.classList.remove('active');
+});
+event.target.classList.add('active');
+document.getElementById('url').placeholder = `ضع رابط ${platform === 'youtube' ? 'يوتيوب' : 'انستغرام'} هنا...`;
 }
 
-async function downloadMP4() {
-    const url = document.getElementById('url').value;
-    const status = document.getElementById('status');
-    
-    if (!url) {
-        status.innerHTML = 'الرجاء إدخال رابط صحيح';
-        return;
-    }
+async function download() {
+const url = document.getElementById('url').value;
+const status = document.getElementById('status');
 
-    status.innerHTML = 'جاري تحضير الملف للتحميل...';
-
-    try {
-        const options = {
-            method: 'GET',
-            headers: {
-                'X-RapidAPI-Key': API_KEY,
-                'X-RapidAPI-Host': currentPlatform === 'youtube' ? 
-                    'youtube-mp4-downloader.p.rapidapi.com' : 
-                    'instagram-downloader-download-instagram-videos-stories.p.rapidapi.com'
-            }
-        };
-
-        let apiUrl = currentPlatform === 'youtube' ?
-            `https://youtube-mp4-downloader.p.rapidapi.com/download?url=${encodeURIComponent(url)}` :
-            `https://instagram-downloader-download-instagram-videos-stories.p.rapidapi.com/index?url=${encodeURIComponent(url)}`;
-
-        const response = await fetch(apiUrl, options);
-        const data = await response.json();
-
-        if (data.error) {
-            throw new Error(data.error);
-        }
-
-        // إنشاء رابط التحميل
-        const downloadUrl = currentPlatform === 'youtube' ? data.downloadUrl : data.media;
-        
-        // إنشاء عنصر a مخفي للتحميل
-        const downloadLink = document.createElement('a');
-        downloadLink.href = downloadUrl;
-        downloadLink.download = `video_${Date.now()}.mp4`;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-
-        status.innerHTML = 'جاري التحميل... ✅';
-        
-        // تنظيف الحالة بعد 3 ثواني
-        setTimeout(() => {
-            status.innerHTML = '';
-        }, 3000);
-
-    } catch (error) {
-        status.innerHTML = `حدث خطأ: ${error.message}`;
-    }
+if (!url) {
+status.innerHTML = '⚠️ الرجاء إدخال رابط صحيح';
+return;
 }
 
-// تفعيل زر Enter للتحميل
-document.getElementById('url').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') downloadMP4();
+status.innerHTML = '<div class="loading"></div> جاري التحميل...';
+
+try {
+const apiUrl = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=mp4`;
+window.location.href = apiUrl;
+
+setTimeout(() => {
+status.innerHTML = '✅ تم بدء التحميل';
+}, 1500);
+
+} catch (error) {
+status.innerHTML = '❌ حدث خطأ في التحميل';
+}
+}
+
+// تفعيل زر Enter
+document.getElementById('url').addEventListener('keypress', e => {
+if (e.key === 'Enter') download();
 });
 </script>
 </body>
