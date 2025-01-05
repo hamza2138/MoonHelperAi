@@ -1,245 +1,162 @@
-
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مكتبتي | تبادل وقراءة الكتب</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+    <title>مكتبتي | قراءة الروايات</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Cairo', sans-serif;
-        }
+‎    /* إضافة نمط لمشغل PDF */
+    .pdf-viewer {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.9);
+        z-index: 1000;
+        display: none;
+    }
 
-        body {
-            background: #f5f5f5;
-        }
+    .pdf-container {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
 
-        nav {
-            background: #2c3e50;
-            color: white;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+    .pdf-toolbar {
+        background: #1a1a1a;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        color: white;
+    }
 
-        .search-bar {
-            background: white;
-            padding: 0.5rem;
-            border-radius: 25px;
-            width: 300px;
-            display: flex;
-            align-items: center;
-        }
+    .pdf-content {
+        flex: 1;
+        background: #2a2a2a;
+    }
 
-        .search-bar input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 0.5rem;
-        }
+    #pdf-embed {
+        width: 100%;
+        height: 100%;
+        border: none;
+    }
 
-        .categories {
-            padding: 1rem;
-            background: white;
-            margin: 1rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
+    .close-btn {
+        background: #e74c3c;
+        color: white;
+        border: none;
+        padding: 5px 15px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
 
-        .category-list {
-            display: flex;
-            gap: 1rem;
-            overflow-x: auto;
-            padding: 1rem 0;
-        }
+‎    /* تحديث شكل البطاقات */
+    .book-card {
+        position: relative;
+        overflow: hidden;
+    }
 
-        .category {
-            background: #3498db;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
+    .book-overlay {
+        position: absolute;
+        bottom: -100%;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.8);
+        padding: 15px;
+        transition: 0.3s;
+    }
 
-        .books-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            padding: 1rem;
-        }
-
-        .book-card {
-            background: white;
-            border-radius: 10px;
-            overflow: hidden;
-
-box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-        }
-
-        .book-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .book-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-        }
-
-        .book-info {
-            padding: 1rem;
-        }
-
-        .book-title {
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-        }
-
-        .book-author {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        button {
-            padding: 0.5rem 1rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .read-btn {
-            background: #2ecc71;
-            color: white;
-        }
-
-        .exchange-btn {
-            background: #e74c3c;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .search-bar {
-                width: 200px;
-            }
-        }
+    .book-card:hover .book-overlay {
+        bottom: 0;
+    }
     </style>
 </head>
 <body>
-    <nav>
-        <h1>مكتبتي</h1>
-        <div class="search-bar">
-            <input type="text" placeholder="ابحث عن كتاب...">
-        </div>
-    </nav>
-
-    <div class="categories">
-        <h2>التصنيفات</h2>
-        <div class="category-list">
-            <div class="category">الكل</div>
-            <div class="category">روايات</div>
-            <div class="category">تنمية بشرية</div>
-            <div class="category">تاريخ</div>
-            <div class="category">علوم</div>
-            <div class="category">فلسفة</div>
-            <div class="category">دين</div>
-            <div class="category">سياسة</div>
+‎    <!-- إضافة مشغل PDF -->
+    <div class="pdf-viewer" id="pdfViewer">
+        <div class="pdf-container">
+            <div class="pdf-toolbar">
+                <h3 id="reading-title">قراءة: </h3>
+                <button class="close-btn" onclick="closePdfViewer()">إغلاق</button>
+            </div>
+            <div class="pdf-content">
+                <iframe id="pdf-embed"></iframe>
+            </div>
         </div>
     </div>
 
-    <div class="books-grid" id="booksContainer">
-        <!-- سيتم إضافة الكتب هنا عبر JavaScript -->
-    </div>
-
+‎    <!-- تحديث السكربت -->
     <script>
-        // بيانات الكتب
-        const books = [
+‎    // تحديث مصفوفة الكتب مع روابط PDF آمنة
+    const books = [
+        {
+            title: "عائد إلى حيفا",
 
-{
-                title: "العادات الذرية",
-                author: "جيمس كلير",
-                image: "https://i.imgur.com/1234.jpg",
-                category: "تنمية بشرية"
-            },
-            {
-                title: "فن اللامبالاة",
-                author: "مارك مانسون",
-                image: "https://i.imgur.com/5678.jpg",
-                category: "تنمية بشرية"
-            },
-            {
-                title: "1984",
-                author: "جورج أورويل",
-                image: "https://i.imgur.com/9012.jpg",
-                category: "روايات"
-            }
-            // يمكنك إضافة المزيد من الكتب هنا
-        ];
+author: "غسان كنفاني",
+            image: "https://i.imgur.com/haifa.jpg",
+            category: "روايات",
+            pdfUrl: "https://your-secure-server.com/books/haifa.pdf",
+            description: "رواية فلسطينية عن قصة عودة"
+        },
+‎        // أضف المزيد من الكتب
+    ];
 
-        // عرض الكتب
-        function displayBooks(books) {
-            const container = document.getElementById('booksContainer');
-            container.innerHTML = books.map(book => `
-                <div class="book-card">
-                    <img src="${book.image || 'https://via.placeholder.com/200x300'}" class="book-image">
-                    <div class="book-info">
-                        <div class="book-title">${book.title}</div>
-                        <div class="book-author">${book.author}</div>
-                        <div class="action-buttons">
-                            <button class="read-btn" onclick="readBook('${book.title}')">قراءة</button>
-                            <button class="exchange-btn" onclick="exchangeBook('${book.title}')">تبادل</button>
-                        </div>
-                    </div>
+‎    // دالة فتح PDF
+    function openPdfViewer(book) {
+        const viewer = document.getElementById('pdfViewer');
+        const embed = document.getElementById('pdf-embed');
+        const title = document.getElementById('reading-title');
+        
+‎        // تعيين العنوان
+        title.textContent = `قراءة: ${book.title}`;
+        
+‎        // تعيين مصدر PDF مع منع التحميل
+        embed.src = `${book.pdfUrl}#toolbar=0&navpanes=0&scrollbar=0`;
+        
+‎        // إظهار المشغل
+        viewer.style.display = 'block';
+        
+‎        // منع النسخ والتحميل
+        document.addEventListener('contextmenu', preventDefaultAction);
+        document.addEventListener('keydown', preventDefaultAction);
+    }
+
+‎    // دالة إغلاق PDF
+    function closePdfViewer() {
+        const viewer = document.getElementById('pdfViewer');
+        viewer.style.display = 'none';
+        
+‎        // إزالة مانع النسخ والتحميل
+        document.removeEventListener('contextmenu', preventDefaultAction);
+        document.removeEventListener('keydown', preventDefaultAction);
+    }
+
+‎    // منع النسخ والتحميل
+    function preventDefaultAction(e) {
+        if (e.keyCode === 83 && (navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)) {
+            e.preventDefault();
+        }
+        if (e.type === 'contextmenu') {
+            e.preventDefault();
+        }
+    }
+
+‎    // تحديث دالة عرض الكتب
+    function displayBooks(books) {
+        const container = document.getElementById('booksContainer');
+        container.innerHTML = books.map(book => `
+            <div class="book-card">
+                <img src="${book.image}" alt="${book.title}" class="book-image">
+                <div class="book-overlay">
+
+                    <h3>${book.title}</h3>
+                    <p>${book.author}</p>
+                    <button onclick="openPdfViewer(${JSON.stringify(book)})">قراءة</button>
                 </div>
-            `).join('');
-        }
-
-        // وظائف التفاعل
-        function readBook(title) {
-            alert(`جاري فتح كتاب: ${title}`);
-        }
-
-        function exchangeBook(title) {
-            alert(`طلب تبادل كتاب: ${title}`);
-        }
-
-        // تحميل الكتب عند فتح الصفحة
-        displayBooks(books);
-
-        // البحث
-        document.querySelector('.search-bar input').addEventListener('input', (e) => {
-            const searchTerm = e.target.value.toLowerCase();
-
-            const filteredBooks = books.filter(book => 
-                book.title.toLowerCase().includes(searchTerm) || 
-                book.author.toLowerCase().includes(searchTerm)
-            );
-            displayBooks(filteredBooks);
-        });
-
-        // تصفية حسب التصنيف
-        document.querySelectorAll('.category').forEach(cat => {
-            cat.addEventListener('click', () => {
-                const category = cat.textContent;
-                const filteredBooks = category === 'الكل' 
-                    ? books 
-                    : books.filter(book => book.category === category);
-                displayBooks(filteredBooks);
-            });
-        });
+            </div>
+        `).join('');
+    }
     </script>
 </body>
 </html>
