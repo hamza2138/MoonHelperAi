@@ -93,38 +93,11 @@ transform: translateY(-2px);
 box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
 }
 
-.download-btn:active {
-transform: translateY(0);
-}
-
-.platform-btns {
-display: flex;
-gap: 10px;
-margin-bottom: 20px;
-}
-
-.platform-btn {
-flex: 1;
-padding: 12px;
-border: none;
-border-radius: 10px;
-cursor: pointer;
-font-weight: bold;
-transition: 0.3s;
-background: rgba(255, 255, 255, 0.05);
-color: #fff;
-}
-
-.platform-btn.active {
-background: linear-gradient(45deg, #ff3366, #ff6b6b);
-}
-
 .status {
 text-align: center;
 margin-top: 20px;
 color: #fff;
 font-size: 14px;
-min-height: 20px;
 }
 
 .loading {
@@ -135,36 +108,19 @@ border: 3px solid rgba(255, 255, 255, 0.3);
 border-radius: 50%;
 border-top-color: #ff3366;
 animation: spin 1s ease-in-out infinite;
-margin-right: 10px;
 }
 
 @keyframes spin {
+
 to { transform: rotate(360deg); }
 }
 
-/* تأثيرات إضافية */
-.pulse {
-animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-0% { transform: scale(1); }
-50% { transform: scale(1.05); }
-100% { transform: scale(1); }
-}
-
-/* تحسينات للموبايل */
 @media (max-width: 480px) {
 .container {
 padding: 20px;
 }
-
 .logo {
 font-size: 28px;
-}
-
-.platform-btns {
-flex-direction: column;
 }
 }
 </style>
@@ -176,58 +132,48 @@ flex-direction: column;
 <div class="subtitle">تحميل فيديوهات MP4 بجودة عالية</div>
 </div>
 
-<div class="platform-btns">
-<button class="platform-btn active" onclick="setPlatform('youtube')">يوتيوب</button>
-<button class="platform-btn" onclick="setPlatform('instagram')">انستغرام</button>
-</div>
-
 <div class="input-group">
 <input type="text" id="url" class="url-input" placeholder="ضع رابط الفيديو هنا...">
 </div>
 
-<button onclick="download()" class="download-btn pulse">تحميل MP4</button>
+<button onclick="download()" class="download-btn">تحميل MP4</button>
 <div id="status" class="status"></div>
 </div>
 
 <script>
-let currentPlatform = 'youtube';
-
-function setPlatform(platform) {
-currentPlatform = platform;
-document.querySelectorAll('.platform-btn').forEach(btn => {
-btn.classList.remove('active');
-});
-event.target.classList.add('active');
-document.getElementById('url').placeholder = `ضع رابط ${platform === 'youtube' ? 'يوتيوب' : 'انستغرام'} هنا...`;
-}
-
 async function download() {
-const url = document.getElementById('url').value;
-const status = document.getElementById('status');
+    const url = document.getElementById('url').value;
+    const status = document.getElementById('status');
 
-if (!url) {
-status.innerHTML = '⚠️ الرجاء إدخال رابط صحيح';
-return;
-}
+    if (!url) {
+        status.innerHTML = '⚠️ الرجاء إدخال رابط صحيح';
+        return;
+    }
 
-status.innerHTML = '<div class="loading"></div> جاري التحميل...';
+    status.innerHTML = '<div class="loading"></div> جاري التحميل...';
 
-try {
-const apiUrl = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=mp4`;
-window.location.href = apiUrl;
+    try {
+        // استخدام API جديد
+        const apiUrl = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=mp4&direct=1`;
+        
+        // فتح الرابط في نافذة جديدة للتحميل المباشر
+        window.open(apiUrl, '_blank');
+        
+        status.innerHTML = '✅ تم بدء التحميل';
+        
+        // مسح الرسالة بعد 3 ثواني
+        setTimeout(() => {
+            status.innerHTML = '';
+        }, 3000);
 
-setTimeout(() => {
-status.innerHTML = '✅ تم بدء التحميل';
-}, 1500);
-
-} catch (error) {
-status.innerHTML = '❌ حدث خطأ في التحميل';
-}
+    } catch (error) {
+        status.innerHTML = '❌ حدث خطأ في التحميل';
+    }
 }
 
 // تفعيل زر Enter
 document.getElementById('url').addEventListener('keypress', e => {
-if (e.key === 'Enter') download();
+    if (e.key === 'Enter') download();
 });
 </script>
 </body>
