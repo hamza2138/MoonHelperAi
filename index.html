@@ -1,119 +1,218 @@
-
 <!DOCTYPE html>
-<html>
+<html dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>فيديو مباشر</title>
+    <title>تحميل الفيديو</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            background: #1a1a2e;
+        * {
             margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            color: white;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Cairo', sans-serif;
         }
 
-        .input-box {
+        body {
+            background: linear-gradient(135deg, #1e2024 0%, #17181c 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
             width: 100%;
-            max-width: 600px;
-            margin-bottom: 20px;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        .title {
+            color: #fff;
             text-align: center;
+            font-size: 24px;
+            margin-bottom: 30px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .input-group {
+            margin-bottom: 20px;
         }
 
         input {
             width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: none;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #fff;
             font-size: 16px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 15px rgba(0,255,136,0.3);
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
         }
 
         button {
-            padding: 12px 24px;
-            background: #4CAF50;
+            flex: 1;
+            padding: 15px;
             border: none;
-            border-radius: 8px;
-            color: white;
+
+border-radius: 12px;
             font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            margin: 10px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .play-btn {
+            background: linear-gradient(45deg, #00ff88, #00b8ff);
+            color: #000;
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, #ff3366, #ff6b4d);
+            color: #fff;
         }
 
         button:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .video-container {
+            width: 100%;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            margin-top: 20px;
         }
 
         video {
-            max-width: 100%;
-            border-radius: 8px;
-            margin-top: 20px;
-            background: #000;
+            width: 100%;
+            display: block;
         }
 
         .message {
-            margin-top: 10px;
-            color: #4CAF50;
+            color: #00ff88;
+            text-align: center;
+            margin-top: 15px;
+            font-size: 16px;
+            min-height: 24px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="input-box">
-        <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا">
-        <button onclick="loadVideo()">عرض الفيديو</button>
-        <button onclick="downloadVideo()" style="background: #2196F3;">تحميل مباشر</button>
+    <div class="container">
+        <h1 class="title">تحميل ومشاهدة الفيديو</h1>
+        
+        <div class="input-group">
+            <input type="text" id="videoUrl" placeholder="ضع رابط الفيديو هنا..." dir="ltr">
+        </div>
+
+        <div class="buttons">
+            <button onclick="playVideo()" class="play-btn">تشغيل الفيديو</button>
+            <button onclick="downloadVideo()" class="download-btn">تحميل الفيديو</button>
+        </div>
+
+        <div class="video-container">
+            <video id="videoPlayer" controls>
+
+متصفحك لا يدعم تشغيل الفيديو
+            </video>
+        </div>
+
+        <div id="message" class="message"></div>
     </div>
 
-    <video id="myVideo" controls></video>
-    <div id="message" class="message"></div>
-
     <script>
-        function loadVideo() {
-            const url = document.getElementById('videoUrl').value;
-
-            const video = document.getElementById('myVideo');
+        function playVideo() {
+            const url = document.getElementById('videoUrl').value.trim();
+            const video = document.getElementById('videoPlayer');
             const message = document.getElementById('message');
 
             if (!url) {
-                message.innerText = 'الرجاء إدخال رابط الفيديو';
+                message.innerHTML = '⚠️ الرجاء إدخال رابط الفيديو';
                 return;
             }
 
-            video.src = url;
-            video.load();
-            message.innerText = 'تم تحميل الفيديو';
+            try {
+                video.src = url;
+                video.load();
+                message.innerHTML = '✅ تم تحميل الفيديو بنجاح';
+                video.play();
+            } catch (error) {
+                message.innerHTML = '❌ حدث خطأ في تحميل الفيديو';
+            }
         }
 
         function downloadVideo() {
-            const url = document.getElementById('videoUrl').value;
+            const url = document.getElementById('videoUrl').value.trim();
             const message = document.getElementById('message');
 
             if (!url) {
-                message.innerText = 'الرجاء إدخال رابط الفيديو';
+                message.innerHTML = '⚠️ الرجاء إدخال رابط الفيديو';
                 return;
             }
 
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = 'video.mp4';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            message.innerText = 'جاري التحميل...';
+            try {
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `video_${Date.now()}.mp4`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                message.innerHTML = '📥 جاري التحميل...';
+            } catch (error) {
+                message.innerHTML = '❌ حدث خطأ في التحميل';
+            }
         }
 
-‎        // تفعيل زر Enter
+        // تفعيل زر Enter
         document.getElementById('videoUrl').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                loadVideo();
+                playVideo();
             }
+        });
+
+        // تنظيف الرسالة عند الكتابة
+        document.getElementById('videoUrl').addEventListener('input', function() {
+            document.getElementById('message').innerHTML = '';
         });
     </script>
 </body>
