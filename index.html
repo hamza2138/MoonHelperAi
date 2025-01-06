@@ -1,9 +1,11 @@
+
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>MoonHelper الغرفة الكاملة</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoonHelper Chat</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
 :root {
 --primary: #7289da;
@@ -17,86 +19,94 @@
 margin: 0;
 padding: 0;
 box-sizing: border-box;
-font-family: 'Cairo', sans-serif;
+font-family: system-ui;
 }
 
 body {
 background: var(--dark);
 color: var(--light);
-min-height: 100vh;
 }
 
+/* Mobile First Design */
 .container {
-display: grid;
-grid-template-columns: 250px 1fr 300px;
+display: flex;
+flex-direction: column;
 height: 100vh;
 }
 
-/* Sidebar Styles */
-.sidebar {
+/* Navigation Bar */
+.nav-bar {
 background: var(--bg);
-padding: 20px;
-border-right: 1px solid rgba(255,255,255,0.1);
-}
-
-.room-info {
-background: rgba(255,255,255,0.1);
 padding: 15px;
-border-radius: 8px;
-margin-bottom: 20px;
-}
-
-#roomCode {
-font-size: 24px;
-color: var(--primary);
-font-weight: bold;
-text-align: center;
-}
-
-.users-list {
-margin-top: 20px;
-}
-
-.user-item {
-padding: 10px;
-margin: 5px 0;
-background: rgba(255,255,255,0.05);
-border-radius: 5px;
 display: flex;
+justify-content: space-between;
 align-items: center;
+border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.nav-title {
+font-size: 1.2em;
+font-weight: bold;
+}
+
+.nav-controls {
+display: flex;
 gap: 10px;
 }
 
-.user-status {
-width: 10px;
-height: 10px;
-border-radius: 50%;
-background: #43b581;
+/* Tabs System */
+.tabs {
+display: flex;
+background: var(--bg);
+padding: 10px;
+gap: 10px;
+overflow-x: auto;
+-webkit-overflow-scrolling: touch;
 }
 
-/* Main Chat Area */
-.main-area {
+.tab {
+padding: 8px 15px;
+background: rgba(255,255,255,0.1);
+border-radius: 20px;
+white-space: nowrap;
+cursor: pointer;
+}
+
+.tab.active {
+background: var(--primary);
+}
+
+/* Content Area */
+.content-area {
+flex: 1;
 display: flex;
 flex-direction: column;
+overflow: hidden;
 }
 
+/* Video Grid */
 .video-grid {
 display: grid;
-grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-gap: 20px;
-padding: 20px;
-background: var(--dark);
+grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+gap: 10px;
+padding: 10px;
 flex: 1;
+overflow-y: auto;
+background: var(--dark);
 }
 
 .video-container {
 position: relative;
+padding-top: 56.25%; /* 16:9 Aspect Ratio */
 background: var(--bg);
 border-radius: 8px;
 overflow: hidden;
 }
 
-video {
+.video-container video {
+position: absolute;
+top: 0;
+left: 0;
 width: 100%;
 height: 100%;
 object-fit: cover;
@@ -108,273 +118,292 @@ bottom: 0;
 left: 0;
 right: 0;
 padding: 10px;
-background: rgba(0,0,0,0.5);
+background: rgba(0,0,0,0.7);
 display: flex;
 justify-content: center;
 gap: 10px;
 }
 
-/* Text Chat Area */
+/* Chat Area */
 .chat-area {
-background: var(--bg);
-border-left: 1px solid rgba(255,255,255,0.1);
-display: flex;
+display: none;
+
 flex-direction: column;
+height: 100%;
+background: var(--bg);
+}
+
+.chat-area.active {
+display: flex;
 }
 
 .messages {
 flex: 1;
-padding: 20px;
+padding: 15px;
 overflow-y: auto;
 }
 
 .message {
-margin-bottom: 15px;
+margin-bottom: 10px;
 padding: 10px;
-
 background: rgba(255,255,255,0.05);
 border-radius: 8px;
+animation: fadeIn 0.3s ease;
 }
 
 .message-header {
 display: flex;
 justify-content: space-between;
 margin-bottom: 5px;
-color: var(--primary);
 font-size: 0.9em;
-}
-
-.message-content {
-word-break: break-word;
+color: var(--primary);
 }
 
 .chat-input {
-padding: 20px;
+padding: 15px;
 background: rgba(0,0,0,0.2);
+display: flex;
+gap: 10px;
 }
 
-/* Controls & Inputs */
+/* Controls */
 button {
-padding: 10px 20px;
+padding: 8px 15px;
 border: none;
 border-radius: 5px;
 background: var(--primary);
 color: white;
 cursor: pointer;
-transition: 0.3s;
+display: flex;
+align-items: center;
+gap: 5px;
 }
 
 button:hover {
-background: #5b6eae;
+opacity: 0.9;
 }
 
 button.danger {
 background: #f04747;
 }
 
-button.danger:hover {
-background: #d84444;
-}
-
 input[type="text"] {
-width: 100%;
+flex: 1;
 padding: 10px;
 border: none;
 border-radius: 5px;
 background: rgba(255,255,255,0.1);
 color: var(--light);
-margin-bottom: 10px;
 }
 
-/* Animations */
-@keyframes fadeIn {
-from { opacity: 0; }
-to { opacity: 1; }
-}
-
-.fade-in {
-animation: fadeIn 0.3s ease-in;
-}
-
-/* Welcome Screen */
-.welcome-screen {
+/* Lock Screen */
+.lock-screen {
 position: fixed;
 top: 0;
 left: 0;
 right: 0;
 bottom: 0;
-background: var(--dark);
+background: rgba(0,0,0,0.95);
 display: flex;
 justify-content: center;
 align-items: center;
 z-index: 1000;
 }
 
-.welcome-box {
-background: var(--bg);
-padding: 30px;
-border-radius: 10px;
-text-align: center;
-max-width: 400px;
-width: 90%;
+.unlock-btn {
+font-size: 2em;
+padding: 20px;
+border-radius: 50%;
 }
 
-.hidden {
+/* Animations */
+@keyframes fadeIn {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+/* Media Queries */
+@media (min-width: 768px) {
+.container {
+flex-direction: row;
+}
+
+.content-area {
+flex: 2;
+}
+
+.chat-area {
+flex: 1;
+display: flex;
+border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.mobile-tabs {
 display: none;
 }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+width: 8px;
+height: 8px;
+}
+
+::-webkit-scrollbar-track {
+background: var(--bg);
+}
+
+::-webkit-scrollbar-thumb {
+background: var(--primary);
+border-radius: 4px;
+}
+
+/* User Status */
+.user-status {
+display: flex;
+align-items: center;
+gap: 5px;
+padding: 8px;
+background: rgba(255,255,255,0.05);
+border-radius: 5px;
+margin: 5px 0;
+}
+
+.status-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: #43b581;
+}
+
 </style>
 </head>
 <body>
-<div id="welcomeScreen" class="welcome-screen">
-<div class="welcome-box fade-in">
-<h2>مرحباً بك في MoonHelper</h2>
-<input type="text" id="username" placeholder="أدخل اسمك" class="mt-20">
-<div class="mt-20">
-<button onclick="createNewRoom()">إنشاء غرفة جديدة</button>
-<button onclick="showJoinRoom()">الانضمام لغرفة</button>
+<div id="lockScreen" class="lock-screen">
+<button onclick="unlockScreen()" class="unlock-btn">
+<i class="fas fa-lock"></i>
+</button>
 </div>
-<div id="joinRoomSection" class="hidden mt-20">
-<input type="text" id="roomCodeInput" placeholder="أدخل كود الغرفة">
-<button onclick="joinRoom()">انضمام</button>
-</div>
+
+<div class="container">
+<div class="nav-bar">
+<div class="nav-title">MoonHelper Chat</div>
+<div class="nav-controls">
+<button onclick="toggleLock()">
+<i class="fas fa-lock"></i>
+</button>
+<button onclick="toggleFullscreen()">
+<i class="fas fa-expand"></i>
+</button>
 </div>
 </div>
 
-<div id="mainContainer" class="container hidden">
-<div class="sidebar">
-<div class="room-info">
-<h3>كود الغرفة</h3>
-<div id="roomCode"></div>
+<div class="tabs">
+<div class="tab active" onclick="switchTab('video')">
+<i class="fas fa-video"></i> فيديو
 </div>
-<div class="users-list">
-<h3>المتصلون</h3>
-<div id="usersList"></div>
+<div class="tab" onclick="switchTab('chat')">
+<i class="fas fa-comments"></i> شات
 </div>
-</div>
-
-<div class="main-area">
-<div class="video-grid" id="videoGrid"></div>
-<div class="video-controls">
-<button onclick="toggleVideo()">تشغيل/إيقاف الكاميرا</button>
-<button onclick="toggleAudio()">تشغيل/إيقاف الميكروفون</button>
-<button class="danger" onclick="leaveRoom()">مغادرة الغرفة</button>
+<div class="tab" onclick="switchTab('users')">
+<i class="fas fa-users"></i> المتصلون
 </div>
 </div>
 
-<div class="chat-area">
-<div class="messages" id="messages"></div>
+<div class="content-area">
+<div id="videoArea" class="video-grid">
+<!-- Video containers will be added here -->
+</div>
+
+<div id="chatArea" class="chat-area">
+<div class="messages" id="messages">
+<!-- Messages will be added here -->
+</div>
 <div class="chat-input">
-<input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
-<button onclick="sendMessage()">إرسال</button>
+<input type="text" placeholder="اكتب رسالتك..." id="messageInput">
+<button onclick="sendMessage()">
+<i class="fas fa-paper-plane"></i>
+</button>
+</div>
+</div>
+
+<div class="video-controls">
+<button onclick="toggleVideo()">
+<i class="fas fa-video"></i>
+</button>
+<button onclick="toggleAudio()">
+<i class="fas fa-microphone"></i>
+</button>
+<button class="danger" onclick="leaveRoom()">
+<i class="fas fa-phone-slash"></i>
+</button>
 </div>
 </div>
 </div>
 
 <script>
-let localStream;
-let peerConnections = {};
-let roomId;
-let username;
-let isVideoEnabled = true;
-let isAudioEnabled = true;
+let isLocked = false;
+let isVideoOn = true;
+let isAudioOn = true;
 
-// تهيئة RTCPeerConnection
-const configuration = {
-iceServers: [
-{ urls: 'stun:stun.l.google.com:19302' }
-]
-};
-
-// وظائف الواجهة
-function showJoinRoom() {
-document.getElementById('joinRoomSection').classList.remove('hidden');
+function toggleLock() {
+isLocked = !isLocked;
+document.getElementById('lockScreen').style.display = isLocked ? 'flex' : 'none';
 }
 
-async function createNewRoom() {
-username = document.getElementById('username').value;
-if (!username) {
-alert('الرجاء إدخال اسمك');
-return;
-}
-roomId = Math.random().toString(36).substr(2, 6).toUpperCase();
-initializeRoom();
+function unlockScreen() {
+isLocked = false;
+document.getElementById('lockScreen').style.display = 'none';
 }
 
-async function joinRoom() {
-username = document.getElementById('username').value;
-roomId = document.getElementById('roomCodeInput').value.toUpperCase();
-if (!username || !roomId) {
-alert('الرجاء إدخال جميع البيانات');
-return;
-}
-initializeRoom();
-}
-
-async function initializeRoom() {
-document.getElementById('welcomeScreen').classList.add('hidden');
-document.getElementById('mainContainer').classList.remove('hidden');
-document.getElementById('roomCode').textContent = roomId;
-
-try {
-localStream = await navigator.mediaDevices.getUserMedia({
-video: true,
-audio: true
-});
-addVideoStream('local', localStream);
-setupPeerConnections();
-} catch (error) {
-console.error('Error accessing media devices:', error);
-alert('خطأ في الوصول إلى الكاميرا أو الميكروفون');
+function toggleFullscreen() {
+if (!document.fullscreenElement) {
+document.documentElement.requestFullscreen();
+} else {
+document.exitFullscreen();
 }
 }
 
-function addVideoStream(userId, stream) {
-const videoContainer = document.createElement('div');
+function switchTab(tab) {
 
-videoContainer.className = 'video-container';
-videoContainer.id = `video-${userId}`;
+document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+document.querySelector(`.tab:contains('${tab}')`).classList.add('active');
 
-const video = document.createElement('video');
-video.srcObject = stream;
-video.autoplay = true;
-if (userId === 'local') video.muted = true;
+// Hide all content areas
+document.getElementById('videoArea').style.display = 'none';
+document.getElementById('chatArea').style.display = 'none';
 
-videoContainer.appendChild(video);
-document.getElementById('videoGrid').appendChild(videoContainer);
+// Show selected content
+if (tab === 'video') {
+document.getElementById('videoArea').style.display = 'grid';
+} else if (tab === 'chat') {
+document.getElementById('chatArea').style.display = 'flex';
 }
-
-function setupPeerConnections() {
-// هنا يتم إعداد اتصالات WebRTC
-// في التطبيق الحقيقي، ستحتاج إلى خادم سيغنالينغ
 }
 
 function toggleVideo() {
-isVideoEnabled = !isVideoEnabled;
-localStream.getVideoTracks().forEach(track => {
-track.enabled = isVideoEnabled;
-});
+isVideoOn = !isVideoOn;
+// Implement video toggle logic here
 }
 
 function toggleAudio() {
-isAudioEnabled = !isAudioEnabled;
-localStream.getAudioTracks().forEach(track => {
-track.enabled = isAudioEnabled;
-});
+isAudioOn = !isAudioOn;
+// Implement audio toggle logic here
 }
 
 function sendMessage() {
-const messageInput = document.getElementById('messageInput');
-const message = messageInput.value;
-if (message.trim()) {
-addMessage(username, message);
-messageInput.value = '';
+const input = document.getElementById('messageInput');
+const message = input.value.trim();
+if (message) {
+addMessage('أنت', message);
+input.value = '';
 }
 }
 
 function addMessage(user, text) {
 const messagesDiv = document.getElementById('messages');
 const messageDiv = document.createElement('div');
-messageDiv.className = 'message fade-in';
+messageDiv.className = 'message';
 messageDiv.innerHTML = `
 <div class="message-header">
 <span>${user}</span>
@@ -386,17 +415,23 @@ messagesDiv.appendChild(messageDiv);
 messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
-function leaveRoom() {
-if (localStream) {
-localStream.getTracks().forEach(track => track.stop());
+// Handle Enter key in chat
+document.getElementById('messageInput').addEventListener('keypress', (e) => {
+if (e.key === 'Enter') {
+sendMessage();
 }
-window.location.reload();
+});
+
+// Prevent screen lock on mobile
+function keepScreenOn() {
+if (navigator.wakeLock) {
+navigator.wakeLock.request('screen')
+.catch(err => console.log(err));
+}
 }
 
-// معالجة أحداث إغلاق الصفحة
-window.onbeforeunload = function() {
-leaveRoom();
-};
+// Initialize
+keepScreenOn();
 </script>
 </body>
 </html>
