@@ -1,213 +1,615 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MoonHelper Plus</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-‎        /* نفس الستايل السابق + الإضافات الجديدة */
-        .channel-list {
-            padding: 10px;
-            background: var(--bg);
-        }
-        
-        .channel {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px;
-            margin: 5px 0;
-            background: rgba(255,255,255,0.05);
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        
-        .channel:hover {
-            background: var(--primary);
-        }
-        
-        .channel-code {
-            color: #43b581;
-            font-family: monospace;
-        }
-        
-        .user-controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.8);
-            padding: 15px;
-            border-radius: 25px;
-            display: flex;
-            gap: 15px;
-            z-index: 1000;
-        }
-        
-        .control-btn {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-        }
-        
-        .control-btn.active {
-            background: #43b581;
-        }
-        
-        .control-btn.muted {
-            background: #f04747;
-        }
-        
-        .username-display {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0,0,0,0.7);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MoonHelper Pro</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dark-theme: #23272A;
+  --blurple: #5865F2;
+  --success: #57F287;
+  --danger: #ED4245;
+  --primary-dark: #2C2F33;
+  --secondary-dark: #36393F;
+  --text-normal: #DCDDDE;
+  --text-muted: #72767D;
+  --background-modifier: rgba(4,4,5,0.07);
+  --background-message-hover: rgba(4,4,5,0.07);
+  --channeltextarea-background: #40444B;
+  --interactive-hover: #DCDDDE;
+  --interactive-active: #FFFFFF;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Cairo', sans-serif;
+}
+
+body {
+  background: var(--dark-theme);
+  color: var(--text-normal);
+  line-height: 1.6;
+}
+
+.app-container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Servers List */
+.servers-list {
+  width: 72px;
+  background: var(--dark-theme);
+  padding: 12px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.server-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--primary-dark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+  color: var(--text-normal);
+  font-size: 20px;
+}
+
+.server-icon:hover {
+  background: var(--blurple);
+  border-radius: 16px;
+}
+
+/* Channels */
+.channels-container {
+  width: 240px;
+  background: var(--primary-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+.server-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.channels-list {
+  padding: 8px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.channel-category {
+  padding: 8px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+
+letter-spacing: 0.02em;
+}
+
+.channel-item {
+  padding: 8px 8px 8px 20px;
+  margin: 2px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.channel-item:hover {
+  background: var(--background-modifier);
+  color: var(--interactive-hover);
+}
+
+.channel-item.active {
+  background: var(--background-modifier);
+  color: var(--interactive-active);
+}
+
+/* Main Content */
+.content-container {
+  flex: 1;
+  background: var(--secondary-dark);
+  display: flex;
+  flex-direction: column;
+}
+
+.content-header {
+  padding: 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Video Grid */
+.video-grid {
+  flex: 1;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.video-wrapper {
+  position: relative;
+  padding-top: 56.25%;
+  background: var(--primary-dark);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.video-wrapper video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 8px;
+  background: rgba(0,0,0,0.5);
+  color: var(--text-normal);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Controls */
+.controls-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 12px;
+  background: rgba(0,0,0,0.8);
+  padding: 12px;
+  border-radius: 24px;
+  z-index: 1000;
+}
+
+.control-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--channeltextarea-background);
+  color: var(--text-normal);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.2s ease;
+}
+
+.control-btn:hover {
+  background: var(--blurple);
+}
+
+.control-btn.active {
+
+background: var(--success);
+}
+
+.control-btn.danger {
+  background: var(--danger);
+}
+
+/* Chat */
+.chat-container {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  background: var(--primary-dark);
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.message {
+  margin-bottom: 16px;
+  padding: 8px;
+  background: var(--background-message-hover);
+  border-radius: 4px;
+}
+
+.message-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  font-size: 0.9em;
+}
+
+.message-author {
+  color: var(--blurple);
+  font-weight: 600;
+}
+
+.message-time {
+  color: var(--text-muted);
+}
+
+.chat-input {
+  padding: 16px;
+  background: var(--channeltextarea-background);
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  color: var(--text-normal);
+  font-size: 1em;
+}
+
+.chat-input input:focus {
+  outline: none;
+}
+
+/* Auth Screens */
+.auth-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.auth-box {
+  background: var(--primary-dark);
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.auth-title {
+  text-align: center;
+  margin-bottom: 24px;
+  color: var(--text-normal);
+  font-size: 24px;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 16px;
+  background: var(--secondary-dark);
+  border: none;
+  border-radius: 4px;
+  color: var(--text-normal);
+  font-size: 16px;
+}
+
+.auth-btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--blurple);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.auth-btn:hover {
+  background: #4752c4;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Responsive Design */
+
+@media (max-width: 768px) {
+  .app-container {
+    flex-direction: column;
+  }
+  
+  .servers-list {
+    width: 100%;
+    height: 60px;
+    flex-direction: row;
+    justify-content: center;
+    padding: 8px;
+  }
+  
+  .channels-container {
+    width: 100%;
+    height: 60px;
+  }
+  
+  .video-grid {
+    padding: 8px;
+    gap: 8px;
+  }
+  
+  .chat-container {
+    width: 100%;
+    height: 300px;
+    bottom: 0;
+    top: auto;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease forwards;
+}
+</style>
 </head>
 <body>
+<!-- Auth Screens -->
+<div id="authScreen" class="auth-screen">
+    <div class="auth-box fade-in">
+        <h2 class="auth-title">أهلاً بك في MoonHelper Pro</h2>
+        <input type="text" id="usernameInput" class="auth-input" placeholder="أدخل اسمك">
+        <button class="auth-btn" onclick="setupUsername()">متابعة</button>
+    </div>
+</div>
 
-<!-- واجهة تسجيل الدخول -->
-    <div id="loginScreen" class="login-screen">
-        <div class="login-box">
-            <h2>أهلاً بك في MoonHelper Plus</h2>
-            <input type="text" id="usernameInput" placeholder="أدخل اسمك">
-            <button onclick="login()">دخول</button>
+<div id="roomScreen" class="auth-screen hidden">
+    <div class="auth-box fade-in">
+        <h2 class="auth-title">إعداد الغرفة</h2>
+        <input type="text" id="roomNameInput" class="auth-input" placeholder="اسم الغرفة">
+        <button class="auth-btn" onclick="createRoom()">إنشاء غرفة جديدة</button>
+        <div style="text-align: center; margin: 16px 0; color: var(--text-muted);">- أو -</div>
+        <input type="text" id="roomCodeInput" class="auth-input" placeholder="كود الغرفة">
+        <button class="auth-btn" onclick="joinRoom()">انضمام لغرفة</button>
+    </div>
+</div>
+
+<!-- Main App -->
+<div id="mainApp" class="app-container hidden">
+    <!-- Servers List -->
+    <div class="servers-list">
+        <div class="server-icon">MH</div>
+    </div>
+
+    <!-- Channels -->
+    <div class="channels-container">
+        <div class="server-header">
+            <h3 id="currentServer">MoonHelper Pro</h3>
+        </div>
+        <div class="channels-list" id="channelsList">
+            <!-- Channels will be added here -->
         </div>
     </div>
 
-    <!-- واجهة إنشاء/انضمام للقناة -->
-    <div id="channelScreen" class="login-screen hidden">
-        <div class="login-box">
-            <h2>القنوات</h2>
-            <button onclick="createNewChannel()">إنشاء قناة جديدة</button>
-            <div style="margin: 20px 0;">- أو -</div>
-            <input type="text" id="channelCodeInput" placeholder="أدخل كود القناة">
-            <button onclick="joinChannel()">انضمام للقناة</button>
+    <!-- Main Content -->
+    <div class="content-container">
+        <div class="content-header">
+            <h3 id="currentRoom">غرفة عامة</h3>
+            <div id="roomCode"></div>
+        </div>
+        <div class="video-grid" id="videoGrid">
+            <!-- Video elements will be added here -->
         </div>
     </div>
 
-    <!-- الواجهة الرئيسية -->
-    <div id="mainApp" class="container hidden">
-        <!-- شريط التنقل -->
-        <div class="nav-bar">
-            <div class="nav-title" id="channelName">MoonHelper Plus</div>
-            <div class="nav-controls">
-                <button onclick="toggleLock()">
-                    <i class="fas fa-lock"></i>
-                </button>
-                <button onclick="toggleFullscreen()">
-                    <i class="fas fa-expand"></i>
-                </button>
-                <button onclick="leaveChannel()" class="danger">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+    <!-- Controls -->
+    <div class="controls-container">
+        <button class="control-btn" onclick="toggleCamera()" id="cameraBtn">
+            <i class="fas fa-video"></i>
+        </button>
+
+<button class="control-btn" onclick="toggleMic()" id="micBtn">
+            <i class="fas fa-microphone"></i>
+        </button>
+        <button class="control-btn" onclick="toggleScreen()" id="screenBtn">
+            <i class="fas fa-desktop"></i>
+        </button>
+        <button class="control-btn danger" onclick="leaveRoom()">
+            <i class="fas fa-phone-slash"></i>
+        </button>
+    </div>
+
+    <!-- Chat -->
+    <div class="chat-container">
+        <div class="chat-messages" id="chatMessages">
+            <!-- Messages will be added here -->
         </div>
-
-        <!-- قائمة القنوات -->
-        <div class="channel-list" id="channelList">
-            <!-- ستضاف القنوات هنا ديناميكياً -->
-        </div>
-
-        <!-- منطقة المحتوى -->
-        <div class="content-area">
-            <div id="videoGrid" class="video-grid">
-                <!-- ستضاف الفيديوهات هنا -->
-            </div>
-            
-            <!-- أزرار التحكم -->
-            <div class="user-controls">
-                <button class="control-btn" onclick="toggleMic()" id="micBtn">
-
-<i class="fas fa-microphone"></i>
-                </button>
-                <button class="control-btn" onclick="toggleCamera()" id="cameraBtn">
-                    <i class="fas fa-video"></i>
-                </button>
-                <button class="control-btn" onclick="toggleScreen()" id="screenBtn">
-                    <i class="fas fa-desktop"></i>
-                </button>
-                <button class="control-btn danger" onclick="leaveChannel()">
-                    <i class="fas fa-phone-slash"></i>
-                </button>
-            </div>
+        <div class="chat-input">
+            <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
+            <button class="control-btn" onclick="sendMessage()">
+                <i class="fas fa-paper-plane"></i>
+            </button>
         </div>
     </div>
+</div>
 
 <script>
 // المتغيرات العامة
 let currentUser = '';
-let currentChannel = '';
+let currentRoom = '';
+let currentRoomCode = '';
 let localStream;
 let screenStream;
-let isMicMuted = false;
-let isCameraMuted = false;
+let isVideoEnabled = false;
+let isMicEnabled = true;
 let isScreenSharing = false;
 
-// وظائف المستخدم
-async function login() {
+// إعداد اسم المستخدم
+function setupUsername() {
     const username = document.getElementById('usernameInput').value.trim();
     if (username) {
         currentUser = username;
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('channelScreen').classList.remove('hidden');
-        // حفظ اسم المستخدم في التخزين المحلي
         localStorage.setItem('username', username);
+        document.getElementById('authScreen').classList.add('hidden');
+        document.getElementById('roomScreen').classList.remove('hidden');
     }
 }
 
-// وظائف القناة
-async function createNewChannel() {
-    const channelCode = Math.random().toString(36).substr(2, 6).toUpperCase();
-    currentChannel = channelCode;
-    await initializeMedia();
-    showMainApp(channelCode);
-}
-
-async function joinChannel() {
-    const channelCode = document.getElementById('channelCodeInput').value.trim();
-    if (channelCode) {
-        currentChannel = channelCode;
-        await initializeMedia();
-        showMainApp(channelCode);
+// إنشاء غرفة جديدة
+function createRoom() {
+    const roomName = document.getElementById('roomNameInput').value.trim();
+    if (roomName) {
+        currentRoom = roomName;
+        currentRoomCode = generateRoomCode();
+        initializeRoom();
     }
 }
 
-function showMainApp(channelCode) {
-    document.getElementById('channelScreen').classList.add('hidden');
+// الانضمام لغرفة
+function joinRoom() {
+    const roomCode = document.getElementById('roomCodeInput').value.trim().toUpperCase();
+    if (roomCode) {
+        currentRoomCode = roomCode;
+        currentRoom = 'غرفة ' + roomCode;
+        initializeRoom();
+    }
+}
+
+// توليد كود غرفة عشوائي
+function generateRoomCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase();
+}
+
+// تهيئة الغرفة
+async function initializeRoom() {
+    document.getElementById('roomScreen').classList.add('hidden');
     document.getElementById('mainApp').classList.remove('hidden');
-    document.getElementById('channelName').textContent = `القناة: ${channelCode}`;
+    document.getElementById('currentRoom').textContent = currentRoom;
+    document.getElementById('roomCode').textContent = 'كود الغرفة: ' + currentRoomCode;
     
-    // إضافة الفيديو المحلي
-
-addVideoElement(currentUser, localStream);
+    // إضافة القناة للقائمة
+    addChannel(currentRoom);
+    
+    // تحديث العنوان
+    document.title = `${currentRoom} - MoonHelper Pro`;
+    
+    // إضافة رسالة ترحيب
+    addSystemMessage(`مرحباً ${currentUser} في ${currentRoom}`);
 }
 
-// وظائف الوسائط
-async function initializeMedia() {
-    try {
-        localStream = await navigator.mediaDevices.getUserMedia({
-            video: true,
-            audio: true
-        });
-    } catch (err) {
-        console.error('خطأ في الوصول للكاميرا/المايك:', err);
-        alert('لا يمكن الوصول للكاميرا أو المايك');
+// إضافة قناة جديدة
+function addChannel(name) {
+    const channelsList = document.getElementById('channelsList');
+    const channel = document.createElement('div');
+    channel.className = 'channel-item active';
+    channel.innerHTML = `
+        <i class="fas fa-hashtag"></i>
+        <span>${name}</span>
+    `;
+    channelsList.appendChild(channel);
+}
+
+// التحكم بالكاميرا
+async function toggleCamera() {
+    if (!isVideoEnabled) {
+        try {
+            if (!localStream) {
+                localStream = await navigator.mediaDevices.getUserMedia({ 
+                    video: true, 
+                    audio: true 
+                });
+            }
+            addVideoStream(currentUser, localStream);
+            isVideoEnabled = true;
+            document.getElementById('cameraBtn').classList.add('active');
+        } catch (err) {
+            console.error('خطأ في الوصول للكاميرا:', err);
+            addSystemMessage('لا يمكن الوصول للكاميرا');
+        }
+    } else {
+        const videoTracks = localStream.getVideoTracks();
+        videoTracks.forEach(track => track.stop());
+        document.getElementById('cameraBtn').classList.remove('active');
+        isVideoEnabled = false;
+        removeVideoStream(currentUser);
     }
 }
 
-function addVideoElement(username, stream) {
-    const videoContainer = document.createElement('div');
-    videoContainer.className = 'video-container';
+// التحكم بالمايك
+function toggleMic() {
+
+if (localStream) {
+        const audioTracks = localStream.getAudioTracks();
+        isMicEnabled = !isMicEnabled;
+        audioTracks.forEach(track => track.enabled = isMicEnabled);
+        document.getElementById('micBtn').classList.toggle('active', isMicEnabled);
+    }
+}
+
+// مشاركة الشاشة
+async function toggleScreen() {
+    if (!isScreenSharing) {
+        try {
+            screenStream = await navigator.mediaDevices.getDisplayMedia();
+            addVideoStream(currentUser + ' (الشاشة)', screenStream);
+            isScreenSharing = true;
+            document.getElementById('screenBtn').classList.add('active');
+            
+            // إيقاف مشاركة الشاشة عند إيقافها من المتصفح
+            screenStream.getVideoTracks()[0].onended = () => {
+                toggleScreen();
+            };
+        } catch (err) {
+            console.error('خطأ في مشاركة الشاشة:', err);
+            addSystemMessage('لا يمكن مشاركة الشاشة');
+        }
+    } else {
+        if (screenStream) {
+            screenStream.getTracks().forEach(track => track.stop());
+        }
+        isScreenSharing = false;
+        document.getElementById('screenBtn').classList.remove('active');
+        removeVideoStream(currentUser + ' (الشاشة)');
+    }
+}
+
+// إضافة فيديو
+function addVideoStream(username, stream) {
+    const videoGrid = document.getElementById('videoGrid');
+    const videoWrapper = document.createElement('div');
+    videoWrapper.className = 'video-wrapper';
+    videoWrapper.id = `video-${username}`;
     
     const video = document.createElement('video');
     video.srcObject = stream;
@@ -215,51 +617,55 @@ function addVideoElement(username, stream) {
     video.playsInline = true;
     if (username === currentUser) video.muted = true;
     
-    const usernameDisplay = document.createElement('div');
-    usernameDisplay.className = 'username-display';
-    usernameDisplay.textContent = username;
+    const overlay = document.createElement('div');
+    overlay.className = 'video-overlay';
+    overlay.innerHTML = `<span>${username}</span>`;
     
-    videoContainer.appendChild(video);
-    videoContainer.appendChild(usernameDisplay);
-    document.getElementById('videoGrid').appendChild(videoContainer);
+    videoWrapper.appendChild(video);
+    videoWrapper.appendChild(overlay);
+    videoGrid.appendChild(videoWrapper);
 }
 
-// وظائف التحكم
-function toggleMic() {
-    isMicMuted = !isMicMuted;
-    localStream.getAudioTracks().forEach(track => {
-        track.enabled = !isMicMuted;
-    });
-    document.getElementById('micBtn').classList.toggle('muted', isMicMuted);
+// إزالة فيديو
+
+function removeVideoStream(username) {
+    const videoElement = document.getElementById(`video-${username}`);
+    if (videoElement) videoElement.remove();
 }
 
-function toggleCamera() {
-    isCameraMuted = !isCameraMuted;
-    localStream.getVideoTracks().forEach(track => {
-        track.enabled = !isCameraMuted;
-    });
-    document.getElementById('cameraBtn').classList.toggle('muted', isCameraMuted);
-}
-
-async function toggleScreen() {
-    if (!isScreenSharing) {
-        try {
-            screenStream = await navigator.mediaDevices.getDisplayMedia();
-            addVideoElement(currentUser + ' (الشاشة)', screenStream);
-            isScreenSharing = true;
-            document.getElementById('screenBtn').classList.add('active');
-        } catch (err) {
-            console.error('خطأ في مشاركة الشاشة:', err);
-        }
-    } else {
-
-        screenStream.getTracks().forEach(track => track.stop());
-        isScreenSharing = false;
-        document.getElementById('screenBtn').classList.remove('active');
+// إرسال رسالة
+function sendMessage() {
+    const input = document.getElementById('messageInput');
+    const message = input.value.trim();
+    if (message) {
+        addMessage(currentUser, message);
+        input.value = '';
     }
 }
 
-function leaveChannel() {
+// إضافة رسالة
+function addMessage(username, message) {
+    const messagesContainer = document.getElementById('chatMessages');
+    const messageElement = document.createElement('div');
+    messageElement.className = 'message fade-in';
+    messageElement.innerHTML = `
+        <div class="message-header">
+            <span class="message-author">${username}</span>
+            <span class="message-time">${new Date().toLocaleTimeString()}</span>
+        </div>
+        <div class="message-content">${message}</div>
+    `;
+    messagesContainer.appendChild(messageElement);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// إضافة رسالة نظام
+function addSystemMessage(message) {
+    addMessage('النظام', message);
+}
+
+// مغادرة الغرفة
+function leaveRoom() {
     if (localStream) {
         localStream.getTracks().forEach(track => track.stop());
     }
@@ -269,20 +675,34 @@ function leaveChannel() {
     window.location.reload();
 }
 
-// الوظائف المساعدة
-function copyChannelCode() {
-    navigator.clipboard.writeText(currentChannel);
-    alert('تم نسخ كود القناة!');
-}
+// معالجة الإدخال
+document.getElementById('messageInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        sendMessage();
+    }
+});
 
-// عند تحميل الصفحة
+// تحميل الصفحة
 window.onload = () => {
-    // استرجاع اسم المستخدم المحفوظ
     const savedUsername = localStorage.getItem('username');
     if (savedUsername) {
         document.getElementById('usernameInput').value = savedUsername;
     }
 };
+
+// منع قفل الشاشة
+async function keepScreenAwake() {
+    try {
+        if ('wakeLock' in navigator) {
+            const wakeLock = await navigator.wakeLock.request('screen');
+        }
+    } catch (err) {
+
+        console.error('خطأ في منع قفل الشاشة:', err);
+    }
+}
+
+keepScreenAwake();
 </script>
 </body>
 </html>
