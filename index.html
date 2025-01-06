@@ -2,219 +2,400 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<title>MoonHelper Voice Chat</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
-<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<title>MoonHelper الغرفة الكاملة</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
+:root {
+--primary: #7289da;
+--dark: #23272a;
+--light: #ffffff;
+--bg: #2c2f33;
+--accent: #99aab5;
+}
+
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Cairo', sans-serif;
 }
 
 body {
-    background: #36393f;
-    color: white;
+background: var(--dark);
+color: var(--light);
+min-height: 100vh;
 }
 
 .container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
+display: grid;
+grid-template-columns: 250px 1fr 300px;
+height: 100vh;
 }
 
-.room-controls {
-    background: #2f3136;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
-    text-align: center;
-}
-
-.voice-controls {
-    background: #40444b;
-    padding: 20px;
-    border-radius: 8px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-}
-
-button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: 4px;
-    background: #5865f2;
-    color: white;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-button:hover {
-    background: #4752c4;
-}
-
-button.red {
-    background: #ed4245;
-}
-
-button.red:hover {
-    background: #c03537;
-}
-
-input {
-    padding: 10px;
-    border-radius: 4px;
-    border: none;
-    margin: 10px;
-    width: 200px;
-}
-
-.status {
-    text-align: center;
-    margin: 20px 0;
-    padding: 10px;
-    background: #40444b;
-    border-radius: 4px;
+/* Sidebar Styles */
+.sidebar {
+background: var(--bg);
+padding: 20px;
+border-right: 1px solid rgba(255,255,255,0.1);
 }
 
 .room-info {
-    background: #40444b;
-    padding: 15px;
-    border-radius: 4px;
-    margin: 20px 0;
-    text-align: center;
-}
-
-.hidden {
-    display: none;
+background: rgba(255,255,255,0.1);
+padding: 15px;
+border-radius: 8px;
+margin-bottom: 20px;
 }
 
 #roomCode {
-    font-size: 24px;
-    font-weight: bold;
-    color: #5865f2;
+font-size: 24px;
+color: var(--primary);
+font-weight: bold;
+text-align: center;
+}
+
+.users-list {
+margin-top: 20px;
+}
+
+.user-item {
+padding: 10px;
+margin: 5px 0;
+background: rgba(255,255,255,0.05);
+border-radius: 5px;
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.user-status {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+background: #43b581;
+}
+
+/* Main Chat Area */
+.main-area {
+display: flex;
+flex-direction: column;
+}
+
+.video-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+gap: 20px;
+padding: 20px;
+background: var(--dark);
+flex: 1;
+}
+
+.video-container {
+position: relative;
+background: var(--bg);
+border-radius: 8px;
+overflow: hidden;
+}
+
+video {
+width: 100%;
+height: 100%;
+object-fit: cover;
+}
+
+.video-controls {
+position: absolute;
+bottom: 0;
+left: 0;
+right: 0;
+padding: 10px;
+background: rgba(0,0,0,0.5);
+display: flex;
+justify-content: center;
+gap: 10px;
+}
+
+/* Text Chat Area */
+.chat-area {
+background: var(--bg);
+border-left: 1px solid rgba(255,255,255,0.1);
+display: flex;
+flex-direction: column;
+}
+
+.messages {
+flex: 1;
+padding: 20px;
+overflow-y: auto;
+}
+
+.message {
+margin-bottom: 15px;
+padding: 10px;
+
+background: rgba(255,255,255,0.05);
+border-radius: 8px;
+}
+
+.message-header {
+display: flex;
+justify-content: space-between;
+margin-bottom: 5px;
+color: var(--primary);
+font-size: 0.9em;
+}
+
+.message-content {
+word-break: break-word;
+}
+
+.chat-input {
+padding: 20px;
+background: rgba(0,0,0,0.2);
+}
+
+/* Controls & Inputs */
+button {
+padding: 10px 20px;
+border: none;
+border-radius: 5px;
+background: var(--primary);
+color: white;
+cursor: pointer;
+transition: 0.3s;
+}
+
+button:hover {
+background: #5b6eae;
+}
+
+button.danger {
+background: #f04747;
+}
+
+button.danger:hover {
+background: #d84444;
+}
+
+input[type="text"] {
+width: 100%;
+padding: 10px;
+border: none;
+border-radius: 5px;
+background: rgba(255,255,255,0.1);
+color: var(--light);
+margin-bottom: 10px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+from { opacity: 0; }
+to { opacity: 1; }
+}
+
+.fade-in {
+animation: fadeIn 0.3s ease-in;
+}
+
+/* Welcome Screen */
+.welcome-screen {
+position: fixed;
+top: 0;
+left: 0;
+right: 0;
+bottom: 0;
+background: var(--dark);
+display: flex;
+justify-content: center;
+align-items: center;
+z-index: 1000;
+}
+
+.welcome-box {
+background: var(--bg);
+padding: 30px;
+border-radius: 10px;
+text-align: center;
+max-width: 400px;
+width: 90%;
+}
+
+.hidden {
+display: none;
 }
 </style>
 </head>
 <body>
-<div class="container">
-    <div id="createRoom" class="room-controls">
-        <h2>إنشاء غرفة جديدة</h2>
-        <button onclick="createNewRoom()">إنشاء غرفة</button>
-    </div>
+<div id="welcomeScreen" class="welcome-screen">
+<div class="welcome-box fade-in">
+<h2>مرحباً بك في MoonHelper</h2>
+<input type="text" id="username" placeholder="أدخل اسمك" class="mt-20">
+<div class="mt-20">
+<button onclick="createNewRoom()">إنشاء غرفة جديدة</button>
+<button onclick="showJoinRoom()">الانضمام لغرفة</button>
+</div>
+<div id="joinRoomSection" class="hidden mt-20">
+<input type="text" id="roomCodeInput" placeholder="أدخل كود الغرفة">
+<button onclick="joinRoom()">انضمام</button>
+</div>
+</div>
+</div>
 
-    <div id="joinRoom" class="room-controls">
-        <h2>الانضمام لغرفة</h2>
-        <input type="text" id="roomCodeInput" placeholder="أدخل كود الغرفة">
+<div id="mainContainer" class="container hidden">
+<div class="sidebar">
+<div class="room-info">
+<h3>كود الغرفة</h3>
+<div id="roomCode"></div>
+</div>
+<div class="users-list">
+<h3>المتصلون</h3>
+<div id="usersList"></div>
+</div>
+</div>
 
-<button onclick="joinExistingRoom()">انضمام</button>
-    </div>
+<div class="main-area">
+<div class="video-grid" id="videoGrid"></div>
+<div class="video-controls">
+<button onclick="toggleVideo()">تشغيل/إيقاف الكاميرا</button>
+<button onclick="toggleAudio()">تشغيل/إيقاف الميكروفون</button>
+<button class="danger" onclick="leaveRoom()">مغادرة الغرفة</button>
+</div>
+</div>
 
-    <div id="roomInfo" class="room-info hidden">
-        <h3>كود الغرفة:</h3>
-        <p id="roomCode"></p>
-        <p>شارك هذا الكود مع صديقك للانضمام</p>
-    </div>
-
-    <div id="voiceControls" class="voice-controls hidden">
-        <button onclick="startCall()" id="startButton">بدء المكالمة</button>
-        <button onclick="muteAudio()" id="muteButton">كتم الصوت</button>
-        <button class="red" onclick="endCall()">إنهاء المكالمة</button>
-    </div>
-
-    <div id="status" class="status"></div>
+<div class="chat-area">
+<div class="messages" id="messages"></div>
+<div class="chat-input">
+<input type="text" id="messageInput" placeholder="اكتب رسالتك هنا...">
+<button onclick="sendMessage()">إرسال</button>
+</div>
+</div>
 </div>
 
 <script>
-let peerConnection;
 let localStream;
+let peerConnections = {};
 let roomId;
-let isMuted = false;
+let username;
+let isVideoEnabled = true;
+let isAudioEnabled = true;
+
+// تهيئة RTCPeerConnection
+const configuration = {
+iceServers: [
+{ urls: 'stun:stun.l.google.com:19302' }
+]
+};
+
+// وظائف الواجهة
+function showJoinRoom() {
+document.getElementById('joinRoomSection').classList.remove('hidden');
+}
 
 async function createNewRoom() {
-    roomId = Math.random().toString(36).substr(2, 6).toUpperCase();
-    document.getElementById('roomCode').textContent = roomId;
-    document.getElementById('roomInfo').classList.remove('hidden');
-    document.getElementById('voiceControls').classList.remove('hidden');
-    document.getElementById('createRoom').classList.add('hidden');
-    document.getElementById('joinRoom').classList.add('hidden');
-    updateStatus('تم إنشاء الغرفة! انتظر انضمام صديقك...');
+username = document.getElementById('username').value;
+if (!username) {
+alert('الرجاء إدخال اسمك');
+return;
+}
+roomId = Math.random().toString(36).substr(2, 6).toUpperCase();
+initializeRoom();
 }
 
-async function joinExistingRoom() {
-    roomId = document.getElementById('roomCodeInput').value.toUpperCase();
-    if (roomId.length === 6) {
-        document.getElementById('voiceControls').classList.remove('hidden');
-        document.getElementById('createRoom').classList.add('hidden');
-        document.getElementById('joinRoom').classList.add('hidden');
-        updateStatus('تم الانضمام للغرفة!');
-    } else {
-        updateStatus('كود غرفة غير صالح!');
-    }
+async function joinRoom() {
+username = document.getElementById('username').value;
+roomId = document.getElementById('roomCodeInput').value.toUpperCase();
+if (!username || !roomId) {
+alert('الرجاء إدخال جميع البيانات');
+return;
+}
+initializeRoom();
 }
 
-async function startCall() {
-    try {
-        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        document.getElementById('startButton').disabled = true;
-        updateStatus('تم تشغيل الميكروفون');
+async function initializeRoom() {
+document.getElementById('welcomeScreen').classList.add('hidden');
+document.getElementById('mainContainer').classList.remove('hidden');
+document.getElementById('roomCode').textContent = roomId;
 
-        // إعداد WebRTC
-        peerConnection = new RTCPeerConnection({
-            iceServers: [
-
-                { urls: 'stun:stun.l.google.com:19302' }
-            ]
-        });
-
-        localStream.getTracks().forEach(track => {
-            peerConnection.addTrack(track, localStream);
-        });
-
-        peerConnection.ontrack = event => {
-            const remoteStream = event.streams[0];
-            // إضافة الصوت للمتصفح
-            const audioElement = new Audio();
-            audioElement.srcObject = remoteStream;
-            audioElement.play();
-        };
-
-    } catch (error) {
-        updateStatus('خطأ في الوصول للميكروفون: ' + error.message);
-    }
+try {
+localStream = await navigator.mediaDevices.getUserMedia({
+video: true,
+audio: true
+});
+addVideoStream('local', localStream);
+setupPeerConnections();
+} catch (error) {
+console.error('Error accessing media devices:', error);
+alert('خطأ في الوصول إلى الكاميرا أو الميكروفون');
+}
 }
 
-function muteAudio() {
-    if (localStream) {
-        isMuted = !isMuted;
-        localStream.getAudioTracks().forEach(track => {
-            track.enabled = !isMuted;
-        });
-        document.getElementById('muteButton').textContent = 
-            isMuted ? 'تشغيل الصوت' : 'كتم الصوت';
-    }
+function addVideoStream(userId, stream) {
+const videoContainer = document.createElement('div');
+
+videoContainer.className = 'video-container';
+videoContainer.id = `video-${userId}`;
+
+const video = document.createElement('video');
+video.srcObject = stream;
+video.autoplay = true;
+if (userId === 'local') video.muted = true;
+
+videoContainer.appendChild(video);
+document.getElementById('videoGrid').appendChild(videoContainer);
 }
 
-function endCall() {
-    if (localStream) {
-        localStream.getTracks().forEach(track => track.stop());
-    }
-    if (peerConnection) {
-        peerConnection.close();
-    }
-    document.getElementById('startButton').disabled = false;
-    updateStatus('تم إنهاء المكالمة');
+function setupPeerConnections() {
+// هنا يتم إعداد اتصالات WebRTC
+// في التطبيق الحقيقي، ستحتاج إلى خادم سيغنالينغ
 }
 
-function updateStatus(message) {
-    document.getElementById('status').textContent = message;
+function toggleVideo() {
+isVideoEnabled = !isVideoEnabled;
+localStream.getVideoTracks().forEach(track => {
+track.enabled = isVideoEnabled;
+});
 }
 
-// التعامل مع إغلاق الصفحة
+function toggleAudio() {
+isAudioEnabled = !isAudioEnabled;
+localStream.getAudioTracks().forEach(track => {
+track.enabled = isAudioEnabled;
+});
+}
+
+function sendMessage() {
+const messageInput = document.getElementById('messageInput');
+const message = messageInput.value;
+if (message.trim()) {
+addMessage(username, message);
+messageInput.value = '';
+}
+}
+
+function addMessage(user, text) {
+const messagesDiv = document.getElementById('messages');
+const messageDiv = document.createElement('div');
+messageDiv.className = 'message fade-in';
+messageDiv.innerHTML = `
+<div class="message-header">
+<span>${user}</span>
+<span>${new Date().toLocaleTimeString()}</span>
+</div>
+<div class="message-content">${text}</div>
+`;
+messagesDiv.appendChild(messageDiv);
+messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+function leaveRoom() {
+if (localStream) {
+localStream.getTracks().forEach(track => track.stop());
+}
+window.location.reload();
+}
+
+// معالجة أحداث إغلاق الصفحة
 window.onbeforeunload = function() {
-    endCall();
+leaveRoom();
 };
 </script>
 </body>
