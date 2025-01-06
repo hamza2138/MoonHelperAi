@@ -1,476 +1,475 @@
-
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
-<meta charset="UTF-8">
-<title>🌟 Galaxy Chat</title>
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
-<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-<style>
-:root {
-  --primary-dark: #0f0f1a;
-  --primary-light: #1a1b2e;
-  --accent: #7289da;
-  --text: #ffffff;
-  --success: #43b581;
-  --danger: #f04747;
-}
+    <meta charset="UTF-8">
+    <title>🌟 Galaxy Chat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #7289da;
+            --background: #1a1a2e;
+            --secondary: #2f3136;
+            --text: #ffffff;
+            --accent: #5865f2;
+            --danger: #ed4245;
+            --success: #43b581;
+        }
 
-body {
-  margin: 0;
-  font-family: 'Cairo', sans-serif;
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
-  color: var(--text);
-  height: 100vh;
-  overflow: hidden;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-.app-container {
-  display: grid;
-  grid-template-columns: 280px 1fr 250px;
-  height: 100vh;
-}
+        body {
+            font-family: 'Cairo', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            height: 100vh;
+        }
 
-/* Sidebar Styles */
-.sidebar {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  padding: 20px;
-}
+        .app-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            height: 100vh;
+        }
 
-.room-card {
-  background: rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  padding: 15px;
-  margin-bottom: 15px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        /* Sidebar Styles */
+        .sidebar {
+            background: var(--secondary);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.1);
+        }
 
-.room-card:hover {
-  transform: translateY(-2px);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-}
+        .logo h1 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
 
-/* Main Chat Area */
-.chat-area {
-  display: flex;
-  flex-direction: column;
-}
+        .rooms-list {
+            flex: 1;
+            overflow-y: auto;
+        }
 
-.chat-header {
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(10px);
-}
+        .room-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.3s;
+            background: rgba(255,255,255,0.05);
+        }
 
-.messages-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-}
+        .room-item:hover {
+            background: rgba(255,255,255,0.1);
+        }
 
-.message {
-  background: rgba(255, 255, 255, 0.07);
-  border-radius: 12px;
-  padding: 12px;
-  margin-bottom: 10px;
-  max-width: 80%;
-}
+        .create-room-btn {
+            padding: 10px;
+            background: var(--accent);
+            border: none;
 
-.message.sent {
-  margin-left: auto;
-  background: var(--accent);
-}
+border-radius: 5px;
+            color: var(--text);
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-/* Controls Area */
-.controls-area {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
+        /* Main Content */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+        }
 
-.control-btn {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
+        .chat-header {
+            padding: 20px;
+            background: var(--secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-border: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+        .room-controls button {
+            background: none;
+            border: none;
+            color: var(--text);
+            font-size: 1.2rem;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
 
-.control-btn:hover {
-  background: var(--accent);
-}
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
 
-.control-btn.active {
-  background: var(--success);
-}
+        .message {
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.05);
+            max-width: 80%;
+        }
 
-.control-btn.muted {
-  background: var(--danger);
-}
+        .message.self {
+            margin-left: auto;
+            background: var(--primary);
+        }
 
-/* Participants Area */
-.participants-area {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 20px;
-  border-left: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .chat-input-area {
+            padding: 20px;
+            background: var(--secondary);
+            display: flex;
+            gap: 10px;
+        }
 
-.participant {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  background: rgba(255, 255, 255, 0.07);
-}
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            color: var(--text);
+        }
 
-.participant-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: var(--accent);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+        .chat-input-area button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background: var(--accent);
+            color: var(--text);
+            cursor: pointer;
+        }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
+justify-content: center;
+            align-items: center;
+        }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-}
+        .modal-content {
+            background: var(--secondary);
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+        }
 
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
 
-.fade-in {
-  animation: fadeIn 0.3s ease;
-}
+        .modal-buttons button {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-/* Modal Styles */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.8);
-  display: none;
-  justify-content: center;
-  align-items: center;
-  backdrop-filter: blur(5px);
-}
+        /* Users Sidebar */
+        .users-sidebar {
+            background: var(--secondary);
+            padding: 20px;
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
 
-.modal-content {
-  background: var(--primary-light);
-  padding: 30px;
-  border-radius: 15px;
-  width: 90%;
-  max-width: 500px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-}
+        .user-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-/* Input Styles */
-.input-group {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
+        /* Active States */
+        .active {
+            color: var(--success) !important;
+        }
 
-.chat-input {
-  flex: 1;
-  padding: 12px;
-  border-radius: 25px;
-  border: none;
-  background: rgba(255, 255, 255, 0.07);
-  color: var(--text);
-  font-family: 'Cairo';
-}
-
-.send-btn {
-  padding: 0 20px;
-  border-radius: 25px;
-  border: none;
-  background: var(--accent);
-  color: var(--text);
-
-cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.send-btn:hover {
-  transform: scale(1.05);
-}
-</style>
+        .muted {
+            color: var(--danger) !important;
+        }
+    </style>
 </head>
 <body>
-<div class="app-container">
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h2>الغرف المتاحة</h2>
-    <div id="rooms-list"></div>
-    <button class="send-btn" onclick="showCreateRoomModal()">
-      <i class="fas fa-plus"></i> إنشاء غرفة
-    </button>
-  </div>
+    <div class="app-container">
+        <!-- Rooms Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <h1>🌟 Galaxy Chat</h1>
+            </div>
+            <div class="rooms-list" id="rooms-list">
+                <!-- Rooms will be added here -->
+            </div>
+            <button class="create-room-btn" onclick="showCreateRoomModal()">
+                <i class="fas fa-plus"></i> إنشاء غرفة
+            </button>
+        </div>
 
-  <!-- Main Chat Area -->
-  <div class="chat-area">
-    <div class="chat-header">
-      <h2 id="current-room-name">اختر غرفة للانضمام</h2>
+        <!-- Main Chat Area -->
+        <div class="main-content">
+            <div class="chat-header">
+                <h2 id="current-room-name">اختر غرفة للدردشة</h2>
+                <div class="room-controls">
+                    <button id="screen-share-btn" onclick="toggleScreenShare()">
+
+<i class="fas fa-desktop"></i>
+                    </button>
+                    <button id="mic-btn" onclick="toggleMic()">
+                        <i class="fas fa-microphone"></i>
+                    </button>
+                    <button id="deafen-btn" onclick="toggleDeafen()">
+                        <i class="fas fa-headphones"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="messages-container" id="messages">
+                <!-- Messages will be added here -->
+            </div>
+
+            <div class="chat-input-area">
+                <input type="text" id="message-input" placeholder="اكتب رسالتك هنا...">
+                <button onclick="sendMessage()">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Users Sidebar -->
+        <div class="users-sidebar">
+            <h3>المتصلون</h3>
+            <div id="users-list">
+                <!-- Users will be added here -->
+            </div>
+        </div>
     </div>
-    
-    <div class="messages-container" id="messages"></div>
-    
-    <div class="controls-area">
-      <button class="control-btn" id="mic-btn" onclick="toggleMic()">
-        <i class="fas fa-microphone"></i>
-      </button>
-      <button class="control-btn" id="screen-btn" onclick="toggleScreenShare()">
-        <i class="fas fa-desktop"></i>
-      </button>
-      <button class="control-btn" id="deafen-btn" onclick="toggleDeafen()">
-        <i class="fas fa-headphones"></i>
-      </button>
-      <div class="input-group">
-        <input type="text" class="chat-input" id="message-input" placeholder="اكتب رسالتك هنا...">
-        <button class="send-btn" onclick="sendMessage()">
-          <i class="fas fa-paper-plane"></i>
-        </button>
-      </div>
+
+    <!-- Create Room Modal -->
+    <div id="create-room-modal" class="modal">
+        <div class="modal-content">
+            <h2>إنشاء غرفة جديدة</h2>
+            <input type="text" id="room-name-input" placeholder="اسم الغرفة">
+            <div class="modal-buttons">
+                <button onclick="createRoom()">إنشاء</button>
+                <button onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Participants Area -->
-  <div class="participants-area">
-    <h2>المتصلون</h2>
-    <div id="participants-list"></div>
-  </div>
-</div>
+    <script src="https://cdn.socket.io/4.5.1/socket.io.min.js"></script>
+    <script>
+‎        // إعداد Socket.IO
+        const socket = io('https://your-server.herokuapp.com');
 
-<!-- Create Room Modal -->
-<div id="create-room-modal" class="modal">
-  <div class="modal-content">
-    <h2>إنشاء غرفة جديدة</h2>
-    <input type="text" class="chat-input" id="room-name-input" placeholder="اسم الغرفة">
-    <div class="input-group">
-      <button class="send-btn" onclick="createRoom()">إنشاء</button>
-      <button class="send-btn" onclick="closeModal()">إلغاء</button>
-    </div>
-  </div>
-</div>
+‎        // متغيرات عامة
+        let currentRoom = null;
+        let currentUser = {
+            id: null,
+            name: null,
+            isMicOn: false,
+            isScreenSharing: false,
+            isDeafened: false
+        };
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.1/socket.io.js"></script>
-<script>
-// متغيرات عامة
-let currentRoom = null;
-let stream = null;
-let screenStream = null;
-let isMicOn = false;
-let isScreenSharing = false;
-let isDeafened = false;
-const socket = io('https://your-server.com');
+‎        // وظائف الغرف
 
-// وظائف إدارة الغرف
 function showCreateRoomModal() {
-  document.getElementById('create-room-modal').style.display = 'flex';
-}
+            document.getElementById('create-room-modal').style.display = 'flex';
+        }
 
-function closeModal() {
-  document.getElementById('create-room-modal').style.display = 'none';
-}
+        function closeModal() {
+            document.getElementById('create-room-modal').style.display = 'none';
+        }
 
-function createRoom() {
-  const roomName = document.getElementById('room-name-input').value.trim();
-  if (roomName) {
-    socket.emit('create-room', {
-      name: roomName,
-      creator: socket.id
-    });
-    closeModal();
-  }
-}
+        function createRoom() {
+            const roomName = document.getElementById('room-name-input').value.trim();
+            if (roomName) {
+                socket.emit('create-room', {
+                    name: roomName,
+                    creator: socket.id
+                });
+                closeModal();
+            }
+        }
 
-function joinRoom(roomId) {
-  if (currentRoom) {
-    leaveRoom();
-  }
-  currentRoom = roomId;
-  socket.emit('join-room', roomId);
-  updateRoomDisplay(roomId);
-}
+        function joinRoom(roomId) {
+            if (currentRoom) {
+                leaveRoom();
+            }
+            currentRoom = roomId;
+            socket.emit('join-room', roomId);
+        }
 
-function leaveRoom() {
-  if (currentRoom) {
-    stopAllStreams();
-    socket.emit('leave-room', currentRoom);
-    currentRoom = null;
-    updateRoomDisplay(null);
-  }
-}
+        function leaveRoom() {
+            if (currentRoom) {
+                socket.emit('leave-room', currentRoom);
+                currentRoom = null;
+                document.getElementById('current-room-name').textContent = 'اختر غرفة للدردشة';
+                document.getElementById('messages').innerHTML = '';
+            }
+        }
 
-// وظائف الوسائط
-async function toggleMic() {
-  const micBtn = document.getElementById('mic-btn');
-  
-  if (!isMicOn) {
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      socket.emit('start-audio', currentRoom);
-      micBtn.classList.add('active');
-      isMicOn = true;
-    } catch (err) {
-      console.error('خطأ في الوصول للمايك:', err);
-    }
-  } else {
-    stopAudioStream();
-    micBtn.classList.remove('active');
-    isMicOn = false;
-  }
-}
+        // وظائف الوسائط
+        async function toggleMic() {
+            const micBtn = document.getElementById('mic-btn');
 
-async function toggleScreenShare() {
-  const screenBtn = document.getElementById('screen-btn');
-  
-  if (!isScreenSharing) {
-    try {
-      screenStream = await navigator.mediaDevices.getDisplayMedia({
-        video: true,
-        audio: true
-      });
-      socket.emit('start-screen-share', currentRoom);
-      screenBtn.classList.add('active');
+            if (!currentUser.isMicOn) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    socket.emit('start-audio', currentRoom);
+                    micBtn.classList.add('active');
+                    currentUser.isMicOn = true;
+                } catch (err) {
+                    console.error('خطأ في الوصول للمايك:', err);
+                }
+            } else {
+                socket.emit('stop-audio', currentRoom);
+                micBtn.classList.remove('active');
+                currentUser.isMicOn = false;
+            }
+        }
 
-isScreenSharing = true;
-    } catch (err) {
-      console.error('خطأ في مشاركة الشاشة:', err);
-    }
-  } else {
-    stopScreenShare();
-    screenBtn.classList.remove('active');
-    isScreenSharing = false;
-  }
-}
+        async function toggleScreenShare() {
 
-function toggleDeafen() {
-  const deafenBtn = document.getElementById('deafen-btn');
-  isDeafened = !isDeafened;
-  
-  if (isDeafened) {
-    deafenBtn.classList.add('muted');
-    // كتم صوت جميع المشاركين
-    socket.emit('toggle-deafen', { roomId: currentRoom, state: true });
-  } else {
-    deafenBtn.classList.remove('muted');
-    // إلغاء كتم صوت المشاركين
-    socket.emit('toggle-deafen', { roomId: currentRoom, state: false });
-  }
-}
+const screenBtn = document.getElementById('screen-share-btn');
 
-// وظائف الرسائل
-function sendMessage() {
-  const input = document.getElementById('message-input');
-  const message = input.value.trim();
-  
-  if (message && currentRoom) {
-    socket.emit('chat-message', {
-      room: currentRoom,
-      message: message,
-      sender: socket.id
-    });
-    input.value = '';
-  }
-}
+            if (!currentUser.isScreenSharing) {
+                try {
+                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: true,
+                        audio: true
+                    });
+                    socket.emit('start-screen-share', currentRoom);
+                    screenBtn.classList.add('active');
+                    currentUser.isScreenSharing = true;
+                } catch (err) {
+                    console.error('خطأ في مشاركة الشاشة:', err);
+                }
+            } else {
+                socket.emit('stop-screen-share', currentRoom);
+                screenBtn.classList.remove('active');
+                currentUser.isScreenSharing = false;
+            }
+        }
 
-// وظائف التحديث
-function updateRoomDisplay(roomId) {
-  const roomName = document.getElementById('current-room-name');
-  if (roomId) {
-    roomName.textContent = `غرفة: ${roomId}`;
-  } else {
-    roomName.textContent = 'اختر غرفة للانضمام';
-  }
-}
+        function toggleDeafen() {
+            const deafenBtn = document.getElementById('deafen-btn');
+            currentUser.isDeafened = !currentUser.isDeafened;
 
-function updateParticipantsList(participants) {
-  const list = document.getElementById('participants-list');
-  list.innerHTML = '';
-  
-  participants.forEach(participant => {
-    const div = document.createElement('div');
-    div.className = 'participant fade-in';
-    div.innerHTML = `
-      <div class="participant-avatar">
-        <i class="fas fa-user"></i>
-      </div>
-      <span>${participant.name}</span>
-      ${participant.isSpeaking ? '<i class="fas fa-volume-up"></i>' : ''}
-    `;
-    list.appendChild(div);
-  });
-}
+            if (currentUser.isDeafened) {
+                deafenBtn.classList.add('muted');
+                socket.emit('toggle-deafen', { roomId: currentRoom, state: true });
+            } else {
+                deafenBtn.classList.remove('muted');
+                socket.emit('toggle-deafen', { roomId: currentRoom, state: false });
+            }
+        }
 
-// وظائف المساعدة
-function stopAllStreams() {
-  stopAudioStream();
-  stopScreenShare();
-}
+        // وظائف الرسائل
+        function sendMessage() {
+            const input = document.getElementById('message-input');
+            const message = input.value.trim();
 
-function stopAudioStream() {
-  if (stream) {
-    stream.getTracks().forEach(track => track.stop());
-    stream = null;
-  }
-}
+            if (message && currentRoom) {
+                socket.emit('chat-message', {
+                    room: currentRoom,
+                    message: message
+                });
+                input.value = '';
+            }
+        }
 
-function stopScreenShare() {
+        // معالجة أحداث Socket.IO
+        socket.on('connect', () => {
+            currentUser.id = socket.id;
+        });
 
-if (screenStream) {
-    screenStream.getTracks().forEach(track => track.stop());
-    screenStream = null;
-  }
-}
+        socket.on('room-created', (roomData) => {
+            addRoomToList(roomData);
 
-// Socket.io listeners
-socket.on('room-created', (roomData) => {
-  const roomsList = document.getElementById('rooms-list');
-  const roomDiv = document.createElement('div');
-  roomDiv.className = 'room-card fade-in';
-  roomDiv.innerHTML = `
-    <h3>${roomData.name}</h3>
-    <p>${roomData.participants} متصل</p>
-  `;
-  roomDiv.onclick = () => joinRoom(roomData.id);
-  roomsList.appendChild(roomDiv);
 });
 
-socket.on('chat-message', (data) => {
-  const messagesDiv = document.getElementById('messages');
-  const messageDiv = document.createElement('div');
-  messageDiv.className = `message fade-in ${data
+        socket.on('chat-message', (data) => {
+            addMessageToChat(data);
+        });
+
+        socket.on('user-joined', (userData) => {
+            updateUsersList(userData);
+        });
+
+        socket.on('user-left', (userData) => {
+            updateUsersList(userData);
+        });
+
+        // وظائف مساعدة
+        function addRoomToList(roomData) {
+            const roomsList = document.getElementById('rooms-list');
+            const roomElement = document.createElement('div');
+            roomElement.className = 'room-item';
+            roomElement.innerHTML = `
+                <i class="fas fa-hashtag"></i>
+                <span>${roomData.name}</span>
+                <span class="room-count">${roomData.participants}</span>
+            `;
+            roomElement.onclick = () => joinRoom(roomData.id);
+            roomsList.appendChild(roomElement);
+        }
+
+        function addMessageToChat(data) {
+            const messagesContainer = document.getElementById('messages');
+            const messageElement = document.createElement('div');
+            messageElement.className = `message ${data.sender === currentUser.id ? 'self' : ''}`;
+            messageElement.textContent = data.message;
+            messagesContainer.appendChild(messageElement);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function updateUsersList(users) {
+            const usersList = document.getElementById('users-list');
+            usersList.innerHTML = '';
+
+            users.forEach(user => {
+                const userElement = document.createElement('div');
+                userElement.className = 'user-item';
+                userElement.innerHTML = `
+                    <i class="fas fa-user"></i>
+                    <span>${user.name}</span>
+                    ${user.isMicOn ? '<i class="fas fa-microphone"></i>' : ''}
+                    ${user.isScreenSharing ? '<i class="fas fa-desktop"></i>' : ''}
+
+${user.isDeafened ? '<i class="fas fa-headphones-alt muted"></i>' : ''}
+                `;
+                usersList.appendChild(userElement);
+            });
+        }
+
+        // Event Listeners
+        document.getElementById('message-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
