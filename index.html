@@ -2,9 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>شات عربي</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/express@4.18.2/lib/express.min.js"></script>
+    <title>MoonHelper Chat</title>
     <style>
         * {
             margin: 0;
@@ -16,69 +14,76 @@
         body {
             background: #36393f;
             color: white;
-        }
-
-        #app {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-        }
-
-        .chat-window {
-            background: #2f3136;
-            border-radius: 8px;
-            overflow: hidden;
-            display: grid;
-            grid-template-columns: 200px 1fr;
-            height: 80vh;
-        }
-
-        .sidebar {
-            background: #202225;
-            padding: 15px;
-        }
-
-        .chat-area {
+            height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
+        .chat-container {
+            flex: 1;
+            display: flex;
+            margin: 20px;
+            background: #2f3136;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #202225;
+            padding: 20px;
+        }
+
+        .main-chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #36393f;
+        }
+
+        .chat-header {
+            padding: 20px;
+            background: #2f3136;
+            border-bottom: 1px solid #202225;
+        }
+
         .messages {
             flex: 1;
+            padding: 20px;
             overflow-y: auto;
-            padding: 15px;
         }
 
         .message {
-            background: #40444b;
+            margin-bottom: 10px;
             padding: 10px;
-            margin: 5px 0;
+            background: #40444b;
             border-radius: 5px;
         }
 
         .input-area {
-            padding: 15px;
+            padding: 20px;
             background: #40444b;
         }
 
         input, button {
-            padding: 8px;
+            padding: 10px;
             margin: 5px;
-            border-radius: 4px;
+            border-radius: 5px;
             border: none;
         }
 
         input {
+            width: calc(100% - 110px);
             background: #40444b;
             color: white;
             border: 1px solid #202225;
-            width: calc(100% - 10px);
         }
 
         button {
             background: #5865f2;
             color: white;
             cursor: pointer;
+            width: 90px;
         }
 
         button:hover {
@@ -86,222 +91,182 @@
         }
 
         .room {
-            padding: 8px;
 
-margin: 5px 0;
+padding: 10px;
+            margin: 5px 0;
             background: #40444b;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
         }
 
         .room:hover {
-            background: #36393f;
-        }
-
-        .selected {
             background: #5865f2;
         }
 
-        .login-screen {
+        .system-message {
+            color: #72767d;
+            font-style: italic;
+        }
+
+        #loginScreen {
             position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0,0,0,0.8);
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
         }
 
         .login-box {
             background: #2f3136;
-            padding: 20px;
-            border-radius: 8px;
+            padding: 30px;
+            border-radius: 10px;
             text-align: center;
         }
 
         .hidden {
-            display: none;
+            display: none !important;
         }
     </style>
 </head>
 <body>
-    <div id="login" class="login-screen">
+    <div id="loginScreen">
         <div class="login-box">
-            <h2>تسجيل الدخول</h2>
-            <input type="text" id="username" placeholder="أدخل اسمك">
+            <h2>أهلاً بك في MoonHelper Chat</h2>
+            <input type="text" id="usernameInput" placeholder="أدخل اسمك" />
             <button onclick="login()">دخول</button>
         </div>
     </div>
 
-    <div id="app" class="hidden">
-        <div class="chat-window">
+    <div id="chatScreen" class="hidden">
+        <div class="chat-container">
             <div class="sidebar">
                 <h3>الغرف</h3>
-                <div id="rooms"></div>
-                <input type="text" id="roomName" placeholder="اسم الغرفة الجديدة">
+                <div id="roomsList"></div>
+                <input type="text" id="newRoomInput" placeholder="اسم الغرفة الجديدة" />
                 <button onclick="createRoom()">إنشاء غرفة</button>
             </div>
-            <div class="chat-area">
-                <div id="messages" class="messages"></div>
+            <div class="main-chat">
+                <div class="chat-header">
+                    <h3 id="currentRoomName">اختر غرفة للدردشة</h3>
+                </div>
+                <div class="messages" id="messagesArea"></div>
                 <div class="input-area">
-                    <input type="text" id="message" placeholder="اكتب رسالتك هنا...">
+                    <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا..." />
                     <button onclick="sendMessage()">إرسال</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // إعداد السيرفر (سيتم تشغيله تلقائياً)
-        const express = require('express');
-        const app = express();
-        const server = require('http').createServer(app);
-        const io = require('socket.io')(server);
-
-const rooms = new Map();
-        const users = new Map();
-
-        io.on('connection', socket => {
-            socket.on('login', username => {
-                users.set(socket.id, username);
-                socket.emit('rooms', Array.from(rooms.keys()));
-            });
-
-            socket.on('createRoom', roomName => {
-                rooms.set(roomName, { messages: [], users: new Set() });
-                io.emit('roomCreated', roomName);
-            });
-
-            socket.on('joinRoom', roomName => {
-                socket.join(roomName);
-                const username = users.get(socket.id);
-                const room = rooms.get(roomName);
-                room.users.add(socket.id);
-                
-                socket.emit('previousMessages', room.messages);
-                io.to(roomName).emit('userJoined', username);
-            });
-
-            socket.on('message', ({ room, text }) => {
-                const username = users.get(socket.id);
-                const messageObj = {
-                    username,
-                    text,
-                    timestamp: new Date().toLocaleTimeString()
-                };
-                rooms.get(room).messages.push(messageObj);
-                io.to(room).emit('message', messageObj);
-            });
-
-            socket.on('disconnect', () => {
-                const username = users.get(socket.id);
-                users.delete(socket.id);
-                
-                rooms.forEach((room, roomName) => {
-                    if (room.users.has(socket.id)) {
-                        room.users.delete(socket.id);
-                        io.to(roomName).emit('userLeft', username);
-                    }
-                });
-            });
-        });
-
-        server.listen(3000, () => {
-            console.log('Server running on port 3000');
-        });
-
-        // كود الواجهة
+<script>
         let currentUser = '';
         let currentRoom = '';
-        const socket = io('https://hamza2138.github.io/MoonHelperAi/');
+        const rooms = new Map();
 
-function login() {
-            const username = document.getElementById('username').value;
-            if (username.trim()) {
+        function login() {
+            const username = document.getElementById('usernameInput').value.trim();
+            if (username) {
                 currentUser = username;
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('app').classList.remove('hidden');
-                socket.emit('login', username);
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('chatScreen').classList.remove('hidden');
+                addSystemMessage('مرحباً بك في الدردشة!');
+                // إنشاء غرفة افتراضية
+                createRoom('الغرفة العامة');
             }
         }
 
-        function createRoom() {
-            const roomName = document.getElementById('roomName').value;
-            if (roomName.trim()) {
-                socket.emit('createRoom', roomName);
-                document.getElementById('roomName').value = '';
+        function createRoom(roomName) {
+            if (!roomName) {
+                roomName = document.getElementById('newRoomInput').value.trim();
+            }
+            if (roomName && !rooms.has(roomName)) {
+                rooms.set(roomName, []);
+                updateRoomsList();
+                document.getElementById('newRoomInput').value = '';
+                joinRoom(roomName);
             }
         }
 
         function joinRoom(roomName) {
             currentRoom = roomName;
-            socket.emit('joinRoom', roomName);
+            document.getElementById('currentRoomName').textContent = roomName;
+            document.getElementById('messagesArea').innerHTML = '';
             
-            document.querySelectorAll('.room').forEach(room => {
-                room.classList.remove('selected');
-            });
-            document.querySelector(`[data-room="${roomName}"]`).classList.add('selected');
-            document.getElementById('messages').innerHTML = '';
+            const messages = rooms.get(roomName) || [];
+            messages.forEach(msg => displayMessage(msg));
+            
+            addSystemMessage(`انضممت إلى ${roomName}`);
         }
 
         function sendMessage() {
-            const messageInput = document.getElementById('message');
-            const text = messageInput.value;
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
             
-            if (text.trim() && currentRoom) {
-                socket.emit('message', { room: currentRoom, text });
+            if (message && currentRoom) {
+                const messageObj = {
+                    user: currentUser,
+                    text: message,
+                    time: new Date().toLocaleTimeString()
+                };
+                
+                const roomMessages = rooms.get(currentRoom);
+                roomMessages.push(messageObj);
+
+displayMessage(messageObj);
                 messageInput.value = '';
             }
         }
 
-        // Socket Events
-        socket.on('rooms', rooms => {
-            const roomsDiv = document.getElementById('rooms');
-            roomsDiv.innerHTML = rooms.map(room => 
-                `<div class="room" data-room="${room}" onclick="joinRoom('${room}')">${room}</div>`
-            ).join('');
-        });
+        function displayMessage(message) {
+            const messagesArea = document.getElementById('messagesArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            messageDiv.innerHTML = `
+                <strong>${message.user}</strong> [${message.time}]:
+                <br>${message.text}
+            `;
+            messagesArea.appendChild(messageDiv);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
 
-        socket.on('roomCreated', room => {
-            const roomsDiv = document.getElementById('rooms');
-            roomsDiv.innerHTML += `<div class="room" data-room="${room}" onclick="joinRoom('${room}')">${room}</div>`;
+        function addSystemMessage(text) {
+            const messagesArea = document.getElementById('messagesArea');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message system-message';
+            messageDiv.textContent = text;
+            messagesArea.appendChild(messageDiv);
+            messagesArea.scrollTop = messagesArea.scrollHeight;
+        }
 
-        });
-
-        socket.on('previousMessages', messages => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML = messages.map(msg => 
-                `<div class="message"><strong>${msg.username}:</strong> ${msg.text}</div>`
-            ).join('');
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-
-        socket.on('message', msg => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<div class="message"><strong>${msg.username}:</strong> ${msg.text}</div>`;
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        });
-
-        socket.on('userJoined', username => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<div class="message system">${username} انضم إلى الغرفة</div>`;
-        });
-
-        socket.on('userLeft', username => {
-            const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<div class="message system">${username} غادر الغرفة</div>`;
-        });
+        function updateRoomsList() {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = '';
+            rooms.forEach((messages, roomName) => {
+                const roomDiv = document.createElement('div');
+                roomDiv.className = 'room';
+                roomDiv.textContent = roomName;
+                roomDiv.onclick = () => joinRoom(roomName);
+                roomsList.appendChild(roomDiv);
+            });
+        }
 
         // Event Listeners
-        document.getElementById('message').addEventListener('keypress', e => {
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') sendMessage();
         });
 
-        document.getElementById('username').addEventListener('keypress', e => {
+        document.getElementById('usernameInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') login();
         });
+
+        // إنشاء غرفة افتراضية عند بدء التطبيق
+        window.onload = () => {
+            rooms.clear();
+        };
     </script>
 </body>
 </html>
