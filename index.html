@@ -1,272 +1,221 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>MoonHelper Chat</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<title>MoonHelper Voice Chat</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
 
-        body {
-            background: #36393f;
-            color: white;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
+body {
+    background: #36393f;
+    color: white;
+}
 
-        .chat-container {
-            flex: 1;
-            display: flex;
-            margin: 20px;
-            background: #2f3136;
-            border-radius: 10px;
-            overflow: hidden;
-        }
+.container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+}
 
-        .sidebar {
-            width: 250px;
-            background: #202225;
-            padding: 20px;
-        }
+.room-controls {
+    background: #2f3136;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    text-align: center;
+}
 
-        .main-chat {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: #36393f;
-        }
+.voice-controls {
+    background: #40444b;
+    padding: 20px;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
 
-        .chat-header {
-            padding: 20px;
-            background: #2f3136;
-            border-bottom: 1px solid #202225;
-        }
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background: #5865f2;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
 
-        .messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-        }
+button:hover {
+    background: #4752c4;
+}
 
-        .message {
-            margin-bottom: 10px;
-            padding: 10px;
-            background: #40444b;
-            border-radius: 5px;
-        }
+button.red {
+    background: #ed4245;
+}
 
-        .input-area {
-            padding: 20px;
-            background: #40444b;
-        }
+button.red:hover {
+    background: #c03537;
+}
 
-        input, button {
-            padding: 10px;
-            margin: 5px;
-            border-radius: 5px;
-            border: none;
-        }
+input {
+    padding: 10px;
+    border-radius: 4px;
+    border: none;
+    margin: 10px;
+    width: 200px;
+}
 
-        input {
-            width: calc(100% - 110px);
-            background: #40444b;
-            color: white;
-            border: 1px solid #202225;
-        }
+.status {
+    text-align: center;
+    margin: 20px 0;
+    padding: 10px;
+    background: #40444b;
+    border-radius: 4px;
+}
 
-        button {
-            background: #5865f2;
-            color: white;
-            cursor: pointer;
-            width: 90px;
-        }
+.room-info {
+    background: #40444b;
+    padding: 15px;
+    border-radius: 4px;
+    margin: 20px 0;
+    text-align: center;
+}
 
-        button:hover {
-            background: #4752c4;
-        }
+.hidden {
+    display: none;
+}
 
-        .room {
-
-padding: 10px;
-            margin: 5px 0;
-            background: #40444b;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .room:hover {
-            background: #5865f2;
-        }
-
-        .system-message {
-            color: #72767d;
-            font-style: italic;
-        }
-
-        #loginScreen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .login-box {
-            background: #2f3136;
-            padding: 30px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .hidden {
-            display: none !important;
-        }
-    </style>
+#roomCode {
+    font-size: 24px;
+    font-weight: bold;
+    color: #5865f2;
+}
+</style>
 </head>
 <body>
-    <div id="loginScreen">
-        <div class="login-box">
-            <h2>أهلاً بك في MoonHelper Chat</h2>
-            <input type="text" id="usernameInput" placeholder="أدخل اسمك" />
-            <button onclick="login()">دخول</button>
-        </div>
+<div class="container">
+    <div id="createRoom" class="room-controls">
+        <h2>إنشاء غرفة جديدة</h2>
+        <button onclick="createNewRoom()">إنشاء غرفة</button>
     </div>
 
-    <div id="chatScreen" class="hidden">
-        <div class="chat-container">
-            <div class="sidebar">
-                <h3>الغرف</h3>
-                <div id="roomsList"></div>
-                <input type="text" id="newRoomInput" placeholder="اسم الغرفة الجديدة" />
-                <button onclick="createRoom()">إنشاء غرفة</button>
-            </div>
-            <div class="main-chat">
-                <div class="chat-header">
-                    <h3 id="currentRoomName">اختر غرفة للدردشة</h3>
-                </div>
-                <div class="messages" id="messagesArea"></div>
-                <div class="input-area">
-                    <input type="text" id="messageInput" placeholder="اكتب رسالتك هنا..." />
-                    <button onclick="sendMessage()">إرسال</button>
-                </div>
-            </div>
-        </div>
+    <div id="joinRoom" class="room-controls">
+        <h2>الانضمام لغرفة</h2>
+        <input type="text" id="roomCodeInput" placeholder="أدخل كود الغرفة">
+
+<button onclick="joinExistingRoom()">انضمام</button>
     </div>
+
+    <div id="roomInfo" class="room-info hidden">
+        <h3>كود الغرفة:</h3>
+        <p id="roomCode"></p>
+        <p>شارك هذا الكود مع صديقك للانضمام</p>
+    </div>
+
+    <div id="voiceControls" class="voice-controls hidden">
+        <button onclick="startCall()" id="startButton">بدء المكالمة</button>
+        <button onclick="muteAudio()" id="muteButton">كتم الصوت</button>
+        <button class="red" onclick="endCall()">إنهاء المكالمة</button>
+    </div>
+
+    <div id="status" class="status"></div>
+</div>
 
 <script>
-        let currentUser = '';
-        let currentRoom = '';
-        const rooms = new Map();
+let peerConnection;
+let localStream;
+let roomId;
+let isMuted = false;
 
-        function login() {
-            const username = document.getElementById('usernameInput').value.trim();
-            if (username) {
-                currentUser = username;
-                document.getElementById('loginScreen').classList.add('hidden');
-                document.getElementById('chatScreen').classList.remove('hidden');
-                addSystemMessage('مرحباً بك في الدردشة!');
-                // إنشاء غرفة افتراضية
-                createRoom('الغرفة العامة');
-            }
-        }
+async function createNewRoom() {
+    roomId = Math.random().toString(36).substr(2, 6).toUpperCase();
+    document.getElementById('roomCode').textContent = roomId;
+    document.getElementById('roomInfo').classList.remove('hidden');
+    document.getElementById('voiceControls').classList.remove('hidden');
+    document.getElementById('createRoom').classList.add('hidden');
+    document.getElementById('joinRoom').classList.add('hidden');
+    updateStatus('تم إنشاء الغرفة! انتظر انضمام صديقك...');
+}
 
-        function createRoom(roomName) {
-            if (!roomName) {
-                roomName = document.getElementById('newRoomInput').value.trim();
-            }
-            if (roomName && !rooms.has(roomName)) {
-                rooms.set(roomName, []);
-                updateRoomsList();
-                document.getElementById('newRoomInput').value = '';
-                joinRoom(roomName);
-            }
-        }
+async function joinExistingRoom() {
+    roomId = document.getElementById('roomCodeInput').value.toUpperCase();
+    if (roomId.length === 6) {
+        document.getElementById('voiceControls').classList.remove('hidden');
+        document.getElementById('createRoom').classList.add('hidden');
+        document.getElementById('joinRoom').classList.add('hidden');
+        updateStatus('تم الانضمام للغرفة!');
+    } else {
+        updateStatus('كود غرفة غير صالح!');
+    }
+}
 
-        function joinRoom(roomName) {
-            currentRoom = roomName;
-            document.getElementById('currentRoomName').textContent = roomName;
-            document.getElementById('messagesArea').innerHTML = '';
-            
-            const messages = rooms.get(roomName) || [];
-            messages.forEach(msg => displayMessage(msg));
-            
-            addSystemMessage(`انضممت إلى ${roomName}`);
-        }
+async function startCall() {
+    try {
+        localStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        document.getElementById('startButton').disabled = true;
+        updateStatus('تم تشغيل الميكروفون');
 
-        function sendMessage() {
-            const messageInput = document.getElementById('messageInput');
-            const message = messageInput.value.trim();
-            
-            if (message && currentRoom) {
-                const messageObj = {
-                    user: currentUser,
-                    text: message,
-                    time: new Date().toLocaleTimeString()
-                };
-                
-                const roomMessages = rooms.get(currentRoom);
-                roomMessages.push(messageObj);
+        // إعداد WebRTC
+        peerConnection = new RTCPeerConnection({
+            iceServers: [
 
-displayMessage(messageObj);
-                messageInput.value = '';
-            }
-        }
-
-        function displayMessage(message) {
-            const messagesArea = document.getElementById('messagesArea');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            messageDiv.innerHTML = `
-                <strong>${message.user}</strong> [${message.time}]:
-                <br>${message.text}
-            `;
-            messagesArea.appendChild(messageDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        function addSystemMessage(text) {
-            const messagesArea = document.getElementById('messagesArea');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message system-message';
-            messageDiv.textContent = text;
-            messagesArea.appendChild(messageDiv);
-            messagesArea.scrollTop = messagesArea.scrollHeight;
-        }
-
-        function updateRoomsList() {
-            const roomsList = document.getElementById('roomsList');
-            roomsList.innerHTML = '';
-            rooms.forEach((messages, roomName) => {
-                const roomDiv = document.createElement('div');
-                roomDiv.className = 'room';
-                roomDiv.textContent = roomName;
-                roomDiv.onclick = () => joinRoom(roomName);
-                roomsList.appendChild(roomDiv);
-            });
-        }
-
-        // Event Listeners
-        document.getElementById('messageInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') sendMessage();
+                { urls: 'stun:stun.l.google.com:19302' }
+            ]
         });
 
-        document.getElementById('usernameInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') login();
+        localStream.getTracks().forEach(track => {
+            peerConnection.addTrack(track, localStream);
         });
 
-        // إنشاء غرفة افتراضية عند بدء التطبيق
-        window.onload = () => {
-            rooms.clear();
+        peerConnection.ontrack = event => {
+            const remoteStream = event.streams[0];
+            // إضافة الصوت للمتصفح
+            const audioElement = new Audio();
+            audioElement.srcObject = remoteStream;
+            audioElement.play();
         };
-    </script>
+
+    } catch (error) {
+        updateStatus('خطأ في الوصول للميكروفون: ' + error.message);
+    }
+}
+
+function muteAudio() {
+    if (localStream) {
+        isMuted = !isMuted;
+        localStream.getAudioTracks().forEach(track => {
+            track.enabled = !isMuted;
+        });
+        document.getElementById('muteButton').textContent = 
+            isMuted ? 'تشغيل الصوت' : 'كتم الصوت';
+    }
+}
+
+function endCall() {
+    if (localStream) {
+        localStream.getTracks().forEach(track => track.stop());
+    }
+    if (peerConnection) {
+        peerConnection.close();
+    }
+    document.getElementById('startButton').disabled = false;
+    updateStatus('تم إنهاء المكالمة');
+}
+
+function updateStatus(message) {
+    document.getElementById('status').textContent = message;
+}
+
+// التعامل مع إغلاق الصفحة
+window.onbeforeunload = function() {
+    endCall();
+};
+</script>
 </body>
 </html>
