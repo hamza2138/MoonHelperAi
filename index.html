@@ -1,75 +1,268 @@
-
 <!DOCTYPE html>
 <html dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🌙 Moon Helper</title>
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
 body {
-    background: #23272A;
+    background: linear-gradient(45deg, #1a1a2e, #16213e);
     margin: 0;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
     font-family: 'Cairo', sans-serif;
     color: white;
+    min-height: 100vh;
 }
 
-.login-btn {
-    background: #5865F2;
-    color: white;
-    border: none;
-    padding: 15px 32px;
-    border-radius: 8px;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s ease;
-    text-decoration: none;
-}
-
-.login-btn:hover {
-    background: #4752C4;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
-}
-
-.discord-icon {
-    width: 24px;
-    height: 24px;
+.header {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    text-align: center;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
 .title {
     font-size: 2.5rem;
-    margin-bottom: 2rem;
-    text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    margin: 0;
+    background: linear-gradient(45deg, #5865F2, #9ba3fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.container {
-    text-align: center;
+.rooms-container {
     padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.room {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 20px;
+    transition: transform 0.3s;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.room:hover {
+    transform: translateY(-5px);
+}
+
+.room-title {
+    color: #5865F2;
+    margin: 0 0 10px 0;
+}
+
+.room-members {
+    color: #b9bbbe;
+    font-size: 0.9rem;
+}
+
+.actions {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: 'Cairo';
+    transition: all 0.3s;
+}
+
+.join-btn {
+    background: #5865F2;
+    color: white;
+}
+
+.create-btn {
+    background: #43b581;
+    color: white;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    margin: 20px;
+}
+
+.kick-btn {
+    background: #ed4245;
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+
+background: #2f3136;
+    padding: 20px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+}
+
+.input-field {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-radius: 5px;
+    background: #40444b;
+    color: white;
+    font-family: 'Cairo';
+}
+
+.member-list {
+    margin-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.member {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    margin: 5px 0;
+    border-radius: 5px;
 }
 </style>
 </head>
 <body>
-<div class="container">
+<div class="header">
     <h1 class="title">🌙 Moon Helper</h1>
-    <a href="https://discord.com/oauth2/authorize?client_id=1284253565417816246&response_type=code&redirect_uri=https%3A%2F%2Fhamza2138.github.io%2FMoonHelperAi%2F&scope=identify+guilds.join+guilds+voice" class="login-btn">
-        <img src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/636e0a6a49cf127bf92de1e2_icon_clyde_white_RGB.png" alt="Discord" class="discord-icon">
-‎        تسجيل دخول بواسطة Discord
-    </a>
+</div>
+
+<button onclick="showCreateRoom()" class="btn create-btn">إنشاء غرفة جديدة</button>
+
+<div class="rooms-container" id="roomsContainer">
+    <!-- سيتم إضافة الغرف هنا ديناميكياً -->
+</div>
+
+<!-- مودال إنشاء غرفة -->
+<div id="createRoomModal" class="modal">
+    <div class="modal-content">
+        <h2>إنشاء غرفة جديدة</h2>
+        <input type="text" id="roomName" class="input-field" placeholder="اسم الغرفة">
+        <input type="text" id="roomCode" class="input-field" placeholder="كود الغرفة (اختياري)">
+        <button onclick="createRoom()" class="btn join-btn">إنشاء</button>
+        <button onclick="closeModal('createRoomModal')" class="btn kick-btn">إلغاء</button>
+    </div>
+</div>
+
+<!-- مودال الانضمام للغرفة -->
+<div id="joinRoomModal" class="modal">
+    <div class="modal-content">
+        <h2>الانضمام للغرفة</h2>
+        <input type="text" id="joinCode" class="input-field" placeholder="أدخل كود الغرفة">
+        <button onclick="joinRoom()" class="btn join-btn">انضمام</button>
+        <button onclick="closeModal('joinRoomModal')" class="btn kick-btn">إلغاء</button>
+    </div>
 </div>
 
 <script>
-‎// التحقق من وجود مستخدم مسجل
-if (localStorage.getItem('discord_user')) {
-    window.location.href = 'rooms.html';
+let rooms = JSON.parse(localStorage.getItem('rooms')) || [];
+
+function showCreateRoom() {
+    document.getElementById('createRoomModal').style.display = 'flex';
+}
+
+function closeModal(modalId) {
+
+document.getElementById(modalId).style.display = 'none';
+}
+
+function createRoom() {
+    const name = document.getElementById('roomName').value;
+    const code = document.getElementById('roomCode').value || Math.random().toString(36).substring(7);
+    
+    const room = {
+        id: Date.now(),
+        name: name,
+        code: code,
+        owner: 'أنت',
+        members: ['أنت'],
+        createdAt: new Date().toISOString()
+    };
+    
+    rooms.push(room);
+    localStorage.setItem('rooms', JSON.stringify(rooms));
+    updateRooms();
+    closeModal('createRoomModal');
+}
+
+function joinRoom() {
+    const code = document.getElementById('joinCode').value;
+    const room = rooms.find(r => r.code === code);
+    
+    if (room && !room.members.includes('أنت')) {
+        room.members.push('أنت');
+        localStorage.setItem('rooms', JSON.stringify(rooms));
+        updateRooms();
+    }
+    
+    closeModal('joinRoomModal');
+}
+
+function kickMember(roomId, member) {
+    const room = rooms.find(r => r.id === roomId);
+    if (room && room.owner === 'أنت') {
+        room.members = room.members.filter(m => m !== member);
+        localStorage.setItem('rooms', JSON.stringify(rooms));
+        updateRooms();
+    }
+}
+
+function updateRooms() {
+    const container = document.getElementById('roomsContainer');
+    container.innerHTML = '';
+    
+    rooms.forEach(room => {
+        const roomEl = document.createElement('div');
+        roomEl.className = 'room';
+        roomEl.innerHTML = `
+            <h3 class="room-title">${room.name}</h3>
+            <div class="room-members">
+                <p>الكود: ${room.code}</p>
+                <p>الأعضاء: ${room.members.length}</p>
+                ${room.members.map(member => `
+                    <div class="member">
+                        ${member}
+                        ${room.owner === 'أنت' && member !== 'أنت' ? 
+                            `<button onclick="kickMember(${room.id}, '${member}')" class="btn kick-btn">طرد</button>`
+
+                            : ''}
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(roomEl);
+    });
+}
+
+// تحديث الغرف عند تحميل الصفحة
+updateRooms();
+
+// إضافة مستمعي الأحداث للمودال
+window.onclick = function(event) {
+    if (event.target.className === 'modal') {
+        event.target.style.display = 'none';
+    }
 }
 </script>
 </body>
